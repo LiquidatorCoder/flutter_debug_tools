@@ -1,10 +1,10 @@
 name: flutter_debug_tools
-description: A new Flutter package project.
-version: 0.0.1
+description: A Flutter package with set of tools to help debug your app.
+version: 0.0.1+2
 homepage:
 
 environment:
-  sdk: '>=3.1.2 <4.0.0'
+  sdk: ">=3.1.2 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
