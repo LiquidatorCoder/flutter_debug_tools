@@ -40,6 +40,17 @@ class DebugToolsState {
           shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
     );
   }
+
+  DebugToolsState clearColor() {
+    return DebugToolsState(
+      currentColor: null,
+      shouldShowToolsIndicator: shouldShowToolsIndicator,
+      shouldShowToolsPanel: shouldShowToolsPanel,
+      shouldShowLogsScreen: shouldShowLogsScreen,
+      shouldShowColorPicker: shouldShowColorPicker,
+      shouldShowPerformanceOverlay: shouldShowPerformanceOverlay,
+    );
+  }
 }
 
 final ValueNotifier<DebugToolsState> state =

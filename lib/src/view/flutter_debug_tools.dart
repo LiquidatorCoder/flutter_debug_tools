@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/view/debug_indicator.dart';
@@ -11,7 +12,9 @@ import 'package:flutter_debug_tools/src/view/pixel_color_inspector.dart';
 class FlutterDebugTools extends StatelessWidget {
   final Widget Function(BuildContext context, bool value, Widget? child)
       builder;
-  const FlutterDebugTools({Key? key, required this.builder}) : super(key: key);
+  final Widget? child;
+  const FlutterDebugTools({Key? key, this.child, required this.builder})
+      : super(key: key);
 
   void _toggleIndicator() => state.value = state.value.copyWith(
       shouldShowToolsIndicator: !state.value.shouldShowToolsIndicator);
@@ -24,53 +27,58 @@ class FlutterDebugTools extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!kDebugMode) {
+      return builder(context, false, child);
+    }
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: SafeArea(
-        child: ValueListenableBuilder<DebugToolsState>(
-          valueListenable: state,
-          builder: (context, value, child) {
-            return Stack(
-              children: [
-                if (value.shouldShowColorPicker)
-                  // Color picker UI
-                  PixelColorInspector(
-                    child: builder(
-                        context, value.shouldShowPerformanceOverlay, child),
-                    onColorPicked: (val) {
-                      state.value = state.value.copyWith(currentColor: val);
-                      _toggleColorPicker();
-                      _toggleDialog();
-                    },
-                  )
-                else
-                  builder(context, value.shouldShowPerformanceOverlay, child),
-                // Indicator to show Flutter screens
-                if (value.shouldShowToolsIndicator)
-                  DebugIndicator(
-                      toggleTools: _toggleDialog,
-                      toggleIndicator: _toggleIndicator),
-                // Tools panel for debugging tools
-                if (value.shouldShowToolsPanel)
-                  DebugToolsPanel(
-                    color: value.currentColor,
-                    onClose: () {
-                      state.value = state.value.copyWith(currentColor: null);
-                      _toggleDialog();
-                    },
-                    toggleLogs: _toggleLogs,
-                    toggleColorPicker: () {
-                      _toggleColorPicker();
-                      _toggleDialog();
-                    },
-                  ),
-                // Logs viewer
-                if (value.shouldShowLogsScreen)
-                  DebugLogsViewer(onTap: _toggleLogs)
-              ],
-            );
-          },
-        ),
+      child: ValueListenableBuilder<DebugToolsState>(
+        valueListenable: state,
+        builder: (context, value, child) {
+          return Stack(
+            children: [
+              if (value.shouldShowColorPicker)
+                // Color picker UI
+                PixelColorInspector(
+                  child: builder(
+                      context, value.shouldShowPerformanceOverlay, child),
+                  onColorPicked: (val) {
+                    state.value = state.value.copyWith(currentColor: val);
+                    _toggleColorPicker();
+                    _toggleDialog();
+                  },
+                )
+              else
+                builder(context, value.shouldShowPerformanceOverlay, child),
+              // Indicator to show Flutter screens
+              if (value.shouldShowToolsIndicator)
+                DebugIndicator(
+                    toggleTools: _toggleDialog,
+                    toggleIndicator: _toggleIndicator),
+              // Tools panel for debugging tools
+              if (value.shouldShowToolsPanel)
+                DebugToolsPanel(
+                  color: value.currentColor,
+                  onClose: () {
+                    _toggleDialog();
+                  },
+                  toggleLogs: _toggleLogs,
+                  toggleColorPicker: () {
+                    _toggleColorPicker();
+                    _toggleDialog();
+                  },
+                  clearColor: () {
+                    state.value = state.value.clearColor();
+                    _toggleDialog();
+                  },
+                ),
+              // Logs viewer
+              if (value.shouldShowLogsScreen)
+                DebugLogsViewer(onTap: _toggleLogs)
+            ],
+          );
+        },
+        child: child,
       ),
     );
   }

@@ -76,47 +76,54 @@ class _DebugIndicatorState extends State<DebugIndicator>
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: Align(
-        alignment: Alignment.topRight,
-        child: GestureDetector(
-          onTap: widget.toggleTools,
-          onLongPress: widget.toggleIndicator,
-          child: Container(
-            color: Colors.transparent,
-            padding: const EdgeInsets.all(8.0),
-            child: _showDot
-                ? Container(
-                    width: 10,
-                    height: 10,
-                    decoration: const BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                  )
-                : Transform.scale(
-                    alignment: Alignment.topRight,
-                    scaleY: 1 - _controller.value / 1.9,
-                    scaleX: 1 - _controller.value / 1.2,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
+    return SafeArea(
+      child: RepaintBoundary(
+        child: Align(
+          alignment: Alignment.topRight,
+          child: GestureDetector(
+            onTap: widget.toggleTools,
+            onLongPress: widget.toggleIndicator,
+            child: Container(
+              color: Colors.transparent,
+              padding: const EdgeInsets.all(8.0),
+              child: _showDot
+                  ? Container(
+                      width: 10,
+                      height: 10,
                       decoration: BoxDecoration(
                         color: Colors.blue,
-                        borderRadius:
-                            BorderRadius.circular(4 + _controller.value * 200),
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: Colors.blue.shade800, width: 1),
                       ),
-                      child: Opacity(
-                        opacity: 1 - _controller.value,
-                        child: const Text(
-                          'FLUTTER',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
+                    )
+                  : Transform.scale(
+                      alignment: Alignment.topRight,
+                      scaleY: 1 - _controller.value / 1.9,
+                      scaleX: 1 - _controller.value / 1.2,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          border:
+                              Border.all(color: Colors.blue.shade800, width: 1),
+                          borderRadius: BorderRadius.circular(
+                              4 + _controller.value * 200),
+                        ),
+                        child: Opacity(
+                          opacity: 1 - _controller.value,
+                          child: const Text(
+                            'FLUTTER',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+            ),
           ),
         ),
       ),

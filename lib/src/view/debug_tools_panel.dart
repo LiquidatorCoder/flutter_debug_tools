@@ -10,6 +10,7 @@ class DebugToolsPanel extends StatelessWidget {
   final VoidCallback onClose;
   final VoidCallback toggleLogs;
   final VoidCallback toggleColorPicker;
+  final VoidCallback clearColor;
 
   const DebugToolsPanel({
     Key? key,
@@ -17,6 +18,7 @@ class DebugToolsPanel extends StatelessWidget {
     required this.onClose,
     required this.toggleLogs,
     required this.toggleColorPicker,
+    required this.clearColor,
   }) : super(key: key);
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
@@ -92,9 +94,11 @@ class DebugToolsPanel extends StatelessWidget {
                 text,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 11,
+                  fontSize: 10,
                   color: Colors.white,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -109,74 +113,81 @@ class DebugToolsPanel extends StatelessWidget {
       onTap: onClose,
       child: Container(
         color: Colors.black.withOpacity(0.7),
-        child: Center(
-          child: Dialog(
-            alignment: Alignment.topCenter,
-            insetPadding: const EdgeInsets.all(12),
-            backgroundColor: Colors.black,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(500),
-                      color: Colors.white,
-                    ),
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                      child: Text(
-                        "Flutter Tools",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (color != null)
+        child: SafeArea(
+          child: Center(
+            child: Dialog(
+              alignment: Alignment.topCenter,
+              insetPadding: const EdgeInsets.all(12),
+              backgroundColor: Colors.black,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(500),
-                        color: color ?? Colors.white,
+                        color: Colors.white,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 2.0),
                         child: Text(
-                          colorToHexString(color ?? Colors.white),
+                          "Flutter Tools",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 13,
-                              color:
-                                  (color ?? Colors.white).computeLuminance() >
-                                          0.5
-                                      ? Colors.black
-                                      : Colors.white),
+                            fontSize: 13,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  if (color != null) const SizedBox(height: 16),
-                  Wrap(
-                    children: [
-                      _buildIcon(
-                          'Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
-                      _buildIcon(
-                          'Layer Bounds', Icons.grid_on, _toggleLayerBounds),
-                      _buildIcon('Repaint Rainbow', Icons.format_paint,
-                          _toggleRepaintRainbow),
-                      _buildIcon('Debug Logs', Icons.text_snippet, toggleLogs),
-                      _buildIcon(
-                          'Perf Overlay', Icons.bar_chart, _togglePerfOverlay),
-                      _buildIcon(
-                          'Color Picker', Icons.colorize, toggleColorPicker),
-                    ],
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    if (color != null)
+                      GestureDetector(
+                        onTap: clearColor,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(500),
+                            color: color ?? Colors.white,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 2.0),
+                            child: Text(
+                              colorToHexString(color ?? Colors.white),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: (color ?? Colors.white)
+                                              .computeLuminance() >
+                                          0.5
+                                      ? Colors.black
+                                      : Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (color != null) const SizedBox(height: 16),
+                    Wrap(
+                      children: [
+                        _buildIcon(
+                            'Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
+                        _buildIcon(
+                            'Layer Bounds', Icons.grid_on, _toggleLayerBounds),
+                        _buildIcon('Repaint Rainbow', Icons.format_paint,
+                            _toggleRepaintRainbow),
+                        _buildIcon(
+                            'Debug Logs', Icons.text_snippet, toggleLogs),
+                        _buildIcon('Perf Overlay', Icons.bar_chart,
+                            _togglePerfOverlay),
+                        _buildIcon(
+                            'Color Picker', Icons.colorize, toggleColorPicker),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
