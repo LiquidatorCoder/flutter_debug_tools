@@ -1,3 +1,7 @@
+## 0.0.3
+
+- Add screen details information
+
 ## 0.0.2
 
 - Add device details information

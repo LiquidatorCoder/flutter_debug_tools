@@ -62,6 +62,13 @@ class DebugToolsPanel extends StatelessWidget {
         "showPerformanceOverlay", state.value.shouldShowPerformanceOverlay);
   }
 
+  void _toogleScreenNameDetails() {
+    state.value = state.value
+        .copyWith(shouldShowScreenName: !state.value.shouldShowScreenName);
+    SharedPrefsManager.instance
+        .setBool("shouldShowScreenName", state.value.shouldShowScreenName);
+  }
+
   Widget _buildIcon(
     String text,
     IconData icon,
@@ -188,6 +195,8 @@ class DebugToolsPanel extends StatelessWidget {
                             'Color Picker', Icons.colorize, toggleColorPicker),
                         _buildIcon('Device Details', Icons.device_unknown,
                             toggleDeviceDetails),
+                        _buildIcon('Widget Name', Icons.view_quilt_outlined,
+                            _toogleScreenNameDetails),
                       ],
                     ),
                   ],

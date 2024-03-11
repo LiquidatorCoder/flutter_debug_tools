@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Add `DebugNavigatorObserver` to observe the screen details
+    final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();
     // Add `FlutterDebugTools` above your `MaterialApp` to enable the debug tools
     return FlutterDebugTools(builder: (context, shouldShowPerfOverlay, child) {
       return MaterialApp(
@@ -28,6 +30,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        // Add `navigatorObservers` to observe the screen details
+        navigatorObservers: [navigatorObserver],
       );
     });
   }

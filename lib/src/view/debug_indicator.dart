@@ -75,6 +75,9 @@ class _DebugIndicatorState extends State<DebugIndicator>
       state.value =
           state.value.copyWith(shouldShowPerformanceOverlay: value == true);
     });
+    prefs.getBool("shouldShowScreenName").then((value) {
+      state.value = state.value.copyWith(shouldShowScreenName: value == true);
+    });
   }
 
   Future<void> _initDeviceData() async {

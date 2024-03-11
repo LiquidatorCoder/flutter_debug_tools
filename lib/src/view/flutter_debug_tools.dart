@@ -5,6 +5,7 @@ import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/view/debug_device_details_dialog.dart';
 import 'package:flutter_debug_tools/src/view/debug_indicator.dart';
 import 'package:flutter_debug_tools/src/view/debug_logs_viewer.dart';
+import 'package:flutter_debug_tools/src/view/debug_screen_details_widget.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel.dart';
 import 'package:flutter_debug_tools/src/view/pixel_color_inspector.dart';
 
@@ -95,6 +96,11 @@ class FlutterDebugTools extends StatelessWidget {
                     _toggleDialog();
                     _toggleDeviceDetails();
                   },
+                ),
+              // Screen details
+              if (value.shouldShowScreenName)
+                DebugScreenDetailsWidget(
+                  screenName: value.currentScreen ?? '',
                 ),
               // Device details
               if (value.shouldShowDeviceDetails)

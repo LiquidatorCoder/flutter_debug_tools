@@ -46,13 +46,15 @@
 
 - **Color Picker**: A widget that overlays your app and allows you to pick a color from the screen.
 
+- **Widget Name**: A widget that overlays your app and shows the name of the current widget.
+
 ## Installation
 
 Add the following to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_debug_tools: ^0.0.1
+  flutter_debug_tools: ^0.0.3
 ```
 
 ## Usage

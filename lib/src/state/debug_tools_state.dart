@@ -9,6 +9,8 @@ class DebugToolsState {
   final bool shouldShowPerformanceOverlay;
   final Map<String, dynamic> deviceData;
   final bool shouldShowDeviceDetails;
+  final String? currentScreen;
+  final bool shouldShowScreenName;
 
   const DebugToolsState({
     this.currentColor,
@@ -19,6 +21,8 @@ class DebugToolsState {
     this.shouldShowPerformanceOverlay = false,
     this.deviceData = const {},
     this.shouldShowDeviceDetails = false,
+    this.currentScreen,
+    this.shouldShowScreenName = false,
   });
 
   DebugToolsState copyWith({
@@ -33,6 +37,8 @@ class DebugToolsState {
     bool? shouldShowPerformanceOverlay,
     Map<String, dynamic>? deviceData,
     bool? shouldShowDeviceDetails,
+    String? currentScreen,
+    bool? shouldShowScreenName,
   }) {
     return DebugToolsState(
       currentColor: currentColor ?? this.currentColor,
@@ -47,6 +53,8 @@ class DebugToolsState {
       deviceData: deviceData ?? this.deviceData,
       shouldShowDeviceDetails:
           shouldShowDeviceDetails ?? this.shouldShowDeviceDetails,
+      currentScreen: currentScreen ?? this.currentScreen,
+      shouldShowScreenName: shouldShowScreenName ?? this.shouldShowScreenName,
     );
   }
 
