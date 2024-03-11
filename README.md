@@ -1,6 +1,6 @@
 <h1 align="center">Flutter Debug Tools</h1>
 
-<p align="center">A set of tools to help find and debug UI or performance issues from the app itself. Works with any Flutter app.
+<p align="center">A set of tools to help find and debug UI or performance issues from the Flutter app itself. Works with any Flutter app.
 </p><br>
 
 <p align="center">
