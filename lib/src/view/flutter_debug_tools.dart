@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/view/debug_indicator.dart';
 import 'package:flutter_debug_tools/src/view/debug_logs_viewer.dart';
@@ -24,6 +25,19 @@ class FlutterDebugTools extends StatelessWidget {
       .copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
   void _toggleColorPicker() => state.value = state.value
       .copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
+
+  String colorToHexString(Color color, {bool withAlpha = false}) {
+    final a = color.alpha.toRadixString(16).padLeft(2, '0');
+    final r = color.red.toRadixString(16).padLeft(2, '0');
+    final g = color.green.toRadixString(16).padLeft(2, '0');
+    final b = color.blue.toRadixString(16).padLeft(2, '0');
+
+    if (withAlpha) {
+      return '#$a$r$g$b';
+    }
+
+    return '#$r$g$b';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +82,9 @@ class FlutterDebugTools extends StatelessWidget {
                     _toggleDialog();
                   },
                   clearColor: () {
+                    Clipboard.setData(ClipboardData(
+                        text: colorToHexString(
+                            value.currentColor ?? Colors.white)));
                     state.value = state.value.clearColor();
                     _toggleDialog();
                   },
