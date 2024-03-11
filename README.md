@@ -1,39 +1,119 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+<h1 align="center">Flutter Debug Tools</h1>
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+<p align="center">A set of tools to help find and debug UI or performance issues from the app itself. Works with any Flutter app.
+</p><br>
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+<p align="center">
+  <a href="https://flutter.dev">
+    <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter"
+      alt="Platform" />
+  </a>
+  <a href="https://pub.dartlang.org/packages/flutter_debug_tools">
+    <img src="https://img.shields.io/pub/v/flutter_debug_tools.svg"
+      alt="Pub Package" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/github/license/aagarwal1012/animated-text-kit?color=red"
+      alt="License: MIT" />
+  </a>
+  <a href="https://www.paypal.me/codenameakshay">
+    <img src="https://img.shields.io/badge/Donate-PayPal-00457C?logo=paypal"
+      alt="Donate" />
+  </a>
+</p><br>
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+<p align="center">
+  <a href="#key-features">Key Features</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#license">License</a> •
+  <a href="#credits">Credits</a>
+</p><br>
 
-## Features
+## Key Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- **Performance Overlay**: A widget that overlays your app and shows performance metrics such as FPS, frame rasterizer, and frame build time.
 
-## Getting started
+- **Debug Paint**: A widget that overlays your app and shows the visual layout of the widgets.
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- **Layer Bounds**: A widget that overlays your app and shows the layer bounds of the widgets.
+
+- **Debug Log**: A widget that overlays your app and shows the logs from the app.
+
+- **Repaint Rainbow**: A widget that overlays your app and shows the repaint boundaries of the widgets, and the color changes when the widget is repainted.
+
+- **Color Picker**: A widget that overlays your app and allows you to pick a color from the screen.
+
+## Installation
+
+Add the following to your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  flutter_debug_tools: ^0.0.1
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
 ```dart
-const like = 'sample';
+import 'package:flutter/material.dart';
+import 'package:flutter_debug_tools/flutter_debug_tools.dart';
+
+void main() {
+    // (Optional) Initialize Loggy with the DebugLoggyPrinter to show logs in the Debug Log
+    Loggy.initLoggy(logOptions: logOptions, logPrinter: DebugLoggyPrinter());
+
+  runApp(MyApp());
+}
+
+// Wrap your material app with the `FlutterDebugTools` widget
+
+return FlutterDebugTools(
+    builder: (context, value, child) {
+        return MaterialApp(
+            // And pass the value to the `showPerformanceOverlay` property
+            showPerformanceOverlay: value,
+            home: MyHomePage(),
+        );
+    },
+);
+
+
 ```
 
-## Additional information
+## License
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```
+MIT License
+
+Copyright (c) 2024 Abhay Maurya
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Credits
+
+This software uses the following open source packages:
+
+- [Loggy](https://pub.dev/packages/loggy)
+- [Shared Preferences](https://pub.dev/packages/shared_preferences)
+
+## Bugs or Requests
+
+If you encounter any problems feel free to open an [issue](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=bug_report.md). If you feel the library is missing a feature, please raise a [ticket](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=feature_request.md) on GitHub and I'll look into it. Pull request are also welcome.
