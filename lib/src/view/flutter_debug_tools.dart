@@ -9,15 +9,18 @@ import 'package:flutter_debug_tools/src/view/pixel_color_inspector.dart';
 /// It provides access to various debugging functionalities such as enabling
 /// debug paint, showing performance overlays, and viewing logs.
 class FlutterDebugTools extends StatelessWidget {
-  final Widget Function(BuildContext context, bool value, Widget? child) builder;
+  final Widget Function(BuildContext context, bool value, Widget? child)
+      builder;
   const FlutterDebugTools({Key? key, required this.builder}) : super(key: key);
 
-  void _toggleIndicator() =>
-      state.value = state.value.copyWith(shouldShowToolsIndicator: !state.value.shouldShowToolsIndicator);
-  void _toggleDialog() => state.value = state.value.copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
-  void _toggleLogs() => state.value = state.value.copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
-  void _toggleColorPicker() =>
-      state.value = state.value.copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
+  void _toggleIndicator() => state.value = state.value.copyWith(
+      shouldShowToolsIndicator: !state.value.shouldShowToolsIndicator);
+  void _toggleDialog() => state.value = state.value
+      .copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
+  void _toggleLogs() => state.value = state.value
+      .copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
+  void _toggleColorPicker() => state.value = state.value
+      .copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,8 @@ class FlutterDebugTools extends StatelessWidget {
                 if (value.shouldShowColorPicker)
                   // Color picker UI
                   PixelColorInspector(
-                    child: builder(context, value.shouldShowPerformanceOverlay, child),
+                    child: builder(
+                        context, value.shouldShowPerformanceOverlay, child),
                     onColorPicked: (val) {
                       state.value = state.value.copyWith(currentColor: val);
                       _toggleColorPicker();
@@ -43,7 +47,9 @@ class FlutterDebugTools extends StatelessWidget {
                   builder(context, value.shouldShowPerformanceOverlay, child),
                 // Indicator to show Flutter screens
                 if (value.shouldShowToolsIndicator)
-                  DebugIndicator(toggleTools: _toggleDialog, toggleIndicator: _toggleIndicator),
+                  DebugIndicator(
+                      toggleTools: _toggleDialog,
+                      toggleIndicator: _toggleIndicator),
                 // Tools panel for debugging tools
                 if (value.shouldShowToolsPanel)
                   DebugToolsPanel(
@@ -59,7 +65,8 @@ class FlutterDebugTools extends StatelessWidget {
                     },
                   ),
                 // Logs viewer
-                if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs)
+                if (value.shouldShowLogsScreen)
+                  DebugLogsViewer(onTap: _toggleLogs)
               ],
             );
           },

@@ -10,13 +10,15 @@ import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
 class DebugIndicator extends StatefulWidget {
   final VoidCallback toggleTools;
   final VoidCallback toggleIndicator;
-  const DebugIndicator({super.key, required this.toggleTools, required this.toggleIndicator});
+  const DebugIndicator(
+      {super.key, required this.toggleTools, required this.toggleIndicator});
 
   @override
   State<DebugIndicator> createState() => _DebugIndicatorState();
 }
 
-class _DebugIndicatorState extends State<DebugIndicator> with SingleTickerProviderStateMixin {
+class _DebugIndicatorState extends State<DebugIndicator>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   Timer? _timer;
   bool _showDot = false;
@@ -67,7 +69,8 @@ class _DebugIndicatorState extends State<DebugIndicator> with SingleTickerProvid
       debugRepaintTextRainbowEnabled = value == true;
     });
     prefs.getBool("showPerformanceOverlay").then((value) {
-      state.value = state.value.copyWith(shouldShowPerformanceOverlay: value == true);
+      state.value =
+          state.value.copyWith(shouldShowPerformanceOverlay: value == true);
     });
   }
 
@@ -99,7 +102,8 @@ class _DebugIndicatorState extends State<DebugIndicator> with SingleTickerProvid
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: Colors.blue,
-                        borderRadius: BorderRadius.circular(4 + _controller.value * 200),
+                        borderRadius:
+                            BorderRadius.circular(4 + _controller.value * 200),
                       ),
                       child: Opacity(
                         opacity: 1 - _controller.value,

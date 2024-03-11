@@ -30,13 +30,17 @@ class DebugToolsState {
   }) {
     return DebugToolsState(
       currentColor: currentColor ?? this.currentColor,
-      shouldShowToolsIndicator: shouldShowToolsIndicator ?? this.shouldShowToolsIndicator,
+      shouldShowToolsIndicator:
+          shouldShowToolsIndicator ?? this.shouldShowToolsIndicator,
       shouldShowToolsPanel: shouldShowToolsPanel ?? this.shouldShowToolsPanel,
       shouldShowLogsScreen: shouldShowLogsScreen ?? this.shouldShowLogsScreen,
-      shouldShowColorPicker: shouldShowColorPicker ?? this.shouldShowColorPicker,
-      shouldShowPerformanceOverlay: shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
+      shouldShowColorPicker:
+          shouldShowColorPicker ?? this.shouldShowColorPicker,
+      shouldShowPerformanceOverlay:
+          shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
     );
   }
 }
 
-final ValueNotifier<DebugToolsState> state = ValueNotifier<DebugToolsState>(const DebugToolsState());
+final ValueNotifier<DebugToolsState> state =
+    ValueNotifier<DebugToolsState>(const DebugToolsState());

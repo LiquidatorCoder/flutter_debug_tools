@@ -54,14 +54,16 @@ class DebugLogsViewer extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: logs?.logs.where((e) => e.isNotEmpty).length,
                   itemBuilder: (context, index) {
-                    if (logs?.logs.where((e) => e.isNotEmpty).toList()[index] == "") {
+                    if (logs?.logs.where((e) => e.isNotEmpty).toList()[index] ==
+                        "") {
                       return const SizedBox.shrink();
                     }
 
                     return ListTile(
                       visualDensity: VisualDensity.compact,
                       title: Text(
-                        logs?.logs.where((e) => e.isNotEmpty).toList()[index] ?? "",
+                        logs?.logs.where((e) => e.isNotEmpty).toList()[index] ??
+                            "",
                         style: const TextStyle(
                           fontSize: 11,
                           color: Colors.black,

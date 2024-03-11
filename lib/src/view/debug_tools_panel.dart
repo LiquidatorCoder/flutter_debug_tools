@@ -34,22 +34,28 @@ class DebugToolsPanel extends StatelessWidget {
 
   void _toggleDebugPaint() {
     debugPaintSizeEnabled = !debugPaintSizeEnabled;
-    SharedPrefsManager.instance.setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
+    SharedPrefsManager.instance
+        .setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
   }
 
   void _toggleLayerBounds() {
     debugPaintLayerBordersEnabled = !debugPaintLayerBordersEnabled;
-    SharedPrefsManager.instance.setBool("debugPaintLayerBordersEnabled", debugPaintLayerBordersEnabled);
+    SharedPrefsManager.instance.setBool(
+        "debugPaintLayerBordersEnabled", debugPaintLayerBordersEnabled);
   }
 
   void _toggleRepaintRainbow() {
     debugRepaintTextRainbowEnabled = !debugRepaintTextRainbowEnabled;
-    SharedPrefsManager.instance.setBool("debugRepaintTextRainbowEnabled", debugRepaintTextRainbowEnabled);
+    SharedPrefsManager.instance.setBool(
+        "debugRepaintTextRainbowEnabled", debugRepaintTextRainbowEnabled);
   }
 
   void _togglePerfOverlay() {
-    state.value = state.value.copyWith(shouldShowPerformanceOverlay: !state.value.shouldShowPerformanceOverlay);
-    SharedPrefsManager.instance.setBool("showPerformanceOverlay", state.value.shouldShowPerformanceOverlay);
+    state.value = state.value.copyWith(
+        shouldShowPerformanceOverlay:
+            !state.value.shouldShowPerformanceOverlay);
+    SharedPrefsManager.instance.setBool(
+        "showPerformanceOverlay", state.value.shouldShowPerformanceOverlay);
   }
 
   Widget _buildIcon(
@@ -119,7 +125,8 @@ class DebugToolsPanel extends StatelessWidget {
                       color: Colors.white,
                     ),
                     child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                       child: Text(
                         "Flutter Tools",
                         textAlign: TextAlign.center,
@@ -138,25 +145,35 @@ class DebugToolsPanel extends StatelessWidget {
                         color: color ?? Colors.white,
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 2.0),
                         child: Text(
                           colorToHexString(color ?? Colors.white),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 13,
-                              color: (color ?? Colors.white).computeLuminance() > 0.5 ? Colors.black : Colors.white),
+                              color:
+                                  (color ?? Colors.white).computeLuminance() >
+                                          0.5
+                                      ? Colors.black
+                                      : Colors.white),
                         ),
                       ),
                     ),
                   if (color != null) const SizedBox(height: 16),
                   Wrap(
                     children: [
-                      _buildIcon('Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
-                      _buildIcon('Layer Bounds', Icons.grid_on, _toggleLayerBounds),
-                      _buildIcon('Repaint Rainbow', Icons.format_paint, _toggleRepaintRainbow),
+                      _buildIcon(
+                          'Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
+                      _buildIcon(
+                          'Layer Bounds', Icons.grid_on, _toggleLayerBounds),
+                      _buildIcon('Repaint Rainbow', Icons.format_paint,
+                          _toggleRepaintRainbow),
                       _buildIcon('Debug Logs', Icons.text_snippet, toggleLogs),
-                      _buildIcon('Perf Overlay', Icons.bar_chart, _togglePerfOverlay),
-                      _buildIcon('Color Picker', Icons.colorize, toggleColorPicker),
+                      _buildIcon(
+                          'Perf Overlay', Icons.bar_chart, _togglePerfOverlay),
+                      _buildIcon(
+                          'Color Picker', Icons.colorize, toggleColorPicker),
                     ],
                   ),
                 ],

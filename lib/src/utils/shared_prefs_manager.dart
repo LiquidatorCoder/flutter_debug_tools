@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefsManager {
   SharedPrefsManager._privateConstructor();
 
-  static final SharedPrefsManager _instance = SharedPrefsManager._privateConstructor();
+  static final SharedPrefsManager _instance =
+      SharedPrefsManager._privateConstructor();
 
   static SharedPrefsManager get instance => _instance;
 
