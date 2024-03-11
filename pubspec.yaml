@@ -1,6 +1,6 @@
 name: flutter_debug_tools
 description: A set of tools to help find and debug UI or performance issues from the Flutter app itself.
-version: 0.0.1+7
+version: 0.0.2
 repository: https://github.com/LiquidatorCoder/flutter_debug_tools
 
 environment:
@@ -8,6 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  device_info_plus: ^9.1.2
   flutter:
     sdk: flutter
   loggy: ^2.0.3

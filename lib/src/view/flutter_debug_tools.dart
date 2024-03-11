@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
+import 'package:flutter_debug_tools/src/view/debug_device_details_dialog.dart';
 import 'package:flutter_debug_tools/src/view/debug_indicator.dart';
 import 'package:flutter_debug_tools/src/view/debug_logs_viewer.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel.dart';
@@ -25,6 +26,8 @@ class FlutterDebugTools extends StatelessWidget {
       .copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
   void _toggleColorPicker() => state.value = state.value
       .copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
+  void _toggleDeviceDetails() => state.value = state.value
+      .copyWith(shouldShowDeviceDetails: !state.value.shouldShowDeviceDetails);
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
     final a = color.alpha.toRadixString(16).padLeft(2, '0');
@@ -88,6 +91,15 @@ class FlutterDebugTools extends StatelessWidget {
                     state.value = state.value.clearColor();
                     _toggleDialog();
                   },
+                  toggleDeviceDetails: () {
+                    _toggleDialog();
+                    _toggleDeviceDetails();
+                  },
+                ),
+              // Device details
+              if (value.shouldShowDeviceDetails)
+                DebugDeviceDetailsDialog(
+                  onTap: _toggleDeviceDetails,
                 ),
               // Logs viewer
               if (value.shouldShowLogsScreen)

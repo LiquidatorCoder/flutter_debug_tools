@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
+import 'package:flutter_debug_tools/src/utils/device_info_manager.dart';
 import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
 
 /// DebugIndicator is a widget that shows an interactive debug icon.
@@ -19,6 +20,7 @@ class DebugIndicator extends StatefulWidget {
 
 class _DebugIndicatorState extends State<DebugIndicator>
     with SingleTickerProviderStateMixin {
+  final deviceInfoManager = DeviceInfoManager.instance;
   late AnimationController _controller;
   Timer? _timer;
   bool _showDot = false;
@@ -27,6 +29,7 @@ class _DebugIndicatorState extends State<DebugIndicator>
   void initState() {
     super.initState();
     _initValues();
+    _initDeviceData();
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -72,6 +75,11 @@ class _DebugIndicatorState extends State<DebugIndicator>
       state.value =
           state.value.copyWith(shouldShowPerformanceOverlay: value == true);
     });
+  }
+
+  Future<void> _initDeviceData() async {
+    final deviceData = await deviceInfoManager.getDeviceDetails();
+    state.value = state.value.copyWith(deviceData: deviceData);
   }
 
   @override

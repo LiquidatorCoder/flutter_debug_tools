@@ -34,6 +34,8 @@
 
 - **Performance Overlay**: A widget that overlays your app and shows performance metrics such as FPS, frame rasterizer, and frame build time.
 
+- **Device Details**: A widget that overlays your app and shows the device details such as device name, model, version, and more.
+
 - **Debug Paint**: A widget that overlays your app and shows the visual layout of the widgets.
 
 - **Layer Bounds**: A widget that overlays your app and shows the layer bounds of the widgets.
@@ -113,6 +115,7 @@ This software uses the following open source packages:
 
 - [Loggy](https://pub.dev/packages/loggy)
 - [Shared Preferences](https://pub.dev/packages/shared_preferences)
+- [Device Info Plus](https://pub.dev/packages/device_info_plus)
 
 ## Bugs or Requests
 

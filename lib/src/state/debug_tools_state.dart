@@ -7,6 +7,8 @@ class DebugToolsState {
   final bool shouldShowLogsScreen;
   final bool shouldShowColorPicker;
   final bool shouldShowPerformanceOverlay;
+  final Map<String, dynamic> deviceData;
+  final bool shouldShowDeviceDetails;
 
   const DebugToolsState({
     this.currentColor,
@@ -15,6 +17,8 @@ class DebugToolsState {
     this.shouldShowLogsScreen = false,
     this.shouldShowColorPicker = false,
     this.shouldShowPerformanceOverlay = false,
+    this.deviceData = const {},
+    this.shouldShowDeviceDetails = false,
   });
 
   DebugToolsState copyWith({
@@ -27,6 +31,8 @@ class DebugToolsState {
     bool? isDebugPaintLayerBordersEnabled,
     bool? isDebugRepaintTextRainbowEnabled,
     bool? shouldShowPerformanceOverlay,
+    Map<String, dynamic>? deviceData,
+    bool? shouldShowDeviceDetails,
   }) {
     return DebugToolsState(
       currentColor: currentColor ?? this.currentColor,
@@ -38,6 +44,9 @@ class DebugToolsState {
           shouldShowColorPicker ?? this.shouldShowColorPicker,
       shouldShowPerformanceOverlay:
           shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
+      deviceData: deviceData ?? this.deviceData,
+      shouldShowDeviceDetails:
+          shouldShowDeviceDetails ?? this.shouldShowDeviceDetails,
     );
   }
 
@@ -49,6 +58,8 @@ class DebugToolsState {
       shouldShowLogsScreen: shouldShowLogsScreen,
       shouldShowColorPicker: shouldShowColorPicker,
       shouldShowPerformanceOverlay: shouldShowPerformanceOverlay,
+      deviceData: deviceData,
+      shouldShowDeviceDetails: shouldShowDeviceDetails,
     );
   }
 }

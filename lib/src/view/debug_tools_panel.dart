@@ -11,6 +11,7 @@ class DebugToolsPanel extends StatelessWidget {
   final VoidCallback toggleLogs;
   final VoidCallback toggleColorPicker;
   final VoidCallback clearColor;
+  final VoidCallback toggleDeviceDetails;
 
   const DebugToolsPanel({
     Key? key,
@@ -19,6 +20,7 @@ class DebugToolsPanel extends StatelessWidget {
     required this.toggleLogs,
     required this.toggleColorPicker,
     required this.clearColor,
+    required this.toggleDeviceDetails,
   }) : super(key: key);
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
@@ -184,6 +186,8 @@ class DebugToolsPanel extends StatelessWidget {
                             _togglePerfOverlay),
                         _buildIcon(
                             'Color Picker', Icons.colorize, toggleColorPicker),
+                        _buildIcon('Device Details', Icons.device_unknown,
+                            toggleDeviceDetails),
                       ],
                     ),
                   ],
