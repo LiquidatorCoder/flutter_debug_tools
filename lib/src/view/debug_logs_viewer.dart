@@ -32,8 +32,9 @@ class DebugLogsViewer extends StatelessWidget {
                       'Debug Logs',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 14,
                         color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -61,11 +62,40 @@ class DebugLogsViewer extends StatelessWidget {
 
                     return ListTile(
                       visualDensity: VisualDensity.compact,
+                      leading: Container(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: _getLogColor(logs, index),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            logs?.logs
+                                    .where((e) => e.isNotEmpty)
+                                    .toList()[index]
+                                    .split(":")[0]
+                                    .trim()
+                                    .toUpperCase()
+                                    .substring(0, 1) ??
+                                "",
+                            style: const TextStyle(
+                              fontSize: 6,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                       title: Text(
-                        logs?.logs.where((e) => e.isNotEmpty).toList()[index] ??
-                            "",
+                        (logs?.logs
+                                    .where((e) => e.isNotEmpty)
+                                    .toList()[index] ??
+                                "")
+                            .split(":")[1]
+                            .trim(),
                         style: const TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           color: Colors.black,
                         ),
                       ),
@@ -78,5 +108,27 @@ class DebugLogsViewer extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getLogColor(DebugLoggyPrinter? logs, int index) {
+    return (logs?.logs.where((e) => e.isNotEmpty).toList()[index] ?? "")
+            .split(":")[0]
+            .trim()
+            .toLowerCase()
+            .contains("info")
+        ? Colors.green.withOpacity(0.7)
+        : (logs?.logs.where((e) => e.isNotEmpty).toList()[index] ?? "")
+                .split(":")[0]
+                .trim()
+                .toLowerCase()
+                .contains("error")
+            ? Colors.red
+            : (logs?.logs.where((e) => e.isNotEmpty).toList()[index] ?? "")
+                    .split(":")[0]
+                    .trim()
+                    .toLowerCase()
+                    .contains("warn")
+                ? Colors.orange.withOpacity(0.7)
+                : Colors.blue.withOpacity(0.7);
   }
 }
