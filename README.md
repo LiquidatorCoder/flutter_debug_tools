@@ -30,6 +30,10 @@
   <a href="#credits">Credits</a>
 </p><br>
 
+| ![Example](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/demo.gif) |
+| ----------------------------------------------------------------------------------------------------------- |
+| **Example app**                                                                                             |
+
 ## Key Features
 
 - **Performance Overlay**: A widget that overlays your app and shows performance metrics such as FPS, frame rasterizer, and frame build time.
@@ -71,13 +75,16 @@ void main() {
 }
 
 // Wrap your material app with the `FlutterDebugTools` widget
-
 return FlutterDebugTools(
     builder: (context, value, child) {
+      // (Optional) Attach navigatorObserver to observe the screen details
+        final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();
         return MaterialApp(
             // And pass the value to the `showPerformanceOverlay` property
             showPerformanceOverlay: value,
             home: MyHomePage(),
+            // Add `navigatorObservers` to observe the screen details
+            navigatorObservers: [navigatorObserver],
         );
     },
 );
