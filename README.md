@@ -58,7 +58,7 @@ Add the following to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_debug_tools: ^0.0.3
+  flutter_debug_tools: ^0.0.3+1
 ```
 
 ## Usage
