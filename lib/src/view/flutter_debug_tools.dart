@@ -8,6 +8,7 @@ import 'package:flutter_debug_tools/src/view/debug_logs_viewer.dart';
 import 'package:flutter_debug_tools/src/view/debug_screen_details_widget.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel.dart';
 import 'package:flutter_debug_tools/src/view/pixel_color_inspector.dart';
+import 'package:flutter_debug_tools/src/view/render_box_inspector.dart';
 
 /// FlutterDebugTools is a widget that overlays debugging tools over its [child].
 /// It provides access to various debugging functionalities such as enabling
@@ -58,8 +59,9 @@ class FlutterDebugTools extends StatelessWidget {
               if (value.shouldShowColorPicker)
                 // Color picker UI
                 PixelColorInspector(
-                  child: builder(
-                      context, value.shouldShowPerformanceOverlay, child),
+                  child: (value.shouldShowRenderBoxDetails)
+                      ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
+                      : builder(context, value.shouldShowPerformanceOverlay, child),
                   onColorPicked: (val) {
                     state.value = state.value.copyWith(currentColor: val);
                     _toggleColorPicker();
@@ -67,7 +69,9 @@ class FlutterDebugTools extends StatelessWidget {
                   },
                 )
               else
-                builder(context, value.shouldShowPerformanceOverlay, child),
+                (value.shouldShowRenderBoxDetails)
+                    ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
+                    : builder(context, value.shouldShowPerformanceOverlay, child),
               // Indicator to show Flutter screens
               if (value.shouldShowToolsIndicator)
                 DebugIndicator(

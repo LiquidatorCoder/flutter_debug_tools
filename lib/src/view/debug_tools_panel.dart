@@ -42,10 +42,11 @@ class DebugToolsPanel extends StatelessWidget {
         .setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
   }
 
-  void _toggleLayerBounds() {
-    debugPaintLayerBordersEnabled = !debugPaintLayerBordersEnabled;
-    SharedPrefsManager.instance.setBool(
-        "debugPaintLayerBordersEnabled", debugPaintLayerBordersEnabled);
+  void _toggleRenderBoxDetails() {
+    state.value = state.value
+        .copyWith(shouldShowRenderBoxDetails: !state.value.shouldShowRenderBoxDetails);
+    SharedPrefsManager.instance
+        .setBool("shouldShowRenderBoxDetails", state.value.shouldShowRenderBoxDetails);
   }
 
   void _toggleRepaintRainbow() {
@@ -184,7 +185,7 @@ class DebugToolsPanel extends StatelessWidget {
                         _buildIcon(
                             'Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
                         _buildIcon(
-                            'Layer Bounds', Icons.grid_on, _toggleLayerBounds),
+                            'Render Box Info', Icons.grid_on, _toggleRenderBoxDetails),
                         _buildIcon('Repaint Rainbow', Icons.format_paint,
                             _toggleRepaintRainbow),
                         _buildIcon(

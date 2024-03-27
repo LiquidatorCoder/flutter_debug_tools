@@ -65,9 +65,6 @@ class _DebugIndicatorState extends State<DebugIndicator>
     prefs.getBool("debugPaintSizeEnabled").then((value) {
       debugPaintSizeEnabled = value == true;
     });
-    prefs.getBool("debugPaintLayerBordersEnabled").then((value) {
-      debugPaintLayerBordersEnabled = value == true;
-    });
     prefs.getBool("debugRepaintTextRainbowEnabled").then((value) {
       debugRepaintTextRainbowEnabled = value == true;
     });
