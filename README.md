@@ -50,7 +50,7 @@
 
 - **Color Picker**: A widget that overlays your app and allows you to pick a color from the screen.
 
-- **Widget Name**: A widget that overlays your app and shows the name of the current widget.
+- **Screen Name**: A widget that overlays your app and shows the path of the current screen.
 
 ## Installation
 

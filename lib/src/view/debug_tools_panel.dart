@@ -196,7 +196,7 @@ class DebugToolsPanel extends StatelessWidget {
                             'Color Picker', Icons.colorize, toggleColorPicker),
                         _buildIcon('Device Details', Icons.device_unknown,
                             toggleDeviceDetails),
-                        _buildIcon('Widget Name', Icons.view_quilt_outlined,
+                        _buildIcon('Screen Name', Icons.screenshot,
                             _toogleScreenNameDetails),
                       ],
                     ),
