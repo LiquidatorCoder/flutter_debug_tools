@@ -44,7 +44,10 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
       position: renderObjectWithoutAbsorbPointer.globalToLocal(pointerOffset),
     );
 
-    return hitTestResult.path.where((v) => v.target is RenderBox).map((v) => v.target).cast<RenderBox>();
+    return hitTestResult.path
+        .where((v) => v.target is RenderBox)
+        .map((v) => v.target)
+        .cast<RenderBox>();
   }
 
   void _getRenderBox(Offset? offset) {
@@ -54,7 +57,9 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
     final boxes = _getBoxes(context, offset);
     if (boxes.isEmpty) return;
 
-    final overlayOffset = (_stackKey.currentContext?.findRenderObject() as RenderStack).localToGlobal(Offset.zero);
+    final overlayOffset =
+        (_stackKey.currentContext?.findRenderObject() as RenderStack)
+            .localToGlobal(Offset.zero);
 
     RenderBox? targetRenderBox;
     RenderBox? containerRenderBox;
@@ -79,6 +84,17 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
 
   @override
   Widget build(BuildContext context) {
+    final top = (_selectedRenderBox?.targetRectShifted.top ?? 0) -
+        (_selectedRenderBox?.paddingTop ?? 0) +
+        (_selectedRenderBox?.targetRect.height ?? 0) +
+        (_selectedRenderBox?.paddingVertical ?? 0);
+    final isBottomCropping = top + 71 > MediaQuery.of(context).size.height;
+
+    final left = (_selectedRenderBox?.targetRectShifted.left ?? 0);
+    final isRightCropping = left + 20 > MediaQuery.of(context).size.width / 2;
+    final maxWidth =
+        isRightCropping ? left : (MediaQuery.of(context).size.width - left);
+
     return Stack(
       key: _stackKey,
       children: [
@@ -93,13 +109,23 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
         ),
         if (show)
           Positioned(
-            left: (_selectedRenderBox?.targetRectShifted.left ?? 0) - (_selectedRenderBox?.paddingLeft ?? 0),
-            top: (_selectedRenderBox?.targetRectShifted.top ?? 0) - (_selectedRenderBox?.paddingTop ?? 0),
+            left: (_selectedRenderBox?.targetRectShifted.left ?? 0) -
+                (_selectedRenderBox?.paddingLeft ?? 0),
+            top: (_selectedRenderBox?.targetRectShifted.top ?? 0) -
+                (_selectedRenderBox?.paddingTop ?? 0),
             child: IgnorePointer(
               child: Container(
-                color: Colors.blue.withOpacity(0.1),
-                width: (_selectedRenderBox?.targetRect.width ?? 0) + (_selectedRenderBox?.paddingHorizontal ?? 0),
-                height: (_selectedRenderBox?.targetRect.height ?? 0) + (_selectedRenderBox?.paddingVertical ?? 0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 1,
+                  ),
+                  color: Colors.blue.withOpacity(0.1),
+                ),
+                width: (_selectedRenderBox?.targetRect.width ?? 0) +
+                    (_selectedRenderBox?.paddingHorizontal ?? 0),
+                height: (_selectedRenderBox?.targetRect.height ?? 0) +
+                    (_selectedRenderBox?.paddingVertical ?? 0),
               ),
             ),
           ),
@@ -109,9 +135,87 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
             top: _selectedRenderBox?.targetRectShifted.top,
             child: IgnorePointer(
               child: Container(
-                color: Colors.yellow.withOpacity(0.3),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.yellow,
+                    width: 1,
+                  ),
+                  color: Colors.yellow.withOpacity(0.3),
+                ),
                 width: _selectedRenderBox?.targetRect.width,
                 height: _selectedRenderBox?.targetRect.height,
+              ),
+            ),
+          ),
+        if (show)
+          Positioned(
+            left: isRightCropping ? null : left,
+            right: isRightCropping
+                ? MediaQuery.of(context).size.width -
+                    left -
+                    (_selectedRenderBox?.targetRect.width ?? 0)
+                : null,
+            top: !isBottomCropping
+                ? top
+                : (_selectedRenderBox?.targetRectShifted.top ?? 0) - 70,
+            child: IgnorePointer(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                height: 70,
+                color: Colors.black.withOpacity(0.7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "padding: ",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                            ),
+                          ),
+                          TextSpan(
+                            text: (_selectedRenderBox?.paddingRect)
+                                .toString()
+                                .replaceAll("Rect.fromLTRB(", "")
+                                .replaceAll(")", ""),
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "size: ",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                "${_selectedRenderBox?.targetRect.width.roundToDouble()}, ${_selectedRenderBox?.targetRect.height.roundToDouble()}",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

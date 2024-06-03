@@ -108,6 +108,9 @@ class RenderBoxInfo {
   double? get paddingHorizontal => (paddingLeft ?? 0) + (paddingRight ?? 0);
   double? get paddingVertical => (paddingTop ?? 0) + (paddingBottom ?? 0);
 
+  Rect get paddingRect => Rect.fromLTRB(
+      paddingLeft ?? 0, paddingTop ?? 0, paddingRight ?? 0, paddingBottom ?? 0);
+
   Rect? get paddingRectLeft => containerRect != null
       ? Rect.fromLTRB(containerRect!.left, containerRect!.top, targetRect.left,
           containerRect!.bottom)

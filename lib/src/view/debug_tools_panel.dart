@@ -185,7 +185,7 @@ class DebugToolsPanel extends StatelessWidget {
                       children: [
                         _buildIcon(
                             'Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
-                        _buildIcon('Render Box Info', Icons.grid_on,
+                        _buildIcon('Size Info', Icons.grid_on,
                             _toggleRenderBoxDetails),
                         _buildIcon('Repaint Rainbow', Icons.format_paint,
                             _toggleRepaintRainbow),
