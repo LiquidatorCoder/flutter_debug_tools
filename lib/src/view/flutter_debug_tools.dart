@@ -60,8 +60,11 @@ class FlutterDebugTools extends StatelessWidget {
                 // Color picker UI
                 PixelColorInspector(
                   child: (value.shouldShowRenderBoxDetails)
-                      ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
-                      : builder(context, value.shouldShowPerformanceOverlay, child),
+                      ? RenderBoxInspector(
+                          child: builder(context,
+                              value.shouldShowPerformanceOverlay, child))
+                      : builder(
+                          context, value.shouldShowPerformanceOverlay, child),
                   onColorPicked: (val) {
                     state.value = state.value.copyWith(currentColor: val);
                     _toggleColorPicker();
@@ -70,8 +73,11 @@ class FlutterDebugTools extends StatelessWidget {
                 )
               else
                 (value.shouldShowRenderBoxDetails)
-                    ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
-                    : builder(context, value.shouldShowPerformanceOverlay, child),
+                    ? RenderBoxInspector(
+                        child: builder(
+                            context, value.shouldShowPerformanceOverlay, child))
+                    : builder(
+                        context, value.shouldShowPerformanceOverlay, child),
               // Indicator to show Flutter screens
               if (value.shouldShowToolsIndicator)
                 DebugIndicator(

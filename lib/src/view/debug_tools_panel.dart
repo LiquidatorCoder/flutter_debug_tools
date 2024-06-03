@@ -43,10 +43,11 @@ class DebugToolsPanel extends StatelessWidget {
   }
 
   void _toggleRenderBoxDetails() {
-    state.value = state.value
-        .copyWith(shouldShowRenderBoxDetails: !state.value.shouldShowRenderBoxDetails);
-    SharedPrefsManager.instance
-        .setBool("shouldShowRenderBoxDetails", state.value.shouldShowRenderBoxDetails);
+    state.value = state.value.copyWith(
+        shouldShowRenderBoxDetails: !state.value.shouldShowRenderBoxDetails);
+    SharedPrefsManager.instance.setBool(
+        "shouldShowRenderBoxDetails", state.value.shouldShowRenderBoxDetails);
+    onClose();
   }
 
   void _toggleRepaintRainbow() {
@@ -184,8 +185,8 @@ class DebugToolsPanel extends StatelessWidget {
                       children: [
                         _buildIcon(
                             'Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
-                        _buildIcon(
-                            'Render Box Info', Icons.grid_on, _toggleRenderBoxDetails),
+                        _buildIcon('Render Box Info', Icons.grid_on,
+                            _toggleRenderBoxDetails),
                         _buildIcon('Repaint Rainbow', Icons.format_paint,
                             _toggleRepaintRainbow),
                         _buildIcon(

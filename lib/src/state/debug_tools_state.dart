@@ -42,16 +42,21 @@ class DebugToolsState {
   }) {
     return DebugToolsState(
       currentColor: currentColor ?? this.currentColor,
-      shouldShowToolsIndicator: shouldShowToolsIndicator ?? this.shouldShowToolsIndicator,
+      shouldShowToolsIndicator:
+          shouldShowToolsIndicator ?? this.shouldShowToolsIndicator,
       shouldShowToolsPanel: shouldShowToolsPanel ?? this.shouldShowToolsPanel,
       shouldShowLogsScreen: shouldShowLogsScreen ?? this.shouldShowLogsScreen,
-      shouldShowColorPicker: shouldShowColorPicker ?? this.shouldShowColorPicker,
-      shouldShowPerformanceOverlay: shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
+      shouldShowColorPicker:
+          shouldShowColorPicker ?? this.shouldShowColorPicker,
+      shouldShowPerformanceOverlay:
+          shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
       deviceData: deviceData ?? this.deviceData,
-      shouldShowDeviceDetails: shouldShowDeviceDetails ?? this.shouldShowDeviceDetails,
+      shouldShowDeviceDetails:
+          shouldShowDeviceDetails ?? this.shouldShowDeviceDetails,
       currentScreen: currentScreen ?? this.currentScreen,
       shouldShowScreenName: shouldShowScreenName ?? this.shouldShowScreenName,
-      shouldShowRenderBoxDetails: shouldShowRenderBoxDetails ?? this.shouldShowRenderBoxDetails,
+      shouldShowRenderBoxDetails:
+          shouldShowRenderBoxDetails ?? this.shouldShowRenderBoxDetails,
     );
   }
 
@@ -70,7 +75,8 @@ class DebugToolsState {
   }
 }
 
-final ValueNotifier<DebugToolsState> state = ValueNotifier<DebugToolsState>(const DebugToolsState());
+final ValueNotifier<DebugToolsState> state =
+    ValueNotifier<DebugToolsState>(const DebugToolsState());
 
 class RenderBoxInfo {
   final RenderBox targetRenderBox;
@@ -85,10 +91,14 @@ class RenderBoxInfo {
 
   Rect get targetRect => getRectFromRenderBox(targetRenderBox)!;
   Rect get targetRectShifted => targetRect.shift(-overlayOffset);
-  Rect? get containerRect => containerRenderBox != null ? getRectFromRenderBox(containerRenderBox!) : null;
+  Rect? get containerRect => containerRenderBox != null
+      ? getRectFromRenderBox(containerRenderBox!)
+      : null;
 
   Rect? getRectFromRenderBox(RenderBox renderBox) {
-    return renderBox.attached ? (renderBox.localToGlobal(Offset.zero)) & renderBox.size : null;
+    return renderBox.attached
+        ? (renderBox.localToGlobal(Offset.zero)) & renderBox.size
+        : null;
   }
 
   double? get paddingLeft => paddingRectLeft?.width;
@@ -99,18 +109,22 @@ class RenderBoxInfo {
   double? get paddingVertical => (paddingTop ?? 0) + (paddingBottom ?? 0);
 
   Rect? get paddingRectLeft => containerRect != null
-      ? Rect.fromLTRB(containerRect!.left, containerRect!.top, targetRect.left, containerRect!.bottom)
+      ? Rect.fromLTRB(containerRect!.left, containerRect!.top, targetRect.left,
+          containerRect!.bottom)
       : null;
 
   Rect? get paddingRectTop => containerRect != null
-      ? Rect.fromLTRB(targetRect.left, containerRect!.top, targetRect.right, targetRect.top)
+      ? Rect.fromLTRB(
+          targetRect.left, containerRect!.top, targetRect.right, targetRect.top)
       : null;
 
   Rect? get paddingRectRight => containerRect != null
-      ? Rect.fromLTRB(targetRect.right, containerRect!.top, containerRect!.right, containerRect!.bottom)
+      ? Rect.fromLTRB(targetRect.right, containerRect!.top,
+          containerRect!.right, containerRect!.bottom)
       : null;
 
   Rect? get paddingRectBottom => containerRect != null
-      ? Rect.fromLTRB(targetRect.left, targetRect.bottom, targetRect.right, containerRect!.bottom)
+      ? Rect.fromLTRB(targetRect.left, targetRect.bottom, targetRect.right,
+          containerRect!.bottom)
       : null;
 }
