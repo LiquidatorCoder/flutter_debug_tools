@@ -21,19 +21,21 @@ class MyApp extends StatelessWidget {
     // Add `DebugNavigatorObserver` to observe the screen details
     final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();
     // Add `FlutterDebugTools` above your `MaterialApp` to enable the debug tools
-    return FlutterDebugTools(builder: (context, shouldShowPerfOverlay, child) {
-      return MaterialApp(
-        showPerformanceOverlay: shouldShowPerfOverlay,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        // Add `navigatorObservers` to observe the screen details
-        navigatorObservers: [navigatorObserver],
-      );
-    });
+    return FlutterDebugTools(
+      builder: (context, shouldShowPerfOverlay, child) {
+        return MaterialApp(
+          showPerformanceOverlay: shouldShowPerfOverlay,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          // Add `navigatorObservers` to observe the screen details
+          navigatorObservers: [navigatorObserver],
+        );
+      },
+    );
   }
 }
 

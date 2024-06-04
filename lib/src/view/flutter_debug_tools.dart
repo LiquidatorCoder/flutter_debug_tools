@@ -17,8 +17,14 @@ class FlutterDebugTools extends StatelessWidget {
   final Widget Function(BuildContext context, bool value, Widget? child)
       builder;
   final Widget? child;
-  const FlutterDebugTools({Key? key, this.child, required this.builder})
-      : super(key: key);
+  final bool isEnabled;
+
+  const FlutterDebugTools({
+    Key? key,
+    this.child,
+    this.isEnabled = kDebugMode,
+    required this.builder,
+  }) : super(key: key);
 
   void _toggleIndicator() => state.value = state.value.copyWith(
       shouldShowToolsIndicator: !state.value.shouldShowToolsIndicator);
@@ -46,7 +52,7 @@ class FlutterDebugTools extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!kDebugMode) {
+    if (!isEnabled) {
       return builder(context, false, child);
     }
     return Directionality(
