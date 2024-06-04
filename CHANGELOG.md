@@ -1,3 +1,7 @@
+## 0.0.4+1
+
+- Add size info tool
+
 ## 0.0.3
 
 - Add screen details information
