@@ -30,9 +30,9 @@
   <a href="#credits">Credits</a>
 </p><br>
 
-| ![Example](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/demo.gif) |
-| ----------------------------------------------------------------------------------------------------------- |
-| **Example app**                                                                                             |
+| ![Example](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/demo.gif) | ![menu](screenshots/image.png) |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **Example app**                                                                                             | **Menu**                       |
 
 ## Key Features
 
