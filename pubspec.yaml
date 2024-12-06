@@ -9,7 +9,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  device_info_plus: 9.1.1
+  device_info_plus: ^11.1.1
   flutter:
     sdk: flutter
   loggy: ^2.0.3

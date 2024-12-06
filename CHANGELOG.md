@@ -1,6 +1,6 @@
 ## 0.0.5
 
-- Revert the `device_info_plus` package to 9.1.1 version
+- Update the `device_info_plus` package to 11.1.1 version
 
 ## 0.0.4
 
