@@ -59,8 +59,7 @@ class DebugDeviceDetailsDialog extends StatelessWidget {
                     children: [
                       ListTile(
                         title: const Text('Screen Size'),
-                        subtitle:
-                            Text('${screenSize.width} x ${screenSize.height}'),
+                        subtitle: Text('${screenSize.width} x ${screenSize.height}'),
                       ),
                       ListTile(
                         title: const Text('Screen Density'),

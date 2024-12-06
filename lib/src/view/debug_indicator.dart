@@ -11,15 +11,13 @@ import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
 class DebugIndicator extends StatefulWidget {
   final VoidCallback toggleTools;
   final VoidCallback toggleIndicator;
-  const DebugIndicator(
-      {super.key, required this.toggleTools, required this.toggleIndicator});
+  const DebugIndicator({super.key, required this.toggleTools, required this.toggleIndicator});
 
   @override
   State<DebugIndicator> createState() => _DebugIndicatorState();
 }
 
-class _DebugIndicatorState extends State<DebugIndicator>
-    with SingleTickerProviderStateMixin {
+class _DebugIndicatorState extends State<DebugIndicator> with SingleTickerProviderStateMixin {
   final deviceInfoManager = DeviceInfoManager.instance;
   late AnimationController _controller;
   Timer? _timer;
@@ -69,8 +67,7 @@ class _DebugIndicatorState extends State<DebugIndicator>
       debugRepaintTextRainbowEnabled = value == true;
     });
     prefs.getBool("showPerformanceOverlay").then((value) {
-      state.value =
-          state.value.copyWith(shouldShowPerformanceOverlay: value == true);
+      state.value = state.value.copyWith(shouldShowPerformanceOverlay: value == true);
     });
     prefs.getBool("shouldShowScreenName").then((value) {
       state.value = state.value.copyWith(shouldShowScreenName: value == true);
@@ -101,8 +98,7 @@ class _DebugIndicatorState extends State<DebugIndicator>
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         shape: BoxShape.circle,
-                        border:
-                            Border.all(color: Colors.blue.shade800, width: 1),
+                        border: Border.all(color: Colors.blue.shade800, width: 1),
                       ),
                     )
                   : Transform.scale(
@@ -113,10 +109,8 @@ class _DebugIndicatorState extends State<DebugIndicator>
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           color: Colors.blue,
-                          border:
-                              Border.all(color: Colors.blue.shade800, width: 1),
-                          borderRadius: BorderRadius.circular(
-                              4 + _controller.value * 200),
+                          border: Border.all(color: Colors.blue.shade800, width: 1),
+                          borderRadius: BorderRadius.circular(4 + _controller.value * 200),
                         ),
                         child: Opacity(
                           opacity: 1 - _controller.value,

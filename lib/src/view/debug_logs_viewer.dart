@@ -55,8 +55,7 @@ class DebugLogsViewer extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: logs?.logs.where((e) => e.isNotEmpty).length,
                   itemBuilder: (context, index) {
-                    if (logs?.logs.where((e) => e.isNotEmpty).toList()[index] ==
-                        "") {
+                    if (logs?.logs.where((e) => e.isNotEmpty).toList()[index] == "") {
                       return const SizedBox.shrink();
                     }
 
@@ -88,12 +87,7 @@ class DebugLogsViewer extends StatelessWidget {
                         ),
                       ),
                       title: Text(
-                        (logs?.logs
-                                    .where((e) => e.isNotEmpty)
-                                    .toList()[index] ??
-                                "")
-                            .split(":")[1]
-                            .trim(),
+                        (logs?.logs.where((e) => e.isNotEmpty).toList()[index] ?? "").split(":")[1].trim(),
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.black,

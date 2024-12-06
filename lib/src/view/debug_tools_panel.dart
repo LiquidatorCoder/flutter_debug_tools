@@ -14,14 +14,14 @@ class DebugToolsPanel extends StatelessWidget {
   final VoidCallback toggleDeviceDetails;
 
   const DebugToolsPanel({
-    Key? key,
+    super.key,
     this.color,
     required this.onClose,
     required this.toggleLogs,
     required this.toggleColorPicker,
     required this.clearColor,
     required this.toggleDeviceDetails,
-  }) : super(key: key);
+  });
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
     final a = color.alpha.toRadixString(16).padLeft(2, '0');
@@ -38,37 +38,28 @@ class DebugToolsPanel extends StatelessWidget {
 
   void _toggleDebugPaint() {
     debugPaintSizeEnabled = !debugPaintSizeEnabled;
-    SharedPrefsManager.instance
-        .setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
+    SharedPrefsManager.instance.setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
   }
 
   void _toggleRenderBoxDetails() {
-    state.value = state.value.copyWith(
-        shouldShowRenderBoxDetails: !state.value.shouldShowRenderBoxDetails);
-    SharedPrefsManager.instance.setBool(
-        "shouldShowRenderBoxDetails", state.value.shouldShowRenderBoxDetails);
+    state.value = state.value.copyWith(shouldShowRenderBoxDetails: !state.value.shouldShowRenderBoxDetails);
+    SharedPrefsManager.instance.setBool("shouldShowRenderBoxDetails", state.value.shouldShowRenderBoxDetails);
     onClose();
   }
 
   void _toggleRepaintRainbow() {
     debugRepaintTextRainbowEnabled = !debugRepaintTextRainbowEnabled;
-    SharedPrefsManager.instance.setBool(
-        "debugRepaintTextRainbowEnabled", debugRepaintTextRainbowEnabled);
+    SharedPrefsManager.instance.setBool("debugRepaintTextRainbowEnabled", debugRepaintTextRainbowEnabled);
   }
 
   void _togglePerfOverlay() {
-    state.value = state.value.copyWith(
-        shouldShowPerformanceOverlay:
-            !state.value.shouldShowPerformanceOverlay);
-    SharedPrefsManager.instance.setBool(
-        "showPerformanceOverlay", state.value.shouldShowPerformanceOverlay);
+    state.value = state.value.copyWith(shouldShowPerformanceOverlay: !state.value.shouldShowPerformanceOverlay);
+    SharedPrefsManager.instance.setBool("showPerformanceOverlay", state.value.shouldShowPerformanceOverlay);
   }
 
   void _toogleScreenNameDetails() {
-    state.value = state.value
-        .copyWith(shouldShowScreenName: !state.value.shouldShowScreenName);
-    SharedPrefsManager.instance
-        .setBool("shouldShowScreenName", state.value.shouldShowScreenName);
+    state.value = state.value.copyWith(shouldShowScreenName: !state.value.shouldShowScreenName);
+    SharedPrefsManager.instance.setBool("shouldShowScreenName", state.value.shouldShowScreenName);
   }
 
   Widget _buildIcon(
@@ -141,8 +132,7 @@ class DebugToolsPanel extends StatelessWidget {
                         color: Colors.white,
                       ),
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 2.0),
+                        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                         child: Text(
                           "Flutter Tools",
                           textAlign: TextAlign.center,
@@ -164,18 +154,14 @@ class DebugToolsPanel extends StatelessWidget {
                             color: color ?? Colors.white,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 2.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                             child: Text(
                               colorToHexString(color ?? Colors.white),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: 13,
-                                  color: (color ?? Colors.white)
-                                              .computeLuminance() >
-                                          0.5
-                                      ? Colors.black
-                                      : Colors.white),
+                                  color:
+                                      (color ?? Colors.white).computeLuminance() > 0.5 ? Colors.black : Colors.white),
                             ),
                           ),
                         ),
@@ -183,22 +169,14 @@ class DebugToolsPanel extends StatelessWidget {
                     if (color != null) const SizedBox(height: 16),
                     Wrap(
                       children: [
-                        _buildIcon(
-                            'Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
-                        _buildIcon('Size Info', Icons.grid_on,
-                            _toggleRenderBoxDetails),
-                        _buildIcon('Repaint Rainbow', Icons.format_paint,
-                            _toggleRepaintRainbow),
-                        _buildIcon(
-                            'Debug Logs', Icons.text_snippet, toggleLogs),
-                        _buildIcon('Perf Overlay', Icons.bar_chart,
-                            _togglePerfOverlay),
-                        _buildIcon(
-                            'Color Picker', Icons.colorize, toggleColorPicker),
-                        _buildIcon('Device Details', Icons.device_unknown,
-                            toggleDeviceDetails),
-                        _buildIcon('Screen Name', Icons.screenshot,
-                            _toogleScreenNameDetails),
+                        _buildIcon('Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
+                        _buildIcon('Size Info', Icons.grid_on, _toggleRenderBoxDetails),
+                        _buildIcon('Repaint Rainbow', Icons.format_paint, _toggleRepaintRainbow),
+                        _buildIcon('Debug Logs', Icons.text_snippet, toggleLogs),
+                        _buildIcon('Perf Overlay', Icons.bar_chart, _togglePerfOverlay),
+                        _buildIcon('Color Picker', Icons.colorize, toggleColorPicker),
+                        _buildIcon('Device Details', Icons.device_unknown, toggleDeviceDetails),
+                        _buildIcon('Screen Name', Icons.screenshot, _toogleScreenNameDetails),
                       ],
                     ),
                   ],

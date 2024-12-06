@@ -14,28 +14,25 @@ import 'package:flutter_debug_tools/src/view/render_box_inspector.dart';
 /// It provides access to various debugging functionalities such as enabling
 /// debug paint, showing performance overlays, and viewing logs.
 class FlutterDebugTools extends StatelessWidget {
-  final Widget Function(BuildContext context, bool value, Widget? child)
-      builder;
+  final Widget Function(BuildContext context, bool value, Widget? child) builder;
   final Widget? child;
   final bool isEnabled;
 
   const FlutterDebugTools({
-    Key? key,
+    super.key,
     this.child,
     this.isEnabled = kDebugMode,
     required this.builder,
-  }) : super(key: key);
+  });
 
-  void _toggleIndicator() => state.value = state.value.copyWith(
-      shouldShowToolsIndicator: !state.value.shouldShowToolsIndicator);
-  void _toggleDialog() => state.value = state.value
-      .copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
-  void _toggleLogs() => state.value = state.value
-      .copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
-  void _toggleColorPicker() => state.value = state.value
-      .copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
-  void _toggleDeviceDetails() => state.value = state.value
-      .copyWith(shouldShowDeviceDetails: !state.value.shouldShowDeviceDetails);
+  void _toggleIndicator() =>
+      state.value = state.value.copyWith(shouldShowToolsIndicator: !state.value.shouldShowToolsIndicator);
+  void _toggleDialog() => state.value = state.value.copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
+  void _toggleLogs() => state.value = state.value.copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
+  void _toggleColorPicker() =>
+      state.value = state.value.copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
+  void _toggleDeviceDetails() =>
+      state.value = state.value.copyWith(shouldShowDeviceDetails: !state.value.shouldShowDeviceDetails);
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
     final a = color.alpha.toRadixString(16).padLeft(2, '0');
@@ -66,11 +63,8 @@ class FlutterDebugTools extends StatelessWidget {
                 // Color picker UI
                 PixelColorInspector(
                   child: (value.shouldShowRenderBoxDetails)
-                      ? RenderBoxInspector(
-                          child: builder(context,
-                              value.shouldShowPerformanceOverlay, child))
-                      : builder(
-                          context, value.shouldShowPerformanceOverlay, child),
+                      ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
+                      : builder(context, value.shouldShowPerformanceOverlay, child),
                   onColorPicked: (val) {
                     state.value = state.value.copyWith(currentColor: val);
                     _toggleColorPicker();
@@ -79,16 +73,11 @@ class FlutterDebugTools extends StatelessWidget {
                 )
               else
                 (value.shouldShowRenderBoxDetails)
-                    ? RenderBoxInspector(
-                        child: builder(
-                            context, value.shouldShowPerformanceOverlay, child))
-                    : builder(
-                        context, value.shouldShowPerformanceOverlay, child),
+                    ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
+                    : builder(context, value.shouldShowPerformanceOverlay, child),
               // Indicator to show Flutter screens
               if (value.shouldShowToolsIndicator)
-                DebugIndicator(
-                    toggleTools: _toggleDialog,
-                    toggleIndicator: _toggleIndicator),
+                DebugIndicator(toggleTools: _toggleDialog, toggleIndicator: _toggleIndicator),
               // Tools panel for debugging tools
               if (value.shouldShowToolsPanel)
                 DebugToolsPanel(
@@ -102,9 +91,7 @@ class FlutterDebugTools extends StatelessWidget {
                     _toggleDialog();
                   },
                   clearColor: () {
-                    Clipboard.setData(ClipboardData(
-                        text: colorToHexString(
-                            value.currentColor ?? Colors.white)));
+                    Clipboard.setData(ClipboardData(text: colorToHexString(value.currentColor ?? Colors.white)));
                     state.value = state.value.clearColor();
                     _toggleDialog();
                   },
@@ -124,8 +111,7 @@ class FlutterDebugTools extends StatelessWidget {
                   onTap: _toggleDeviceDetails,
                 ),
               // Logs viewer
-              if (value.shouldShowLogsScreen)
-                DebugLogsViewer(onTap: _toggleLogs)
+              if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs)
             ],
           );
         },

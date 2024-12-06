@@ -7,9 +7,7 @@ import 'package:flutter/services.dart';
 class PixelColorInspector extends StatefulWidget {
   final void Function(Color) onColorPicked;
   final Widget child;
-  const PixelColorInspector(
-      {Key? key, required this.child, required this.onColorPicked})
-      : super(key: key);
+  const PixelColorInspector({super.key, required this.child, required this.onColorPicked});
 
   @override
   State<PixelColorInspector> createState() => _PixelColorInspectorState();
@@ -27,8 +25,7 @@ class _PixelColorInspectorState extends State<PixelColorInspector> {
   }
 
   Future<void> _captureImage() async {
-    RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!
-        .findRenderObject()! as RenderRepaintBoundary;
+    RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     _image = await boundary.toImage(pixelRatio: pixelRatio);
     setState(() {});
@@ -62,8 +59,7 @@ class _PixelColorInspectorState extends State<PixelColorInspector> {
 
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
 
-    var offset = (_repaintBoundaryKey.currentContext!.findRenderObject()!
-            as RenderRepaintBoundary)
+    var offset = (_repaintBoundaryKey.currentContext!.findRenderObject()! as RenderRepaintBoundary)
         .globalToLocal(globalPosition);
 
     offset *= pixelRatio;
@@ -71,21 +67,16 @@ class _PixelColorInspectorState extends State<PixelColorInspector> {
     final int pixelX = offset.dx.round();
     final int pixelY = offset.dy.round();
 
-    if (pixelX < 0 ||
-        pixelY < 0 ||
-        pixelX >= _image!.width ||
-        pixelY >= _image!.height) {
+    if (pixelX < 0 || pixelY < 0 || pixelX >= _image!.width || pixelY >= _image!.height) {
       // Coordinates are outside the bounds of the image
       return;
     }
 
-    final ByteData? byteData =
-        await _image!.toByteData(format: ui.ImageByteFormat.rawRgba);
+    final ByteData? byteData = await _image!.toByteData(format: ui.ImageByteFormat.rawRgba);
 
     setState(() {
       if (byteData != null) {
-        _selectedColor = getPixelFromByteData(byteData,
-            width: _image?.width ?? 0, x: pixelX, y: pixelY);
+        _selectedColor = getPixelFromByteData(byteData, width: _image?.width ?? 0, x: pixelX, y: pixelY);
       }
     });
 

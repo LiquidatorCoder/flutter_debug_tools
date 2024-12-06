@@ -4,7 +4,7 @@ import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 
 class RenderBoxInspector extends StatefulWidget {
   final Widget child;
-  const RenderBoxInspector({Key? key, required this.child}) : super(key: key);
+  const RenderBoxInspector({super.key, required this.child});
 
   @override
   State<RenderBoxInspector> createState() => _RenderBoxInspectorState();
@@ -44,10 +44,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
       position: renderObjectWithoutAbsorbPointer.globalToLocal(pointerOffset),
     );
 
-    return hitTestResult.path
-        .where((v) => v.target is RenderBox)
-        .map((v) => v.target)
-        .cast<RenderBox>();
+    return hitTestResult.path.where((v) => v.target is RenderBox).map((v) => v.target).cast<RenderBox>();
   }
 
   void _getRenderBox(Offset? offset) {
@@ -57,9 +54,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
     final boxes = _getBoxes(context, offset);
     if (boxes.isEmpty) return;
 
-    final overlayOffset =
-        (_stackKey.currentContext?.findRenderObject() as RenderStack)
-            .localToGlobal(Offset.zero);
+    final overlayOffset = (_stackKey.currentContext?.findRenderObject() as RenderStack).localToGlobal(Offset.zero);
 
     RenderBox? targetRenderBox;
     RenderBox? containerRenderBox;
@@ -92,8 +87,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
 
     final left = (_selectedRenderBox?.targetRectShifted.left ?? 0);
     final isRightCropping = left + 20 > MediaQuery.of(context).size.width / 2;
-    final maxWidth =
-        isRightCropping ? left : (MediaQuery.of(context).size.width - left);
+    final maxWidth = isRightCropping ? left : (MediaQuery.of(context).size.width - left);
 
     return Stack(
       key: _stackKey,
@@ -109,10 +103,8 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
         ),
         if (show)
           Positioned(
-            left: (_selectedRenderBox?.targetRectShifted.left ?? 0) -
-                (_selectedRenderBox?.paddingLeft ?? 0),
-            top: (_selectedRenderBox?.targetRectShifted.top ?? 0) -
-                (_selectedRenderBox?.paddingTop ?? 0),
+            left: (_selectedRenderBox?.targetRectShifted.left ?? 0) - (_selectedRenderBox?.paddingLeft ?? 0),
+            top: (_selectedRenderBox?.targetRectShifted.top ?? 0) - (_selectedRenderBox?.paddingTop ?? 0),
             child: IgnorePointer(
               child: Container(
                 decoration: BoxDecoration(
@@ -122,10 +114,8 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                   ),
                   color: Colors.blue.withOpacity(0.1),
                 ),
-                width: (_selectedRenderBox?.targetRect.width ?? 0) +
-                    (_selectedRenderBox?.paddingHorizontal ?? 0),
-                height: (_selectedRenderBox?.targetRect.height ?? 0) +
-                    (_selectedRenderBox?.paddingVertical ?? 0),
+                width: (_selectedRenderBox?.targetRect.width ?? 0) + (_selectedRenderBox?.paddingHorizontal ?? 0),
+                height: (_selectedRenderBox?.targetRect.height ?? 0) + (_selectedRenderBox?.paddingVertical ?? 0),
               ),
             ),
           ),
@@ -151,20 +141,15 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
           Positioned(
             left: isRightCropping ? null : left,
             right: isRightCropping
-                ? MediaQuery.of(context).size.width -
-                    left -
-                    (_selectedRenderBox?.targetRect.width ?? 0)
+                ? MediaQuery.of(context).size.width - left - (_selectedRenderBox?.targetRect.width ?? 0)
                 : null,
-            top: !isBottomCropping
-                ? top
-                : (_selectedRenderBox?.targetRectShifted.top ?? 0) - 70,
+            top: !isBottomCropping ? top : (_selectedRenderBox?.targetRectShifted.top ?? 0) - 70,
             child: IgnorePointer(
               child: Container(
                 constraints: BoxConstraints(maxWidth: maxWidth),
                 height: 70,
                 color: Colors.black.withOpacity(0.7),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
