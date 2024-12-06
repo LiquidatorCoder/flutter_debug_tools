@@ -1,64 +1,84 @@
 <h1 align="center">Flutter Debug Tools</h1>
 
-<p align="center">A set of tools to help find and debug UI or performance issues from the Flutter app itself. Works with any Flutter app.
+<p align="center">
+  <b>A set of interactive, in-app tools for diagnosing UI and performance issues in Flutter apps—no external tooling required.</b>
 </p><br>
 
 <p align="center">
   <a href="https://flutter.dev">
-    <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter"
-      alt="Platform" />
+    <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter" alt="Platform" />
   </a>
   <a href="https://pub.dartlang.org/packages/flutter_debug_tools">
-    <img src="https://img.shields.io/pub/v/flutter_debug_tools.svg"
-      alt="Pub Package" />
+    <img src="https://img.shields.io/pub/v/flutter_debug_tools.svg" alt="Pub Package" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/github/license/aagarwal1012/animated-text-kit?color=red"
-      alt="License: MIT" />
+    <img src="https://img.shields.io/github/license/aagarwal1012/animated-text-kit?color=red" alt="License: MIT" />
   </a>
   <a href="https://www.paypal.me/codenameakshay">
-    <img src="https://img.shields.io/badge/Donate-PayPal-00457C?logo=paypal"
-      alt="Donate" />
+    <img src="https://img.shields.io/badge/Donate-PayPal-00457C?logo=paypal" alt="Donate" />
   </a>
 </p><br>
 
 <p align="center">
-  <a href="#key-features">Key Features</a> •
+  <a href="#features">Features</a> •
   <a href="#installation">Installation</a> •
   <a href="#usage">Usage</a> •
   <a href="#license">License</a> •
-  <a href="#credits">Credits</a>
+  <a href="#credits">Credits</a> •
+  <a href="#bugs-or-requests">Bugs or Requests</a>
 </p><br>
 
-| ![Example](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/demo.gif) | ![menu](screenshots/image.png) |
-| ----------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| **Example app**                                                                                             | **Menu**                       |
+---
 
-## Key Features
+| ![Demo Animation](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/demo.gif) | ![Menu Screenshot](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/image.png) |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| **Interactive Demo**                                                                                               | **Tools Menu**                                                                                                       |
 
-- **Performance Overlay**: A widget that overlays your app and shows performance metrics such as FPS, frame rasterizer, and frame build time.
+---
 
-- **Device Details**: A widget that overlays your app and shows the device details such as device name, model, version, and more.
+## Features
 
-- **Debug Paint**: A widget that overlays your app and shows the visual layout of the widgets.
+- **Performance Overlay:**  
+  Visualize FPS, frame rendering time, and rasterization metrics over your app’s UI.
 
-- **Layer Bounds**: A widget that overlays your app and shows the layer bounds of the widgets.
+- **Device Details Overlay:**  
+  Instantly see device-specific information (model, OS version, screen size, and more) directly within your app.
 
-- **Debug Log**: A widget that overlays your app and shows the logs from the app.
+- **Debug Paint / Layout Guides:**  
+  Reveal widget boundaries, padding, alignments, and layout constraints with a single toggle.
 
-- **Repaint Rainbow**: A widget that overlays your app and shows the repaint boundaries of the widgets, and the color changes when the widget is repainted.
+- **Layer Bounds Display:**  
+  Understand how Flutter composes layers by viewing layer boundaries in real-time.
 
-- **Color Picker**: A widget that overlays your app and allows you to pick a color from the screen.
+- **Debug Log Overlay:**  
+  Keep track of logs without attaching to an external console—logs appear right on top of your running app.
 
-- **Screen Name**: A widget that overlays your app and shows the path of the current screen.
+- **Repaint Rainbow:**  
+  Easily detect frequent widget repaints. The overlay colors widgets differently each time they repaint, helping identify costly builds.
+
+- **Color Picker:**  
+  Tap on any pixel to grab its color value—perfect for UI fine-tuning and design validation.
+
+- **Screen Name Overlay:**  
+  Always know which route or screen is currently displayed, useful for debugging navigation flows.
+
+**No special IDEs or separate debug modes required—just integrate and toggle overlays as you run your app.**
+
+---
 
 ## Installation
 
-Add the following to your `pubspec.yaml` file:
+Add the following line to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_debug_tools: ^0.0.3+1
+  flutter_debug_tools: ^1.0.0
+```
+
+Then, run:
+
+```bash
+flutter pub get
 ```
 
 ## Usage
@@ -69,24 +89,24 @@ import 'package:flutter_debug_tools/flutter_debug_tools.dart';
 
 void main() {
     // (Optional) Initialize Loggy with the DebugLoggyPrinter to show logs in the Debug Log
-    Loggy.initLoggy(logOptions: logOptions, logPrinter: DebugLoggyPrinter());
+    Loggy.initLoggy(logOptions: LogOptions(), logPrinter: DebugLoggyPrinter());
 
   runApp(MyApp());
 }
 
 // Wrap your material app with the `FlutterDebugTools` widget
 return FlutterDebugTools(
-    builder: (context, value, child) {
-      // (Optional) Attach navigatorObserver to observe the screen details
-        final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();
-        return MaterialApp(
-            // And pass the value to the `showPerformanceOverlay` property
-            showPerformanceOverlay: value,
-            home: MyHomePage(),
-            // Add `navigatorObservers` to observe the screen details
-            navigatorObservers: [navigatorObserver],
-        );
-    },
+  builder: (context, showPerformanceOverlay, child) {
+    // (Optional) Attach navigatorObserver to observe the screen details
+    final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();
+    return MaterialApp(
+      // Control performance overlay using [showPerformanceOverlay]
+      showPerformanceOverlay: showPerformanceOverlay,
+      home: MyHomePage(),
+      // Add `navigatorObservers` to observe the screen details
+      navigatorObservers: [navigatorObserver],
+    );
+  },
 );
 
 
@@ -120,7 +140,7 @@ SOFTWARE.
 
 ## Credits
 
-This software uses the following open source packages:
+This package uses the following open-source packages:
 
 - [Loggy](https://pub.dev/packages/loggy)
 - [Shared Preferences](https://pub.dev/packages/shared_preferences)
@@ -128,4 +148,6 @@ This software uses the following open source packages:
 
 ## Bugs or Requests
 
-If you encounter any problems feel free to open an [issue](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=bug_report.md). If you feel the library is missing a feature, please raise a [ticket](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=feature_request.md) on GitHub and I'll look into it. Pull request are also welcome.
+- For bugs, please [open an issue](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=bug_report.md).
+- For features or enhancements, submit a [feature request](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=feature_request.md).
+- PRs are welcome—contributions help make this tool better!
