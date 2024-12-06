@@ -5,7 +5,7 @@ repository: https://github.com/LiquidatorCoder/flutter_debug_tools
 topics: [debug, color-picker, performance, ui, size]
 
 environment:
-  sdk: ">=3.1.2 <4.0.0"
+  sdk: ^3.5.4
   flutter: ">=1.17.0"
 
 dependencies:
@@ -18,8 +18,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^4.0.0
 
 screenshots:
-  - description: The flutter bloc package logo.
+  - description: Menu of flutter debug tools.
     path: screenshots/image.png
+
+flutter:
