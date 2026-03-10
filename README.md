@@ -1,6 +1,10 @@
 <h1 align="center">FlutterLens 🔍</h1>
 
 <p align="center">
+  <img src="screenshots/image.png" alt="FlutterLens Branding" width="780" />
+</p>
+
+<p align="center">
   <b>In-app debug tools for Flutter UI, rendering, logs, navigation, and device diagnostics - no context switching required.</b>
 </p>
 
