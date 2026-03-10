@@ -1,11 +1,15 @@
+import 'dart:ui';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
+import 'package:flutter_debug_tools/src/view/debug_tools_panel_sheet.dart';
+import 'package:flutter_debug_tools/src/view/debug_tools_panel_styles.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-/// DebugToolsPanel is a widget that displays a dialog containing debugging options.
-/// Allows toggling of various debug modes and viewing of logs.
-class DebugToolsPanel extends StatelessWidget {
+class DebugToolsPanel extends StatefulWidget {
   final Color? color;
   final VoidCallback onClose;
   final VoidCallback toggleLogs;
@@ -23,7 +27,95 @@ class DebugToolsPanel extends StatelessWidget {
     required this.toggleDeviceDetails,
   });
 
-  String colorToHexString(Color color, {bool withAlpha = false}) {
+  @override
+  State<DebugToolsPanel> createState() => _DebugToolsPanelState();
+}
+
+class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProviderStateMixin {
+  late bool _debugPaintEnabled;
+  late bool _repaintRainbowEnabled;
+  late final AnimationController _sheetController;
+  late final Animation<Offset> _sheetSlideAnimation;
+  late final Animation<double> _sheetOpacityAnimation;
+  late final Animation<double> _barrierOpacityAnimation;
+  bool _isDismissing = false;
+  String _appVersion = 'loading';
+  final String _debugToolsVersion = const String.fromEnvironment(
+    'FLUTTER_DEBUG_TOOLS_VERSION',
+    defaultValue: '1.0.0',
+  );
+  String _flutterVersion = 'loading';
+  String _dartVersion = 'loading';
+
+  @override
+  void initState() {
+    super.initState();
+    _debugPaintEnabled = debugPaintSizeEnabled;
+    _repaintRainbowEnabled = debugRepaintTextRainbowEnabled;
+
+    _sheetController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+      reverseDuration: const Duration(milliseconds: 300),
+    );
+
+    _sheetSlideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _sheetController,
+        curve: const Cubic(0.16, 1.0, 0.3, 1.0),
+        reverseCurve: Curves.easeOutCubic,
+      ),
+    );
+
+    _sheetOpacityAnimation = CurvedAnimation(
+      parent: _sheetController,
+      curve: Curves.easeOut,
+      reverseCurve: Curves.easeIn,
+    );
+
+    _barrierOpacityAnimation = CurvedAnimation(
+      parent: _sheetController,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
+      reverseCurve: Curves.easeIn,
+    );
+
+    _loadVersions();
+    _sheetController.forward();
+  }
+
+  Future<void> _loadVersions() async {
+    const String rawDart = String.fromEnvironment('dart.vm.version');
+    final String dartVersion = rawDart.isEmpty ? 'unknown' : rawDart.split(' ').first;
+
+    const String flutterVersion = String.fromEnvironment(
+      'FLUTTER_VERSION',
+      defaultValue: 'unknown',
+    );
+
+    String appVersion = 'unknown';
+    try {
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      appVersion = packageInfo.version;
+    } catch (_) {}
+
+    if (!mounted) return;
+    setState(() {
+      _dartVersion = dartVersion;
+      _flutterVersion = flutterVersion;
+      _appVersion = appVersion;
+    });
+  }
+
+  @override
+  void dispose() {
+    _sheetController.dispose();
+    super.dispose();
+  }
+
+  String _colorToHexString(Color color, {bool withAlpha = false}) {
     String channelToHex(double value) => (value * 255.0).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
 
     final a = channelToHex(color.a);
@@ -31,160 +123,214 @@ class DebugToolsPanel extends StatelessWidget {
     final g = channelToHex(color.g);
     final b = channelToHex(color.b);
 
-    if (withAlpha) {
-      return '#$a$r$g$b';
+    return withAlpha ? '#$a$r$g$b' : '#$r$g$b';
+  }
+
+  Future<void> _dismiss({VoidCallback? onDismissed, bool closePanel = true}) async {
+    if (_isDismissing) return;
+    _isDismissing = true;
+
+    await _sheetController.reverse();
+    if (!mounted) return;
+
+    if (onDismissed != null) {
+      onDismissed();
+      return;
     }
 
-    return '#$r$g$b';
+    if (closePanel) {
+      widget.onClose();
+    }
   }
 
   void _toggleDebugPaint() {
-    debugPaintSizeEnabled = !debugPaintSizeEnabled;
+    setState(() {
+      _debugPaintEnabled = !_debugPaintEnabled;
+      debugPaintSizeEnabled = _debugPaintEnabled;
+    });
     SharedPrefsManager.instance.setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
   }
 
   void _toggleRenderBoxDetails() {
-    state.value = state.value.copyWith(shouldShowRenderBoxDetails: !state.value.shouldShowRenderBoxDetails);
-    SharedPrefsManager.instance.setBool("shouldShowRenderBoxDetails", state.value.shouldShowRenderBoxDetails);
-    onClose();
+    state.value = state.value.copyWith(
+      shouldShowRenderBoxDetails: !state.value.shouldShowRenderBoxDetails,
+    );
+    SharedPrefsManager.instance.setBool(
+      "shouldShowRenderBoxDetails",
+      state.value.shouldShowRenderBoxDetails,
+    );
+    _dismiss();
   }
 
   void _toggleRepaintRainbow() {
-    debugRepaintTextRainbowEnabled = !debugRepaintTextRainbowEnabled;
-    SharedPrefsManager.instance.setBool("debugRepaintTextRainbowEnabled", debugRepaintTextRainbowEnabled);
+    setState(() {
+      _repaintRainbowEnabled = !_repaintRainbowEnabled;
+      debugRepaintTextRainbowEnabled = _repaintRainbowEnabled;
+    });
+    SharedPrefsManager.instance.setBool(
+      "debugRepaintTextRainbowEnabled",
+      debugRepaintTextRainbowEnabled,
+    );
   }
 
   void _togglePerfOverlay() {
-    state.value = state.value.copyWith(shouldShowPerformanceOverlay: !state.value.shouldShowPerformanceOverlay);
-    SharedPrefsManager.instance.setBool("showPerformanceOverlay", state.value.shouldShowPerformanceOverlay);
+    state.value = state.value.copyWith(
+      shouldShowPerformanceOverlay: !state.value.shouldShowPerformanceOverlay,
+    );
+    SharedPrefsManager.instance.setBool(
+      "showPerformanceOverlay",
+      state.value.shouldShowPerformanceOverlay,
+    );
+    setState(() {});
   }
 
-  void _toogleScreenNameDetails() {
-    state.value = state.value.copyWith(shouldShowScreenName: !state.value.shouldShowScreenName);
+  void _toggleScreenNameDetails() {
+    state.value = state.value.copyWith(
+      shouldShowScreenName: !state.value.shouldShowScreenName,
+    );
     SharedPrefsManager.instance.setBool("shouldShowScreenName", state.value.shouldShowScreenName);
+    setState(() {});
   }
 
-  Widget _buildIcon(
-    String text,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-              ),
-              height: 48,
-              width: 48,
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 32,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            SizedBox(
-              width: 48,
-              child: Text(
-                text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Colors.white,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
+  List<DebugToolItem> _buildToolItems() {
+    return [
+      DebugToolItem(
+        id: 'debug_paint',
+        label: 'Debug\nPaint',
+        icon: Icons.grid_4x4_rounded,
+        isActive: _debugPaintEnabled,
+        onTap: _toggleDebugPaint,
+      ),
+      DebugToolItem(
+        id: 'size_info',
+        label: 'Size\nInfo',
+        icon: Icons.swap_vert_rounded,
+        isActive: state.value.shouldShowRenderBoxDetails,
+        onTap: _toggleRenderBoxDetails,
+      ),
+      DebugToolItem(
+        id: 'repaint_rainbow',
+        label: 'Repaint\nRainbow',
+        icon: Icons.auto_awesome_rounded,
+        isActive: _repaintRainbowEnabled,
+        onTap: _toggleRepaintRainbow,
+      ),
+      DebugToolItem(
+        id: 'debug_logs',
+        label: 'Debug\nLogs',
+        icon: Icons.notes_rounded,
+        isActive: false,
+        onTap: widget.toggleLogs,
+      ),
+      DebugToolItem(
+        id: 'perf_overlay',
+        label: 'Perf\nOverlay',
+        icon: Icons.monitor_heart_rounded,
+        isActive: state.value.shouldShowPerformanceOverlay,
+        onTap: _togglePerfOverlay,
+      ),
+      DebugToolItem(
+        id: 'color_picker',
+        label: 'Color\nPicker',
+        icon: Icons.opacity_outlined,
+        isActive: false,
+        onTap: () => _dismiss(
+          onDismissed: widget.toggleColorPicker,
+          closePanel: false,
         ),
       ),
-    );
+      DebugToolItem(
+        id: 'device_details',
+        label: 'Device\nDetails',
+        icon: Icons.stay_current_portrait_outlined,
+        isActive: false,
+        onTap: () => _dismiss(
+          onDismissed: widget.toggleDeviceDetails,
+          closePanel: false,
+        ),
+      ),
+      DebugToolItem(
+        id: 'screen_name',
+        label: 'Screen\nName',
+        icon: Icons.login_rounded,
+        isActive: state.value.shouldShowScreenName,
+        onTap: _toggleScreenNameDetails,
+      ),
+    ];
+  }
+
+  List<DevTickerItem> _buildTickerItems() {
+    const String buildMode = kReleaseMode
+        ? 'release'
+        : kProfileMode
+            ? 'profile'
+            : 'debug';
+
+    return [
+      DevTickerItem(
+        label: 'App',
+        value: _appVersion,
+        dotColor: DevTickerDotColor.green,
+      ),
+      DevTickerItem(
+        label: 'Debug tools',
+        value: _debugToolsVersion,
+        dotColor: DevTickerDotColor.orange,
+      ),
+      DevTickerItem(label: 'Flutter', value: _flutterVersion),
+      DevTickerItem(label: 'Dart', value: _dartVersion),
+      const DevTickerItem(
+        label: 'Build',
+        value: buildMode,
+        dotColor: DevTickerDotColor.pink,
+      ),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onClose,
-      child: Container(
-        color: Colors.black.withValues(alpha: 0.7),
+      onTap: _dismiss,
+      child: Material(
+        color: Colors.transparent,
         child: SafeArea(
-          child: Center(
-            child: Dialog(
-              alignment: Alignment.topCenter,
-              insetPadding: const EdgeInsets.all(12),
-              backgroundColor: Colors.black,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(500),
-                        color: Colors.white,
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                        child: Text(
-                          "Flutter Tools",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+          top: false,
+          bottom: false,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: FadeTransition(
+                    opacity: _barrierOpacityAnimation,
+                    child: ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                        child: ColoredBox(
+                          color: DebugToolsPanelStyles.sheetFill.withValues(alpha: 0.45),
+                          child: const SizedBox.expand(),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    if (color != null)
-                      GestureDetector(
-                        onTap: clearColor,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(500),
-                            color: color ?? Colors.white,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                            child: Text(
-                              colorToHexString(color ?? Colors.white),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color:
-                                      (color ?? Colors.white).computeLuminance() > 0.5 ? Colors.black : Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (color != null) const SizedBox(height: 16),
-                    Wrap(
-                      children: [
-                        _buildIcon('Debug Paint', Icons.grid_3x3, _toggleDebugPaint),
-                        _buildIcon('Size Info', Icons.grid_on, _toggleRenderBoxDetails),
-                        _buildIcon('Repaint Rainbow', Icons.format_paint, _toggleRepaintRainbow),
-                        _buildIcon('Debug Logs', Icons.text_snippet, toggleLogs),
-                        _buildIcon('Perf Overlay', Icons.bar_chart, _togglePerfOverlay),
-                        _buildIcon('Color Picker', Icons.colorize, toggleColorPicker),
-                        _buildIcon('Device Details', Icons.device_unknown, toggleDeviceDetails),
-                        _buildIcon('Screen Name', Icons.screenshot, _toogleScreenNameDetails),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              GestureDetector(
+                onTap: () {},
+                child: DebugToolsPanelSheet(
+                  opacityAnimation: _sheetOpacityAnimation,
+                  slideAnimation: _sheetSlideAnimation,
+                  selectedColor: widget.color,
+                  colorToHexString: _colorToHexString,
+                  onClearColor: () => _dismiss(
+                    onDismissed: widget.clearColor,
+                    closePanel: false,
+                  ),
+                  toolItems: _buildToolItems(),
+                  tickerItems: _buildTickerItems(),
+                ),
+              ),
+            ],
           ),
         ),
       ),

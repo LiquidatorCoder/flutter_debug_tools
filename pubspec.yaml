@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   loggy: ^2.0.3
+  package_info_plus: ^8.1.2
   shared_preferences: ^2.3.3
 
 dev_dependencies:
