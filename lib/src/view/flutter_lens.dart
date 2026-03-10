@@ -49,6 +49,11 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
       return true;
     }
 
+    if (state.value.shouldShowDeviceDetails) {
+      _toggleDeviceDetails();
+      return true;
+    }
+
     return false;
   }
 
