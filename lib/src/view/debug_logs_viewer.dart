@@ -358,7 +358,7 @@ class _HeaderButton extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
-          child: Icon(icon, size: 18, color: Colors.white.withValues(alpha: 0.72)),
+          child: Icon(icon, size: 18, color: DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.45)),
         ),
       ),
     );
@@ -402,7 +402,8 @@ class _FilterChip extends StatelessWidget {
                 fontSize: 8,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.9,
-                color: isSelected ? _selectedTextColor(filter) : Colors.white.withValues(alpha: 0.72),
+                color:
+                    isSelected ? _selectedTextColor(filter) : DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.45),
                 fontFeatures: const [
                   FontFeature.tabularFigures(),
                 ],
