@@ -129,10 +129,7 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                       state.value = state.value.clearColor();
                       _toggleDialog();
                     },
-                    toggleDeviceDetails: () {
-                      _toggleDialog();
-                      _toggleDeviceDetails();
-                    },
+                    toggleDeviceDetails: _toggleDeviceDetails,
                   ),
                 if (value.shouldShowScreenName)
                   DebugScreenDetailsWidget(

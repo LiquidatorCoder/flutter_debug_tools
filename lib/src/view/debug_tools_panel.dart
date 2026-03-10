@@ -271,10 +271,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
         label: 'Device\nDetails',
         icon: Icons.stay_current_portrait_outlined,
         isActive: false,
-        onTap: () => _dismiss(
-          onDismissed: widget.toggleDeviceDetails,
-          closePanel: false,
-        ),
+        onTap: widget.toggleDeviceDetails,
       ),
       DebugToolItem(
         id: 'screen_name',
