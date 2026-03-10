@@ -10,15 +10,13 @@ import 'package:flutter_debug_tools/src/view/debug_tools_panel.dart';
 import 'package:flutter_debug_tools/src/view/pixel_color_inspector.dart';
 import 'package:flutter_debug_tools/src/view/render_box_inspector.dart';
 
-/// FlutterDebugTools is a widget that overlays debugging tools over its [child].
-/// It provides access to various debugging functionalities such as enabling
-/// debug paint, showing performance overlays, and viewing logs.
-class FlutterDebugTools extends StatelessWidget {
+/// FlutterLens overlays debugging tools over its [child].
+class FlutterLens extends StatelessWidget {
   final Widget Function(BuildContext context, bool value, Widget? child) builder;
   final Widget? child;
   final bool isEnabled;
 
-  const FlutterDebugTools({
+  const FlutterLens({
     super.key,
     this.child,
     this.isEnabled = kDebugMode,
@@ -62,7 +60,6 @@ class FlutterDebugTools extends StatelessWidget {
           return Stack(
             children: [
               if (value.shouldShowColorPicker)
-                // Color picker UI
                 PixelColorInspector(
                   child: (value.shouldShowRenderBoxDetails)
                       ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
@@ -77,15 +74,11 @@ class FlutterDebugTools extends StatelessWidget {
                 (value.shouldShowRenderBoxDetails)
                     ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
                     : builder(context, value.shouldShowPerformanceOverlay, child),
-              // Indicator to show Flutter screens
               if (value.shouldShowToolsIndicator) DebugIndicator(toggleTools: _toggleDialog),
-              // Tools panel for debugging tools
               if (value.shouldShowToolsPanel)
                 DebugToolsPanel(
                   color: value.currentColor,
-                  onClose: () {
-                    _toggleDialog();
-                  },
+                  onClose: _toggleDialog,
                   toggleLogs: _toggleLogs,
                   toggleColorPicker: () {
                     _toggleColorPicker();
@@ -101,17 +94,14 @@ class FlutterDebugTools extends StatelessWidget {
                     _toggleDeviceDetails();
                   },
                 ),
-              // Screen details
               if (value.shouldShowScreenName)
                 DebugScreenDetailsWidget(
                   screenName: value.currentScreen ?? '',
                 ),
-              // Device details
               if (value.shouldShowDeviceDetails)
                 DebugDeviceDetailsDialog(
                   onTap: _toggleDeviceDetails,
                 ),
-              // Logs viewer
               if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs)
             ],
           );

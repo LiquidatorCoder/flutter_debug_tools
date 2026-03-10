@@ -126,8 +126,8 @@ class DebugToolsPanelSheet extends StatelessWidget {
                       padding: EdgeInsets.fromLTRB(24, 0, 24, 20),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Debug Tools',
+                          child: Text(
+                            'FlutterLens',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,

@@ -1,4 +1,4 @@
-<h1 align="center">Flutter Debug Tools</h1>
+<h1 align="center">FlutterLens</h1>
 
 <p align="center">
   <b>A set of interactive, in-app tools for diagnosing UI and performance issues in Flutter apps—no external tooling required.</b>
@@ -72,7 +72,7 @@ Add the following line to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_debug_tools: ^1.0.0
+  flutter_debug_tools: ^2.0.0
 ```
 
 Then, run:
@@ -94,8 +94,8 @@ void main() {
   runApp(MyApp());
 }
 
-// Wrap your material app with the `FlutterDebugTools` widget
-return FlutterDebugTools(
+// Wrap your material app with the `FlutterLens` widget
+return FlutterLens(
   builder: (context, showPerformanceOverlay, child) {
     // (Optional) Attach navigatorObserver to observe the screen details
     final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();

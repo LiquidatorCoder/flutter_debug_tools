@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // Add `DebugNavigatorObserver` to observe the screen details
     final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();
-    // Add `FlutterDebugTools` above your `MaterialApp` to enable the debug tools
-    return FlutterDebugTools(
+    // Add `FlutterLens` above your `MaterialApp` to enable FlutterLens
+    return FlutterLens(
       builder: (context, shouldShowPerfOverlay, child) {
         return MaterialApp(
           showPerformanceOverlay: shouldShowPerfOverlay,
