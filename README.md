@@ -29,9 +29,9 @@
 
 | Screenshots |  |  |
 | --- | --- | --- |
-| <img src="screenshots/flow/1.png" alt="Flow 1" height="320" /> | <img src="screenshots/flow/3.png" alt="Flow 3" height="320" /> | <img src="screenshots/flow/5.png" alt="Flow 5" height="320" /> |
+| ![Flow 1](screenshots/flow/1.png) | ![Flow 3](screenshots/flow/3.png) | ![Flow 5](screenshots/flow/5.png) |
 | 🧲 **Edge tray launcher** docked to the right side; draggable and always accessible. | 📋 **Bottom sheet tools grid** with active/inactive visual states and quick toggles. | 🎨 **Color result card** showing selected color in HEX, RGB, and HSL with copy action. |
-| <img src="screenshots/flow/2.png" alt="Flow 2" height="320" /> | <img src="screenshots/flow/4.png" alt="Flow 4" height="320" /> | <img src="screenshots/flow/6.png" alt="Flow 6" height="320" /> |
+| ![Flow 2](screenshots/flow/2.png) | ![Flow 4](screenshots/flow/4.png) | ![Flow 6](screenshots/flow/6.png) |
 | 🧾 **Version ticker** displaying app, FlutterLens, Flutter, Dart, and build mode details. | 📱 **In-app debug logs** to inspect console logs inside the running app. | ⚡ **Device details** to quickly check and share device details. |
 
 ---
