@@ -1,8 +1,6 @@
 <h1 align="center">FlutterLens 🔍</h1>
 
-<p align="center">
-  <img src="screenshots/image.png" alt="FlutterLens Branding" width="780" />
-</p>
+![FlutterLens Branding](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/image.png)
 
 <p align="center">
   <b>In-app debug tools for Flutter UI, rendering, logs, navigation, and device diagnostics - no context switching required.</b>
@@ -33,9 +31,9 @@
 
 | Screenshots |  |  |
 | --- | --- | --- |
-| ![Flow 1](screenshots/flow/1.png) | ![Flow 3](screenshots/flow/3.png) | ![Flow 5](screenshots/flow/5.png) |
+| ![Flow 1](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/flow/1.png) | ![Flow 3](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/flow/3.png) | ![Flow 5](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/flow/5.png) |
 | 🧲 **Edge tray launcher** docked to the right side; draggable and always accessible. | 📋 **Bottom sheet tools grid** with active/inactive visual states and quick toggles. | 🎨 **Color result card** showing selected color in HEX, RGB, and HSL with copy action. |
-| ![Flow 2](screenshots/flow/2.png) | ![Flow 4](screenshots/flow/4.png) | ![Flow 6](screenshots/flow/6.png) |
+| ![Flow 2](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/flow/2.png) | ![Flow 4](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/flow/4.png) | ![Flow 6](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/flow/6.png) |
 | 🧾 **Version ticker** displaying app, FlutterLens, Flutter, Dart, and build mode details. | 📱 **In-app debug logs** to inspect console logs inside the running app. | ⚡ **Device details** to quickly check and share device details. |
 
 ---

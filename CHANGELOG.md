@@ -1,3 +1,7 @@
+## 2.0.1
+
+- **README Fix:** Switched branding and flow screenshots to absolute GitHub raw URLs so images render reliably on pub.dev.
+
 ## 2.0.0
 
 - **FlutterLens Rebrand (Breaking):** Public widget API renamed from `FlutterDebugTools` to `FlutterLens`.
