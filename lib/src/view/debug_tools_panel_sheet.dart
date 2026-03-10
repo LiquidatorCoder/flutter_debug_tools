@@ -84,114 +84,111 @@ class DebugToolsPanelSheet extends StatelessWidget {
               topLeft: Radius.circular(32),
               topRight: Radius.circular(32),
             ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 32, sigmaY: 32),
-              child: Container(
-                width: double.infinity,
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.sizeOf(context).height * 0.82,
+            child: Container(
+              width: double.infinity,
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * 0.82,
+              ),
+              decoration: const BoxDecoration(
+                color: DebugToolsPanelStyles.sheetFill,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
                 ),
-                decoration: const BoxDecoration(
-                  color: DebugToolsPanelStyles.sheetFill,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(32),
-                    topRight: Radius.circular(32),
-                  ),
-                  border: Border.fromBorderSide(
-                    BorderSide(color: Color.fromRGBO(255, 255, 255, 0.03), width: 1),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.7),
-                      blurRadius: 48,
-                      offset: Offset(0, -12),
-                    )
-                  ],
+                border: Border.fromBorderSide(
+                  BorderSide(color: Color.fromRGBO(255, 255, 255, 0.03), width: 1),
                 ),
-                child: SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 16, 0, 24),
-                        child: Container(
-                          width: 36,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(255, 255, 255, 0.15),
-                            borderRadius: BorderRadius.circular(2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.7),
+                    blurRadius: 48,
+                    offset: Offset(0, -12),
+                  )
+                ],
+              ),
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 16, 0, 24),
+                      child: Container(
+                        width: 36,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(255, 255, 255, 0.15),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 20),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Debug Tools',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.2,
+                            color: DebugToolsPanelStyles.textPrimary,
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(24, 0, 24, 20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Debug Tools',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.2,
-                              color: DebugToolsPanelStyles.textPrimary,
-                            ),
-                          ),
+                    ),
+                    Container(
+                      height: 1,
+                      margin: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color.fromRGBO(255, 255, 255, 0),
+                            Color.fromRGBO(255, 255, 255, 0.04),
+                            Color.fromRGBO(255, 255, 255, 0),
+                          ],
                         ),
                       ),
-                      Container(
-                        height: 1,
-                        margin: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              Color.fromRGBO(255, 255, 255, 0),
-                              Color.fromRGBO(255, 255, 255, 0.04),
-                              Color.fromRGBO(255, 255, 255, 0),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final double cellWidth = (constraints.maxWidth - (12 * 3)) / 4;
-                            return Wrap(
-                              spacing: 12,
-                              runSpacing: 24,
-                              children: toolItems
-                                  .map(
-                                    (item) => SizedBox(
-                                      width: cellWidth,
-                                      child: _ToolButton(
-                                        label: item.label,
-                                        icon: item.icon,
-                                        active: item.isActive,
-                                        onTap: item.onTap,
-                                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double cellWidth = (constraints.maxWidth - (12 * 3)) / 4;
+                          return Wrap(
+                            spacing: 12,
+                            runSpacing: 24,
+                            children: toolItems
+                                .map(
+                                  (item) => SizedBox(
+                                    width: cellWidth,
+                                    child: _ToolButton(
+                                      label: item.label,
+                                      icon: item.icon,
+                                      active: item.isActive,
+                                      onTap: item.onTap,
                                     ),
-                                  )
-                                  .toList(),
-                            );
-                          },
+                                  ),
+                                )
+                                .toList(),
+                          );
+                        },
+                      ),
+                    ),
+                    if (showColorChip)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                        child: _ColorResultCard(
+                          color: selectedColor!,
+                          hexText: colorToHexString(selectedColor!),
+                          subText: '${_rgbText(selectedColor!)}  -  ${_hslText(selectedColor!)}',
+                          onCopyTap: onClearColor,
                         ),
                       ),
-                      if (showColorChip)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                          child: _ColorResultCard(
-                            color: selectedColor!,
-                            hexText: colorToHexString(selectedColor!),
-                            subText: '${_rgbText(selectedColor!)}  -  ${_hslText(selectedColor!)}',
-                            onCopyTap: onClearColor,
-                          ),
-                        ),
-                      _DevTickerRow(items: tickerItems),
-                    ],
-                  ),
+                    _DevTickerRow(items: tickerItems),
+                  ],
                 ),
               ),
             ),
