@@ -1,3 +1,19 @@
+## 2.0.0
+
+- **FlutterLens Rebrand (Breaking):** Public widget API renamed from `FlutterDebugTools` to `FlutterLens`.
+- **New Debug Panel UI:** Rebuilt tools panel as a modern draggable bottom sheet with:
+  - frosted/glass styling
+  - active state gradients
+  - improved spacing and hierarchy
+  - swipe-down-to-dismiss interaction
+- **New Edge Tray Launcher:** Replaced old floating control with a draggable right-edge tray tab for quicker access.
+- **Enhanced Color Picker Result:** Added rich color card with swatch, HEX/RGB/HSL details, and copy affordance.
+- **Version Ticker:** Added animated ticker row to show app/build/runtime metadata (App, FlutterLens, Flutter, Dart, Build).
+- **In-App Logs Upgrade:** Integrated `DebugLogStore` + `DebugLogCapture` pipeline for improved log capture/filtering flow.
+- **Logging Dependency Cleanup:** Removed `loggy` dependency in favor of built-in FlutterLens log capture/store APIs.
+- **Documentation Refresh:** Updated README with FlutterLens branding, expanded usage, screenshots flow, and feature guides.
+- **Dependencies:** Added `package_info_plus` for runtime app version reporting in ticker.
+
 ## 1.0.0
 
 - **First stable release**  
