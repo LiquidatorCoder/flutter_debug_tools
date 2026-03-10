@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_debug_tools/src/debug_log_store.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/view/debug_device_details_dialog.dart';
 import 'package:flutter_debug_tools/src/view/debug_indicator.dart';
@@ -47,6 +48,8 @@ class FlutterLens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DebugLogCapture.install();
+
     if (!isEnabled) {
       return builder(context, false, child);
     }

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_tools/flutter_debug_tools.dart';
-import 'package:loggy/loggy.dart';
 
-void main() {
-  // Add `DebugLoggyPrinter` to enable the debug logs
-  Loggy.initLoggy(logPrinter: DebugLoggyPrinter());
-  // Log messages
-  logDebug('This is debug message');
-  logInfo('This is info message');
-  logWarning('This is warning message');
-  logError('This is error message');
-  runApp(const MyApp());
+Future<void> main() async {
+  await DebugLogCapture.runApp(() async {
+    debugPrint('debug: This is debug message');
+    debugPrint('info: This is info message');
+    debugPrint('warn: This is warning message');
+    debugPrint('error: This is error message');
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

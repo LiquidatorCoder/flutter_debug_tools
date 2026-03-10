@@ -87,11 +87,10 @@ flutter pub get
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_tools/flutter_debug_tools.dart';
 
-void main() {
-    // (Optional) Initialize Loggy with the DebugLoggyPrinter to show logs in the Debug Log
-    Loggy.initLoggy(logOptions: LogOptions(), logPrinter: DebugLoggyPrinter());
-
-  runApp(MyApp());
+Future<void> main() async {
+  await DebugLogCapture.runApp(() async {
+    runApp(MyApp());
+  });
 }
 
 // Wrap your material app with the `FlutterLens` widget
@@ -142,7 +141,6 @@ SOFTWARE.
 
 This package uses the following open-source packages:
 
-- [Loggy](https://pub.dev/packages/loggy)
 - [Shared Preferences](https://pub.dev/packages/shared_preferences)
 - [Device Info Plus](https://pub.dev/packages/device_info_plus)
 
