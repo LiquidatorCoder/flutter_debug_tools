@@ -27,9 +27,12 @@
 
 ---
 
-| ![Demo Animation](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/demo.gif) | ![Menu Screenshot](https://raw.githubusercontent.com/LiquidatorCoder/flutter_debug_tools/main/screenshots/image.png) |
-| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| **Interactive Demo**                                                                                               | **Tools Menu**                                                                                                       |
+| Screenshots |  |  |
+| --- | --- | --- |
+| ![Flow 1](screenshots/flow/1.png) | ![Flow 2](screenshots/flow/2.png) | ![Flow 3](screenshots/flow/3.png) |
+| 🧲 **Edge tray launcher** docked to the right side; draggable and always accessible. | 📋 **Bottom sheet tools grid** with active/inactive visual states and quick toggles. | 🎨 **Color result card** showing selected color in HEX, RGB, and HSL with copy action. |
+| ![Flow 4](screenshots/flow/4.png) | ![Flow 5](screenshots/flow/5.png) | ![Flow 6](screenshots/flow/6.png) |
+| 🧾 **Version ticker** displaying app, FlutterLens, Flutter, Dart, and build mode details. | 📱 **In-app debugging flow** while app UI remains visible behind the tools. | ⚡ **Performance-focused workflow** combining overlays and live diagnostics in one panel. |
 
 ---
 
