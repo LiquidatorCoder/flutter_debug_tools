@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,56 +6,34 @@ import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/utils/device_info_manager.dart';
 import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
 
-/// DebugIndicator is a widget that shows an interactive debug icon.
-/// Tapping on the icon toggles the visibility of the debugging tools panel.
+/// Draggable edge tray that opens debug tools.
 class DebugIndicator extends StatefulWidget {
   final VoidCallback toggleTools;
-  final VoidCallback toggleIndicator;
-  const DebugIndicator({super.key, required this.toggleTools, required this.toggleIndicator});
+
+  const DebugIndicator({
+    super.key,
+    required this.toggleTools,
+  });
 
   @override
   State<DebugIndicator> createState() => _DebugIndicatorState();
 }
 
-class _DebugIndicatorState extends State<DebugIndicator> with SingleTickerProviderStateMixin {
-  final deviceInfoManager = DeviceInfoManager.instance;
-  late AnimationController _controller;
-  Timer? _timer;
-  bool _showDot = false;
+class _DebugIndicatorState extends State<DebugIndicator> {
+  final DeviceInfoManager deviceInfoManager = DeviceInfoManager.instance;
+
+  static const double _trayWidth = 34;
+  static const double _trayHeight = 44;
+  static const double _edgeMargin = 2;
+
+  double? _trayTop;
+  bool _trayPressed = false;
 
   @override
   void initState() {
     super.initState();
     _initValues();
     _initDeviceData();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-    );
-
-    Tween<double>(begin: 1.0, end: 0.0).animate(_controller)
-      ..addListener(() {
-        setState(() {});
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            _showDot = true;
-          });
-        }
-      });
-
-    // Start the animation after 3 seconds
-    _timer = Timer(const Duration(seconds: 3), () {
-      _controller.forward();
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _timer?.cancel();
-    super.dispose();
   }
 
   void _initValues() {
@@ -79,53 +57,116 @@ class _DebugIndicatorState extends State<DebugIndicator> with SingleTickerProvid
     state.value = state.value.copyWith(deviceData: deviceData);
   }
 
+  double _clampTop(double top, double maxHeight) {
+    const double minTop = 12;
+    final double maxTop = (maxHeight - _trayHeight - 12).clamp(minTop, maxHeight);
+    return top.clamp(minTop, maxTop);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: RepaintBoundary(
-        child: Align(
-          alignment: Alignment.topRight,
-          child: GestureDetector(
-            onTap: widget.toggleTools,
-            onLongPress: widget.toggleIndicator,
-            child: Container(
-              color: Colors.transparent,
-              padding: const EdgeInsets.all(8.0),
-              child: _showDot
-                  ? Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.blue.shade800, width: 1),
-                      ),
-                    )
-                  : Transform.scale(
-                      alignment: Alignment.topRight,
-                      scaleY: 1 - _controller.value / 1.9,
-                      scaleX: 1 - _controller.value / 1.2,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          border: Border.all(color: Colors.blue.shade800, width: 1),
-                          borderRadius: BorderRadius.circular(4 + _controller.value * 200),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            _trayTop ??= _clampTop(
+              constraints.maxHeight * 0.45 - (_trayHeight / 2),
+              constraints.maxHeight,
+            );
+
+            return Stack(
+              children: [
+                Positioned(
+                  right: -_edgeMargin,
+                  top: _trayTop,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 20, end: 0),
+                    duration: const Duration(milliseconds: 500),
+                    curve: const Cubic(0.16, 1.0, 0.3, 1.0),
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: 1 - (value / 20),
+                        child: Transform.translate(
+                          offset: Offset(value + (_trayPressed ? 3 : 0), 0),
+                          child: child,
                         ),
-                        child: Opacity(
-                          opacity: 1 - _controller.value,
-                          child: const Text(
-                            'FLUTTER',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
+                      );
+                    },
+                    child: GestureDetector(
+                      onTap: widget.toggleTools,
+                      onTapDown: (_) => setState(() => _trayPressed = true),
+                      onTapUp: (_) => setState(() => _trayPressed = false),
+                      onTapCancel: () => setState(() => _trayPressed = false),
+                      onVerticalDragUpdate: (details) {
+                        setState(() {
+                          _trayTop = _clampTop(
+                            (_trayTop ?? 0) + details.delta.dy,
+                            constraints.maxHeight,
+                          );
+                        });
+                      },
+                      child: const _DebugTray(width: _trayWidth, height: _trayHeight),
                     ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _DebugTray extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const _DebugTray({required this.width, required this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    const LinearGradient accent = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFFF7A250), Color(0xFFE24A79), Color(0xFF5A3386)],
+    );
+
+    return SizedBox(
+      width: width,
+      height: height,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(14),
+          bottomLeft: Radius.circular(14),
+        ),
+        child: Container(
+          width: width,
+          decoration: const BoxDecoration(
+            gradient: accent,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(14),
+              bottomLeft: Radius.circular(14),
             ),
+            border: Border(
+              left: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.2)),
+              top: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.2)),
+              bottom: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.2)),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.5),
+                blurRadius: 24,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: Icon(
+            Icons.bug_report,
+            size: 13,
+            color: Color.fromRGBO(255, 255, 255, 0.85),
           ),
         ),
       ),

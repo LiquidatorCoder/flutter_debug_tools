@@ -78,8 +78,7 @@ class FlutterDebugTools extends StatelessWidget {
                     ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
                     : builder(context, value.shouldShowPerformanceOverlay, child),
               // Indicator to show Flutter screens
-              if (value.shouldShowToolsIndicator)
-                DebugIndicator(toggleTools: _toggleDialog, toggleIndicator: _toggleIndicator),
+              if (value.shouldShowToolsIndicator) DebugIndicator(toggleTools: _toggleDialog),
               // Tools panel for debugging tools
               if (value.shouldShowToolsPanel)
                 DebugToolsPanel(
