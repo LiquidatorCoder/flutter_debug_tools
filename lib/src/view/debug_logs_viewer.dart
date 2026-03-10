@@ -110,7 +110,7 @@ class DebugLogsViewer extends StatelessWidget {
             .trim()
             .toLowerCase()
             .contains("info")
-        ? Colors.green.withOpacity(0.7)
+        ? Colors.green.withValues(alpha: 0.7)
         : (logs?.logs.where((e) => e.isNotEmpty).toList()[index] ?? "")
                 .split(":")[0]
                 .trim()
@@ -122,7 +122,7 @@ class DebugLogsViewer extends StatelessWidget {
                     .trim()
                     .toLowerCase()
                     .contains("warn")
-                ? Colors.orange.withOpacity(0.7)
-                : Colors.blue.withOpacity(0.7);
+                ? Colors.orange.withValues(alpha: 0.7)
+                : Colors.blue.withValues(alpha: 0.7);
   }
 }

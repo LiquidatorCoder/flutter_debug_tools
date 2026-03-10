@@ -35,10 +35,12 @@ class FlutterDebugTools extends StatelessWidget {
       state.value = state.value.copyWith(shouldShowDeviceDetails: !state.value.shouldShowDeviceDetails);
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
-    final a = color.alpha.toRadixString(16).padLeft(2, '0');
-    final r = color.red.toRadixString(16).padLeft(2, '0');
-    final g = color.green.toRadixString(16).padLeft(2, '0');
-    final b = color.blue.toRadixString(16).padLeft(2, '0');
+    String channelToHex(double value) => (value * 255.0).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
+
+    final a = channelToHex(color.a);
+    final r = channelToHex(color.r);
+    final g = channelToHex(color.g);
+    final b = channelToHex(color.b);
 
     if (withAlpha) {
       return '#$a$r$g$b';

@@ -26,8 +26,9 @@ class DebugNavigatorObserver extends NavigatorObserver {
     updateScreenName(previousRoute?.settings.name);
   }
 
-  Future<void> updateScreenName(String? screenName) async {
-    await Future.delayed(const Duration(milliseconds: 100));
-    state.value = state.value.copyWith(currentScreen: screenName);
+  void updateScreenName(String? screenName) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state.value = state.value.copyWith(currentScreen: screenName);
+    });
   }
 }

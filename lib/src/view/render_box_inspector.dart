@@ -112,7 +112,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                     color: Colors.blue,
                     width: 1,
                   ),
-                  color: Colors.blue.withOpacity(0.1),
+                  color: Colors.blue.withValues(alpha: 0.1),
                 ),
                 width: (_selectedRenderBox?.targetRect.width ?? 0) + (_selectedRenderBox?.paddingHorizontal ?? 0),
                 height: (_selectedRenderBox?.targetRect.height ?? 0) + (_selectedRenderBox?.paddingVertical ?? 0),
@@ -130,7 +130,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                     color: Colors.yellow,
                     width: 1,
                   ),
-                  color: Colors.yellow.withOpacity(0.3),
+                   color: Colors.yellow.withValues(alpha: 0.3),
                 ),
                 width: _selectedRenderBox?.targetRect.width,
                 height: _selectedRenderBox?.targetRect.height,
@@ -148,7 +148,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
               child: Container(
                 constraints: BoxConstraints(maxWidth: maxWidth),
                 height: 70,
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withValues(alpha: 0.7),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,7 +159,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                           TextSpan(
                             text: "padding: ",
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
                             ),
                           ),
@@ -169,7 +169,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                                 .replaceAll("Rect.fromLTRB(", "")
                                 .replaceAll(")", ""),
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                               color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
@@ -183,7 +183,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                           TextSpan(
                             text: "size: ",
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                               color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
                             ),
                           ),
@@ -191,7 +191,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                             text:
                                 "${_selectedRenderBox?.targetRect.width.roundToDouble()}, ${_selectedRenderBox?.targetRect.height.roundToDouble()}",
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                               color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),

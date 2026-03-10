@@ -6,7 +6,7 @@ topics: [debug, color-picker, performance, ui, size]
 
 environment:
   sdk: ^3.5.4
-  flutter: ">=1.17.0"
+  flutter: ">=3.35.0"
 
 dependencies:
   device_info_plus: ^11.1.1
