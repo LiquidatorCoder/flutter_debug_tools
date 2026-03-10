@@ -1,6 +1,6 @@
 name: flutter_debug_tools
 description: FlutterLens is a set of tools to help find and debug UI or performance issues from the Flutter app itself.
-version: 2.0.1
+version: 2.0.2
 repository: https://github.com/LiquidatorCoder/flutter_debug_tools
 topics: [debug, color-picker, performance, ui, size]
 
@@ -9,11 +9,11 @@ environment:
   flutter: ">=3.35.0"
 
 dependencies:
-  device_info_plus: ^11.1.1
+  device_info_plus: ^12.3.0
   flutter:
     sdk: flutter
-  package_info_plus: ^8.1.2
-  shared_preferences: ^2.3.3
+  package_info_plus: ^9.0.0
+  shared_preferences: ^2.5.4
 
 dev_dependencies:
   flutter_test:

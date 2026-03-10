@@ -1,3 +1,8 @@
+## 2.0.2
+
+- **Static Analysis Fix:** Added an explicit return type to `RenderBoxInspector.show` to satisfy `lints_core` missing type annotation checks.
+- **Dependency Updates:** Upgraded `device_info_plus` to `^12.3.0`, `package_info_plus` to `^9.0.0`, and `shared_preferences` to `^2.5.4` for latest supported compatibility.
+
 ## 2.0.1
 
 - **README Fix:** Switched branding and flow screenshots to absolute GitHub raw URLs so images render reliably on pub.dev.

@@ -16,7 +16,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
 
   RenderBoxInfo? _selectedRenderBox;
 
-  get show => _selectedRenderBox != null;
+  bool get show => _selectedRenderBox != null;
 
   RenderBox? _bypassAbsorbPointer(RenderProxyBox renderObject) {
     RenderBox lastObject = renderObject;
