@@ -1,32 +1,29 @@
-<h1 align="center">FlutterLens</h1>
+<h1 align="center">FlutterLens 🔍</h1>
 
 <p align="center">
-  <b>A set of interactive, in-app tools for diagnosing UI and performance issues in Flutter apps—no external tooling required.</b>
-</p><br>
+  <b>In-app debug tools for Flutter UI, rendering, logs, navigation, and device diagnostics - no context switching required.</b>
+</p>
 
 <p align="center">
   <a href="https://flutter.dev">
     <img src="https://img.shields.io/badge/Platform-Flutter-02569B?logo=flutter" alt="Platform" />
   </a>
-  <a href="https://pub.dartlang.org/packages/flutter_debug_tools">
+  <a href="https://pub.dev/packages/flutter_debug_tools">
     <img src="https://img.shields.io/pub/v/flutter_debug_tools.svg" alt="Pub Package" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/github/license/aagarwal1012/animated-text-kit?color=red" alt="License: MIT" />
+    <img src="https://img.shields.io/badge/License-MIT-red" alt="License: MIT" />
   </a>
-  <a href="https://www.paypal.me/codenameakshay">
-    <img src="https://img.shields.io/badge/Donate-PayPal-00457C?logo=paypal" alt="Donate" />
-  </a>
-</p><br>
+</p>
 
 <p align="center">
-  <a href="#features">Features</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#usage">Usage</a> •
-  <a href="#license">License</a> •
-  <a href="#credits">Credits</a> •
-  <a href="#bugs-or-requests">Bugs or Requests</a>
-</p><br>
+  <a href="#-features">Features</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-debug-logs-how-it-works">Debug Logs</a> •
+  <a href="#-tips">Tips</a> •
+  <a href="#-license">License</a>
+</p>
 
 ---
 
@@ -36,52 +33,51 @@
 
 ---
 
-## Features
+## ✨ Features
 
-- **Performance Overlay:**  
-  Visualize FPS, frame rendering time, and rasterization metrics over your app’s UI.
+- 🧭 **Screen Name Overlay**: See the active route/screen while navigating.
+- 📋 **Debug Logs Viewer**: Capture and inspect console logs inside the running app.
+- 📱 **Device Details**: Inspect model, OS, screen metrics, and hardware info in-app.
+- 🎯 **Color Picker**: Pick any on-screen pixel color quickly.
+- 🧱 **Debug Paint / Layout Insights**: Visualize layout boundaries and spacing behavior.
+- 🌈 **Repaint Rainbow**: Spot frequent repaints to detect expensive widgets.
+- ⚡ **Performance Overlay Toggle**: Enable Flutter performance overlay directly from the panel.
+- 🧲 **Edge Tray Launcher**: Open FlutterLens from a draggable edge tray.
+- 🧾 **Version Ticker**: Live ticker for app/build/flutter/dart/FlutterLens versions.
+- 🎨 **Picked Color Card**: View HEX/RGB/HSL + copy from the panel.
+- 💾 **Sticky Debug Toggles**: Core flags are persisted across launches.
 
-- **Device Details Overlay:**  
-  Instantly see device-specific information (model, OS version, screen size, and more) directly within your app.
+### 🧰 Tool-by-tool quick map
 
-- **Debug Paint / Layout Guides:**  
-  Reveal widget boundaries, padding, alignments, and layout constraints with a single toggle.
-
-- **Layer Bounds Display:**  
-  Understand how Flutter composes layers by viewing layer boundaries in real-time.
-
-- **Debug Log Overlay:**  
-  Keep track of logs without attaching to an external console—logs appear right on top of your running app.
-
-- **Repaint Rainbow:**  
-  Easily detect frequent widget repaints. The overlay colors widgets differently each time they repaint, helping identify costly builds.
-
-- **Color Picker:**  
-  Tap on any pixel to grab its color value—perfect for UI fine-tuning and design validation.
-
-- **Screen Name Overlay:**  
-  Always know which route or screen is currently displayed, useful for debugging navigation flows.
-
-**No special IDEs or separate debug modes required—just integrate and toggle overlays as you run your app.**
+- `Debug Paint` → toggles `debugPaintSizeEnabled`
+- `Size Info` → enables render box inspector overlay
+- `Repaint Rainbow` → toggles `debugRepaintTextRainbowEnabled`
+- `Debug Logs` → opens in-app logs viewer
+- `Perf Overlay` → toggles `showPerformanceOverlay`
+- `Color Picker` → pixel pick + color card/copy flow
+- `Device Details` → opens device info sheet
+- `Screen Name` → route name overlay (with `DebugNavigatorObserver`)
 
 ---
 
-## Installation
+## 📦 Installation
 
-Add the following line to your `pubspec.yaml`:
+Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
   flutter_debug_tools: ^2.0.0
 ```
 
-Then, run:
+Then run:
 
 ```bash
 flutter pub get
 ```
 
-## Usage
+---
+
+## 🚀 Quick Start
 
 ```dart
 import 'package:flutter/material.dart';
@@ -89,63 +85,147 @@ import 'package:flutter_debug_tools/flutter_debug_tools.dart';
 
 Future<void> main() async {
   await DebugLogCapture.runApp(() async {
-    runApp(MyApp());
+    runApp(const MyApp());
   });
 }
 
-// Wrap your material app with the `FlutterLens` widget
-return FlutterLens(
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final navigatorObserver = DebugNavigatorObserver();
+
+    return FlutterLens(
+      builder: (context, showPerformanceOverlay, child) {
+        return MaterialApp(
+          title: 'FlutterLens Demo',
+          showPerformanceOverlay: showPerformanceOverlay,
+          navigatorObservers: [navigatorObserver],
+          home: const Placeholder(),
+        );
+      },
+    );
+  }
+}
+```
+
+### 🧩 Minimal integration (without log zone wrapper)
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_debug_tools/flutter_debug_tools.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FlutterLens(
+      builder: (context, showPerformanceOverlay, child) {
+        return MaterialApp(
+          showPerformanceOverlay: showPerformanceOverlay,
+          home: const Placeholder(),
+        );
+      },
+    );
+  }
+}
+```
+
+### 🎛️ Disable in non-debug environments
+
+```dart
+FlutterLens(
+  isEnabled: kDebugMode,
   builder: (context, showPerformanceOverlay, child) {
-    // (Optional) Attach navigatorObserver to observe the screen details
-    final DebugNavigatorObserver navigatorObserver = DebugNavigatorObserver();
     return MaterialApp(
-      // Control performance overlay using [showPerformanceOverlay]
       showPerformanceOverlay: showPerformanceOverlay,
-      home: MyHomePage(),
-      // Add `navigatorObservers` to observe the screen details
-      navigatorObservers: [navigatorObserver],
+      home: const HomeScreen(),
     );
   },
-);
-
-
+)
 ```
 
-## License
+---
 
+## 🧾 Debug Logs (How It Works)
+
+- ✅ Captures Dart-side console logs (including `print` output in the wrapped zone)
+- ✅ Captures framework/platform error callbacks and shows them in the logs viewer
+- ✅ Lets you filter logs by level (`All`, `Info`, `Warn`, `Error`, `Debug`)
+- ✅ Tap any log row to copy it to clipboard
+
+If you already use another logger, you can still use it; FlutterLens will continue showing captured console/error output in the viewer.
+
+### 🔎 What gets captured
+
+- `print(...)` output (inside `DebugLogCapture.runApp` zone)
+- `FlutterError.onError`
+- `PlatformDispatcher.instance.onError`
+- uncaught zoned async exceptions
+
+### 📚 Public logging APIs
+
+- `DebugLogCapture.install()`
+- `DebugLogCapture.runApp(() async { ... })`
+- `DebugLogStore.instance.add(...)`
+- `DebugLogStore.instance.clear()`
+
+---
+
+## 🧭 Navigation integration
+
+To populate route names in the `Screen Name` overlay, attach `DebugNavigatorObserver`:
+
+```dart
+MaterialApp(
+  navigatorObservers: [DebugNavigatorObserver()],
+  home: const HomeScreen(),
+)
 ```
+
+---
+
+## 🖱️ Panel interactions
+
+- Swipe down on the panel to dismiss.
+- Tap outside the panel to dismiss.
+- Drag the right-edge tray up/down to reposition.
+- Tap the tray to open FlutterLens.
+
+---
+
+## 💡 Tips
+
+- Use FlutterLens only in debug/dev environments.
+- Add `DebugNavigatorObserver` for better route visibility in overlays.
+- Keep an eye on `Repaint Rainbow` + `Performance Overlay` together for quick perf diagnosis.
+- If Dart/Flutter versions show fallback values, pass build-time dart-defines for those keys.
+
+---
+
+## 🙌 Credits
+
+Built with:
+
+- [shared_preferences](https://pub.dev/packages/shared_preferences)
+- [device_info_plus](https://pub.dev/packages/device_info_plus)
+
+---
+
+## 🐞 Bugs or Requests
+
+- Bug report: [Open issue](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=bug_report.md)
+- Feature request: [Open request](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=feature_request.md)
+- PRs are welcome! 🎉
+
+---
+
+## 📄 License
+
 MIT License
-
-Copyright (c) 2024 Abhay Maurya
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-## Credits
-
-This package uses the following open-source packages:
-
-- [Shared Preferences](https://pub.dev/packages/shared_preferences)
-- [Device Info Plus](https://pub.dev/packages/device_info_plus)
-
-## Bugs or Requests
-
-- For bugs, please [open an issue](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=bug_report.md).
-- For features or enhancements, submit a [feature request](https://github.com/LiquidatorCoder/flutter_debug_tools/issues/new?template=feature_request.md).
-- PRs are welcome—contributions help make this tool better!
