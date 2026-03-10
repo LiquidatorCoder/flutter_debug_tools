@@ -12,7 +12,7 @@ import 'package:flutter_debug_tools/src/view/pixel_color_inspector.dart';
 import 'package:flutter_debug_tools/src/view/render_box_inspector.dart';
 
 /// FlutterLens overlays debugging tools over its [child].
-class FlutterLens extends StatelessWidget {
+class FlutterLens extends StatefulWidget {
   final Widget Function(BuildContext context, bool value, Widget? child) builder;
   final Widget? child;
   final bool isEnabled;
@@ -23,6 +23,34 @@ class FlutterLens extends StatelessWidget {
     this.isEnabled = kDebugMode,
     required this.builder,
   });
+
+  @override
+  State<FlutterLens> createState() => _FlutterLensState();
+}
+
+class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    DebugLogCapture.install();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<bool> didPopRoute() async {
+    if (state.value.shouldShowLogsScreen) {
+      _toggleLogs();
+      return true;
+    }
+
+    return false;
+  }
 
   void _toggleDialog() => state.value = state.value.copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
   void _toggleLogs() => state.value = state.value.copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
@@ -48,66 +76,73 @@ class FlutterLens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DebugLogCapture.install();
-
-    if (!isEnabled) {
-      return builder(context, false, child);
+    if (!widget.isEnabled) {
+      return widget.builder(context, false, widget.child);
     }
+
     return Directionality(
       textDirection: TextDirection.ltr,
       child: ValueListenableBuilder<DebugToolsState>(
         valueListenable: state,
         builder: (context, value, child) {
-          return Stack(
-            children: [
-              if (value.shouldShowColorPicker)
-                PixelColorInspector(
-                  child: (value.shouldShowRenderBoxDetails)
-                      ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
-                      : builder(context, value.shouldShowPerformanceOverlay, child),
-                  onColorPicked: (val) {
-                    state.value = state.value.copyWith(currentColor: val);
-                    _toggleColorPicker();
-                    _toggleDialog();
-                  },
-                )
-              else
-                (value.shouldShowRenderBoxDetails)
-                    ? RenderBoxInspector(child: builder(context, value.shouldShowPerformanceOverlay, child))
-                    : builder(context, value.shouldShowPerformanceOverlay, child),
-              if (value.shouldShowToolsIndicator) DebugIndicator(toggleTools: _toggleDialog),
-              if (value.shouldShowToolsPanel)
-                DebugToolsPanel(
-                  color: value.currentColor,
-                  onClose: _toggleDialog,
-                  toggleLogs: _toggleLogs,
-                  toggleColorPicker: () {
-                    _toggleColorPicker();
-                    _toggleDialog();
-                  },
-                  clearColor: () {
-                    Clipboard.setData(ClipboardData(text: colorToHexString(value.currentColor ?? Colors.white)));
-                    state.value = state.value.clearColor();
-                    _toggleDialog();
-                  },
-                  toggleDeviceDetails: () {
-                    _toggleDialog();
-                    _toggleDeviceDetails();
-                  },
-                ),
-              if (value.shouldShowScreenName)
-                DebugScreenDetailsWidget(
-                  screenName: value.currentScreen ?? '',
-                ),
-              if (value.shouldShowDeviceDetails)
-                DebugDeviceDetailsDialog(
-                  onTap: _toggleDeviceDetails,
-                ),
-              if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs)
-            ],
+          return PopScope(
+            canPop: !value.shouldShowLogsScreen,
+            onPopInvokedWithResult: (didPop, result) {
+              if (!didPop && value.shouldShowLogsScreen) {
+                _toggleLogs();
+              }
+            },
+            child: Stack(
+              children: [
+                if (value.shouldShowColorPicker)
+                  PixelColorInspector(
+                    child: (value.shouldShowRenderBoxDetails)
+                        ? RenderBoxInspector(child: widget.builder(context, value.shouldShowPerformanceOverlay, child))
+                        : widget.builder(context, value.shouldShowPerformanceOverlay, child),
+                    onColorPicked: (val) {
+                      state.value = state.value.copyWith(currentColor: val);
+                      _toggleColorPicker();
+                      _toggleDialog();
+                    },
+                  )
+                else
+                  (value.shouldShowRenderBoxDetails)
+                      ? RenderBoxInspector(child: widget.builder(context, value.shouldShowPerformanceOverlay, child))
+                      : widget.builder(context, value.shouldShowPerformanceOverlay, child),
+                if (value.shouldShowToolsIndicator) DebugIndicator(toggleTools: _toggleDialog),
+                if (value.shouldShowToolsPanel)
+                  DebugToolsPanel(
+                    color: value.currentColor,
+                    onClose: _toggleDialog,
+                    toggleLogs: _toggleLogs,
+                    toggleColorPicker: () {
+                      _toggleColorPicker();
+                      _toggleDialog();
+                    },
+                    clearColor: () {
+                      Clipboard.setData(ClipboardData(text: colorToHexString(value.currentColor ?? Colors.white)));
+                      state.value = state.value.clearColor();
+                      _toggleDialog();
+                    },
+                    toggleDeviceDetails: () {
+                      _toggleDialog();
+                      _toggleDeviceDetails();
+                    },
+                  ),
+                if (value.shouldShowScreenName)
+                  DebugScreenDetailsWidget(
+                    screenName: value.currentScreen ?? '',
+                  ),
+                if (value.shouldShowDeviceDetails)
+                  DebugDeviceDetailsDialog(
+                    onTap: _toggleDeviceDetails,
+                  ),
+                if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs)
+              ],
+            ),
           );
         },
-        child: child,
+        child: widget.child,
       ),
     );
   }
