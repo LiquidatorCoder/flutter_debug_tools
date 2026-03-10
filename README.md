@@ -29,10 +29,10 @@
 
 | Screenshots |  |  |
 | --- | --- | --- |
-| ![Flow 1](screenshots/flow/1.png) | ![Flow 2](screenshots/flow/2.png) | ![Flow 3](screenshots/flow/3.png) |
+| ![Flow 1](screenshots/flow/1.png) | ![Flow 3](screenshots/flow/3.png) | ![Flow 5](screenshots/flow/5.png) |
 | 🧲 **Edge tray launcher** docked to the right side; draggable and always accessible. | 📋 **Bottom sheet tools grid** with active/inactive visual states and quick toggles. | 🎨 **Color result card** showing selected color in HEX, RGB, and HSL with copy action. |
-| ![Flow 4](screenshots/flow/4.png) | ![Flow 5](screenshots/flow/5.png) | ![Flow 6](screenshots/flow/6.png) |
-| 🧾 **Version ticker** displaying app, FlutterLens, Flutter, Dart, and build mode details. | 📱 **In-app debugging flow** while app UI remains visible behind the tools. | ⚡ **Performance-focused workflow** combining overlays and live diagnostics in one panel. |
+| ![Flow 2](screenshots/flow/2.png) | ![Flow 4](screenshots/flow/4.png) | ![Flow 6](screenshots/flow/6.png) |
+| 🧾 **Version ticker** displaying app, FlutterLens, Flutter, Dart, and build mode details. | 📱 **In-app debug logs** to inspect console logs inside the running app. | ⚡ **Device details** to quickly check and share device details. |
 
 ---
 
