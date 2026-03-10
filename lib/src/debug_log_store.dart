@@ -123,7 +123,11 @@ class DebugLogCapture {
         DebugLogStore.instance.add(diagnostics, level: DebugLogLevel.error);
       }
 
-      _previousFlutterErrorHandler?.call(details);
+      if (_previousFlutterErrorHandler != null) {
+        _previousFlutterErrorHandler!.call(details);
+      } else {
+        FlutterError.presentError(details);
+      }
     };
 
     PlatformDispatcher.instance.onError = (Object error, StackTrace stackTrace) {
@@ -141,6 +145,7 @@ class DebugLogCapture {
       },
       (Object error, StackTrace stackTrace) {
         DebugLogStore.instance.addError(error, stackTrace);
+        _printErrorToConsole(error, stackTrace);
       },
       zoneSpecification: ZoneSpecification(
         print: (self, parent, zone, line) {
@@ -148,6 +153,16 @@ class DebugLogCapture {
           parent.print(zone, line);
         },
       ),
+    );
+  }
+
+  static void _printErrorToConsole(Object error, StackTrace stackTrace) {
+    FlutterError.dumpErrorToConsole(
+      FlutterErrorDetails(
+        exception: error,
+        stack: stackTrace,
+      ),
+      forceReport: true,
     );
   }
 }
