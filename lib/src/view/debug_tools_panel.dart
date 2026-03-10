@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
+import 'package:flutter_debug_tools/src/utils/dart_runtime_info.dart';
 import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel_sheet.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel_styles.dart';
@@ -87,8 +88,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
   }
 
   Future<void> _loadVersions() async {
-    const String rawDart = String.fromEnvironment('dart.vm.version');
-    final String dartVersion = rawDart.isEmpty ? 'unknown' : rawDart.split(' ').first;
+    final String dartVersion = getDartRuntimeVersion();
 
     const String flutterVersion = String.fromEnvironment(
       'FLUTTER_VERSION',
@@ -273,7 +273,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
         dotColor: DevTickerDotColor.green,
       ),
       DevTickerItem(
-        label: 'Debug tools',
+        label: 'FlutterLens',
         value: _debugToolsVersion,
         dotColor: DevTickerDotColor.orange,
       ),

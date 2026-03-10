@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
@@ -163,7 +161,7 @@ class _DebugTray extends StatelessWidget {
               ),
             ],
           ),
-          child: Icon(
+          child: const Icon(
             Icons.bug_report,
             size: 13,
             color: Color.fromRGBO(255, 255, 255, 0.85),

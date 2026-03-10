@@ -125,9 +125,9 @@ class DebugToolsPanelSheet extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.fromLTRB(24, 0, 24, 20),
                       child: Align(
-                        alignment: Alignment.centerLeft,
-                          child: Text(
-                            'FlutterLens',
+                        alignment: Alignment.center,
+                        child: Text(
+                          'FlutterLens',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,

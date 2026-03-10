@@ -23,8 +23,6 @@ class FlutterLens extends StatelessWidget {
     required this.builder,
   });
 
-  void _toggleIndicator() =>
-      state.value = state.value.copyWith(shouldShowToolsIndicator: !state.value.shouldShowToolsIndicator);
   void _toggleDialog() => state.value = state.value.copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
   void _toggleLogs() => state.value = state.value.copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
   void _toggleColorPicker() =>
