@@ -48,6 +48,9 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
   String _flutterVersion = 'loading';
   String _dartVersion = 'loading';
 
+  static const double _dismissVelocity = 700;
+  static const double _dismissProgress = 0.72;
+
   @override
   void initState() {
     super.initState();
@@ -141,6 +144,30 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
     if (closePanel) {
       widget.onClose();
     }
+  }
+
+  void _handleSheetDragUpdate(DragUpdateDetails details, BuildContext context) {
+    if (_isDismissing) return;
+    final double delta = details.primaryDelta ?? 0;
+    if (delta <= 0) return;
+
+    final double sheetTravel = MediaQuery.sizeOf(context).height * 0.82;
+    if (sheetTravel <= 0) return;
+    final double progressDelta = delta / sheetTravel;
+
+    _sheetController.value = (_sheetController.value - progressDelta).clamp(0.0, 1.0);
+  }
+
+  void _handleSheetDragEnd(DragEndDetails details) {
+    if (_isDismissing) return;
+
+    final double velocity = details.primaryVelocity ?? 0;
+    if (velocity > _dismissVelocity || _sheetController.value < _dismissProgress) {
+      _dismiss();
+      return;
+    }
+
+    _sheetController.forward();
   }
 
   void _toggleDebugPaint() {
@@ -317,17 +344,23 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
               ),
               GestureDetector(
                 onTap: () {},
-                child: DebugToolsPanelSheet(
-                  opacityAnimation: _sheetOpacityAnimation,
-                  slideAnimation: _sheetSlideAnimation,
-                  selectedColor: widget.color,
-                  colorToHexString: _colorToHexString,
-                  onClearColor: () => _dismiss(
-                    onDismissed: widget.clearColor,
-                    closePanel: false,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onVerticalDragUpdate: (details) =>
+                      _handleSheetDragUpdate(details, context),
+                  onVerticalDragEnd: _handleSheetDragEnd,
+                  child: DebugToolsPanelSheet(
+                    opacityAnimation: _sheetOpacityAnimation,
+                    slideAnimation: _sheetSlideAnimation,
+                    selectedColor: widget.color,
+                    colorToHexString: _colorToHexString,
+                    onClearColor: () => _dismiss(
+                      onDismissed: widget.clearColor,
+                      closePanel: false,
+                    ),
+                    toolItems: _buildToolItems(),
+                    tickerItems: _buildTickerItems(),
                   ),
-                  toolItems: _buildToolItems(),
-                  tickerItems: _buildTickerItems(),
                 ),
               ),
             ],
