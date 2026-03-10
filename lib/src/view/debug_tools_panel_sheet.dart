@@ -350,8 +350,7 @@ class _DevTickerRow extends StatefulWidget {
   State<_DevTickerRow> createState() => _DevTickerRowState();
 }
 
-class _DevTickerRowState extends State<_DevTickerRow>
-    with SingleTickerProviderStateMixin {
+class _DevTickerRowState extends State<_DevTickerRow> with SingleTickerProviderStateMixin {
   final GlobalKey _segmentKey = GlobalKey();
   late final AnimationController _marqueeController;
 
@@ -404,8 +403,7 @@ class _DevTickerRowState extends State<_DevTickerRow>
     }
 
     _segmentExtent = extent;
-    final int durationMs =
-        (_segmentExtent / _pixelsPerSecond * 1000).round().clamp(2000, 120000);
+    final int durationMs = (_segmentExtent / _pixelsPerSecond * 1000).round().clamp(2000, 120000);
     _marqueeController.duration = Duration(milliseconds: durationMs);
     _marqueeController
       ..reset()
@@ -437,7 +435,7 @@ class _DevTickerRowState extends State<_DevTickerRow>
             color: dot,
             shape: BoxShape.circle,
             boxShadow: [
-              BoxShadow(color: dot.withValues(alpha: 0.65), blurRadius: 5),
+              BoxShadow(color: dot.withValues(alpha: 0.65), blurRadius: 2),
             ],
           ),
         ),
@@ -519,8 +517,7 @@ class _DevTickerRowState extends State<_DevTickerRow>
           child: AnimatedBuilder(
             animation: _marqueeController,
             builder: (context, child) {
-              final double dx =
-                  _segmentExtent <= 0 ? 0 : -_marqueeController.value * _segmentExtent;
+              final double dx = _segmentExtent <= 0 ? 0 : -_marqueeController.value * _segmentExtent;
               return Stack(
                 children: [
                   Positioned(

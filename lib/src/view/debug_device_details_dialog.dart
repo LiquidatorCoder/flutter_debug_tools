@@ -462,28 +462,6 @@ class _SpecTile extends StatelessWidget {
   }
 }
 
-class _Pill extends StatelessWidget {
-  const _Pill({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
-      child: Text(
-        text,
-        style: _DeviceTextStyles.pill.copyWith(color: Colors.white.withValues(alpha: 0.6)),
-      ),
-    );
-  }
-}
-
 class _DeviceTextStyles {
   static const TextStyle screenTitle = TextStyle(
     fontSize: 14,
@@ -526,11 +504,6 @@ class _DeviceTextStyles {
     fontFeatures: [FontFeature.tabularFigures()],
   );
 
-  static const TextStyle pill = TextStyle(
-    fontSize: 10,
-    fontWeight: FontWeight.w600,
-    fontFeatures: [FontFeature.tabularFigures()],
-  );
 }
 
 class _HeaderButton extends StatelessWidget {
