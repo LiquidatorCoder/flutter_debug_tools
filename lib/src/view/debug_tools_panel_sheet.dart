@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -351,42 +350,66 @@ class _DevTickerRow extends StatefulWidget {
   State<_DevTickerRow> createState() => _DevTickerRowState();
 }
 
-class _DevTickerRowState extends State<_DevTickerRow> {
-  final ScrollController _scrollController = ScrollController();
-  Timer? _timer;
-  static const double _speedPerTick = 0.45;
-  static const Duration _tickDuration = Duration(milliseconds: 16);
+class _DevTickerRowState extends State<_DevTickerRow>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey _segmentKey = GlobalKey();
+  late final AnimationController _marqueeController;
+
+  static const double _segmentGap = 16;
+  static const double _pixelsPerSecond = 26;
+  static const double _tickerHeight = 14;
+  double _segmentExtent = 0;
 
   @override
   void initState() {
     super.initState();
+    _marqueeController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 12),
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _startAutoScroll();
+      _measureAndStart();
     });
   }
 
   @override
+  void didUpdateWidget(covariant _DevTickerRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.items != widget.items) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _measureAndStart();
+      });
+    }
+  }
+
+  @override
   void dispose() {
-    _timer?.cancel();
-    _scrollController.dispose();
+    _marqueeController.dispose();
     super.dispose();
   }
 
-  void _startAutoScroll() {
-    _timer?.cancel();
-    _timer = Timer.periodic(_tickDuration, (_) {
-      if (!mounted || !_scrollController.hasClients) return;
-      final double maxExtent = _scrollController.position.maxScrollExtent;
-      if (maxExtent <= 0) return;
+  void _measureAndStart() {
+    final BuildContext? segmentContext = _segmentKey.currentContext;
+    if (segmentContext == null) return;
+    final RenderBox? box = segmentContext.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return;
 
-      final double half = maxExtent / 2;
-      double nextOffset = _scrollController.offset + _speedPerTick;
-      if (nextOffset >= half) {
-        nextOffset -= half;
-      }
-      _scrollController.jumpTo(nextOffset);
-    });
+    final double extent = box.size.width;
+    if (extent <= 0) return;
+    if ((extent - _segmentExtent).abs() < 0.5 && _marqueeController.isAnimating) {
+      return;
+    }
+
+    _segmentExtent = extent;
+    final int durationMs =
+        (_segmentExtent / _pixelsPerSecond * 1000).round().clamp(2000, 120000);
+    _marqueeController.duration = Duration(milliseconds: durationMs);
+    _marqueeController
+      ..reset()
+      ..repeat();
   }
 
   Color _dotColor(DevTickerDotColor color) {
@@ -445,22 +468,43 @@ class _DevTickerRowState extends State<_DevTickerRow> {
   Widget _buildTickerContent() {
     return Row(
       children: [
-        ...widget.items.expand((item) => [
-              _buildItem(item),
-              Container(
-                width: 1,
-                height: 10,
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                color: const Color.fromRGBO(255, 255, 255, 0.07),
-              ),
-            ]),
+        for (int i = 0; i < widget.items.length; i++) ...[
+          _buildItem(widget.items[i]),
+          if (i != widget.items.length - 1)
+            Container(
+              width: 1,
+              height: 10,
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              color: const Color.fromRGBO(255, 255, 255, 0.07),
+            ),
+        ],
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final Widget content = _buildTickerContent();
+    final Widget measuredSegment = Row(
+      key: _segmentKey,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildTickerContent(),
+        const SizedBox(width: _segmentGap),
+      ],
+    );
+    final Widget duplicateSegment = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildTickerContent(),
+        const SizedBox(width: _segmentGap),
+      ],
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _measureAndStart();
+    });
+
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 14),
       decoration: const BoxDecoration(
@@ -468,16 +512,32 @@ class _DevTickerRowState extends State<_DevTickerRow> {
           top: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.04)),
         ),
       ),
-      child: ClipRect(
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          scrollDirection: Axis.horizontal,
-          physics: const NeverScrollableScrollPhysics(),
-          child: Row(
-            children: [
-              content,
-              content,
-            ],
+      child: SizedBox(
+        width: double.infinity,
+        height: _tickerHeight,
+        child: ClipRect(
+          child: AnimatedBuilder(
+            animation: _marqueeController,
+            builder: (context, child) {
+              final double dx =
+                  _segmentExtent <= 0 ? 0 : -_marqueeController.value * _segmentExtent;
+              return Stack(
+                children: [
+                  Positioned(
+                    left: dx,
+                    top: 0,
+                    bottom: 0,
+                    child: measuredSegment,
+                  ),
+                  Positioned(
+                    left: dx + _segmentExtent,
+                    top: 0,
+                    bottom: 0,
+                    child: duplicateSegment,
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
