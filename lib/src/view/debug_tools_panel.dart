@@ -305,10 +305,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
         icon: Icons.animation_rounded,
         isActive:
             state.value.shouldShowAnimationToolbox || hasAnimationOverrides,
-        onTap: () => _dismiss(
-          onDismissed: widget.toggleAnimationToolbox,
-          closePanel: false,
-        ),
+        onTap: widget.toggleAnimationToolbox,
       ),
     ];
   }
