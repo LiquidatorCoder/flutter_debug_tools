@@ -1,3 +1,8 @@
+## 2.0.4
+
+- **Animation Toolbox:** Added a dedicated animation debugging tool to inspect and tune motion, including global curve controls.
+- **Network Inspector:** Added a new in-app inspector for network activity with a refined UI for clearer request and response details.
+
 ## 2.0.3
 
 - **UI/UX Improvements:** Refined FlutterLens panel, logs viewer, and related debug views for better layout and usability.
