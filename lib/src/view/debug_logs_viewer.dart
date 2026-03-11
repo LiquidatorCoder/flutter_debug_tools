@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_debug_tools/src/debug_log_store.dart';
+import 'package:flutter_debug_tools/src/view/flutter_lens_theme.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel_styles.dart';
 
 /// DebugLogsViewer is a widget that displays a list of logs.
@@ -22,225 +23,234 @@ class _DebugLogsViewerState extends State<DebugLogsViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: DebugToolsPanelStyles.sheetFill,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: Text(
-                    'Debug Logs',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.2,
-                      color: DebugToolsPanelStyles.textPrimary,
+    return Theme(
+      data: flutterLensTheme(context),
+      child: Scaffold(
+        backgroundColor: DebugToolsPanelStyles.sheetFill,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: Text(
+                      'Debug Logs',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                        color: DebugToolsPanelStyles.textPrimary,
+                        fontFamily: flutterLensFontFamily,
+                      ),
                     ),
                   ),
-                ),
-                const Spacer(),
-                _HeaderButton(
-                  icon: Icons.clear_rounded,
-                  onTap: widget.onTap,
-                ),
-                const SizedBox(width: 8),
-                _HeaderButton(
-                  icon: Icons.delete_outline_rounded,
-                  onTap: DebugLogStore.instance.clear,
-                ),
-                const SizedBox(width: 16),
-              ],
-            ),
-            SizedBox(
-              height: 38,
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                scrollDirection: Axis.horizontal,
-                itemCount: _LogFilter.values.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  final filter = _LogFilter.values[index];
-                  final isSelected = filter == _selectedFilter;
-                  return _FilterChip(
-                    filter: filter,
-                    title: _filterTitle(filter),
-                    isSelected: isSelected,
-                    onTap: () => setState(() => _selectedFilter = filter),
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x66000000),
-                        blurRadius: 32,
-                        offset: Offset(0, 16),
-                      ),
-                    ],
+                  const Spacer(),
+                  _HeaderButton(
+                    icon: Icons.clear_rounded,
+                    onTap: widget.onTap,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        color: DebugToolsPanelStyles.sheetFill,
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-                      ),
-                      child: ValueListenableBuilder<List<DebugLogEntry>>(
-                        valueListenable: DebugLogStore.instance.logs,
-                        builder: (context, logs, _) {
-                          final filteredLogs = _filterLogs(logs);
+                  const SizedBox(width: 8),
+                  _HeaderButton(
+                    icon: Icons.delete_outline_rounded,
+                    onTap: DebugLogStore.instance.clear,
+                  ),
+                  const SizedBox(width: 16),
+                ],
+              ),
+              SizedBox(
+                height: 38,
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _LogFilter.values.length,
+                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final filter = _LogFilter.values[index];
+                    final isSelected = filter == _selectedFilter;
+                    return _FilterChip(
+                      filter: filter,
+                      title: _filterTitle(filter),
+                      isSelected: isSelected,
+                      onTap: () => setState(() => _selectedFilter = filter),
+                    );
+                  },
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x66000000),
+                          blurRadius: 32,
+                          offset: Offset(0, 16),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: DebugToolsPanelStyles.sheetFill,
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                        ),
+                        child: ValueListenableBuilder<List<DebugLogEntry>>(
+                          valueListenable: DebugLogStore.instance.logs,
+                          builder: (context, logs, _) {
+                            final filteredLogs = _filterLogs(logs);
 
-                          if (logs.isEmpty) {
-                            return const Center(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 24),
-                                child: Text(
-                                  'No logs captured yet.\nStart interacting with the app to see logs here.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    height: 1.45,
-                                    color: Color(0xA3FFFFFF),
+                            if (logs.isEmpty) {
+                              return const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 24),
+                                  child: Text(
+                                    'No logs captured yet.\nStart interacting with the app to see logs here.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      height: 1.45,
+                                      color: Color(0xA3FFFFFF),
+                                      fontFamily: flutterLensFontFamily,
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }
-
-                          if (filteredLogs.isEmpty) {
-                            return Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
-                                child: Text(
-                                  'No ${_filterTitle(_selectedFilter).toLowerCase()} logs yet.',
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    height: 1.45,
-                                    color: Color(0xA3FFFFFF),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-
-                          return ListView.separated(
-                            padding: const EdgeInsets.only(top: 6, bottom: 10),
-                            itemCount: filteredLogs.length,
-                            separatorBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(left: 56, right: 16),
-                                child: Divider(
-                                  height: 1,
-                                  color: Colors.white.withValues(alpha: 0.04),
                                 ),
                               );
-                            },
-                            itemBuilder: (context, index) {
-                              final entry = filteredLogs[filteredLogs.length - 1 - index];
-                              final level = entry.level;
-                              final levelTitle = _getLevelTitle(level);
-                              final logText = '[${_formatTime(entry.timestamp)}] $levelTitle: ${entry.message}';
+                            }
 
-                              return Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () async {
-                                    await Clipboard.setData(ClipboardData(text: logText));
-                                    if (!context.mounted) return;
-                                    final messenger = ScaffoldMessenger.maybeOf(context);
-                                    if (messenger == null) return;
-                                    messenger
-                                      ..hideCurrentSnackBar()
-                                      ..showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Log copied to clipboard'),
-                                          duration: Duration(milliseconds: 1200),
-                                        ),
-                                      );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        _LevelBadge(level: level),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      levelTitle,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
+                            if (filteredLogs.isEmpty) {
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  child: Text(
+                                    'No ${_filterTitle(_selectedFilter).toLowerCase()} logs yet.',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      height: 1.45,
+                                      color: Color(0xA3FFFFFF),
+                                      fontFamily: flutterLensFontFamily,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return ListView.separated(
+                              padding: const EdgeInsets.only(top: 6, bottom: 10),
+                              itemCount: filteredLogs.length,
+                              separatorBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(left: 56, right: 16),
+                                  child: Divider(
+                                    height: 1,
+                                    color: Colors.white.withValues(alpha: 0.04),
+                                  ),
+                                );
+                              },
+                              itemBuilder: (context, index) {
+                                final entry = filteredLogs[filteredLogs.length - 1 - index];
+                                final level = entry.level;
+                                final levelTitle = _getLevelTitle(level);
+                                final logText = '[${_formatTime(entry.timestamp)}] $levelTitle: ${entry.message}';
+
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      await Clipboard.setData(ClipboardData(text: logText));
+                                      if (!context.mounted) return;
+                                      final messenger = ScaffoldMessenger.maybeOf(context);
+                                      if (messenger == null) return;
+                                      messenger
+                                        ..hideCurrentSnackBar()
+                                        ..showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Log copied to clipboard'),
+                                            duration: Duration(milliseconds: 1200),
+                                          ),
+                                        );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          _LevelBadge(level: level),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        levelTitle,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                          fontSize: 8,
+                                                          fontWeight: FontWeight.w900,
+                                                          letterSpacing: 0.9,
+                                                          color: _getMetaColor(level),
+                                                          fontFamily: flutterLensFontFamily,
+                                                          fontFeatures: const [
+                                                            FontFeature.tabularFigures(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Text(
+                                                      _formatTime(entry.timestamp),
                                                       style: TextStyle(
                                                         fontSize: 8,
                                                         fontWeight: FontWeight.w900,
-                                                        letterSpacing: 0.9,
-                                                        color: _getMetaColor(level),
+                                                        color: Colors.white.withValues(alpha: 0.28),
+                                                        fontFamily: flutterLensFontFamily,
                                                         fontFeatures: const [
                                                           FontFeature.tabularFigures(),
                                                         ],
                                                       ),
                                                     ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    _formatTime(entry.timestamp),
-                                                    style: TextStyle(
-                                                      fontSize: 8,
-                                                      fontWeight: FontWeight.w900,
-                                                      color: Colors.white.withValues(alpha: 0.28),
-                                                      fontFeatures: const [
-                                                        FontFeature.tabularFigures(),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                entry.message,
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  color: _getMessageColor(level),
-                                                  fontFeatures: const [
-                                                    FontFeature.tabularFigures(),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
+                                                const SizedBox(height: 6),
+                                                Text(
+                                                  entry.message,
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: _getMessageColor(level),
+                                                    fontFamily: flutterLensFontFamily,
+                                                    fontFeatures: const [
+                                                      FontFeature.tabularFigures(),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        },
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -404,6 +414,7 @@ class _FilterChip extends StatelessWidget {
                 letterSpacing: 0.9,
                 color:
                     isSelected ? _selectedTextColor(filter) : DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.45),
+                fontFamily: flutterLensFontFamily,
                 fontFeatures: const [
                   FontFeature.tabularFigures(),
                 ],
@@ -507,6 +518,7 @@ class _LevelBadge extends StatelessWidget {
               color: Colors.white,
               fontWeight: FontWeight.w900,
               fontSize: 11,
+              fontFamily: flutterLensFontFamily,
             ),
           ),
         ),
@@ -528,6 +540,7 @@ class _LevelBadge extends StatelessWidget {
           color: _textColor(level),
           fontWeight: FontWeight.w800,
           fontSize: 11,
+          fontFamily: flutterLensFontFamily,
         ),
       ),
     );

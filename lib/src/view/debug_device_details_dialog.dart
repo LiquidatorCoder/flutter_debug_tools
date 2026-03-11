@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/utils/device_info_manager.dart';
+import 'package:flutter_debug_tools/src/view/flutter_lens_theme.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel_styles.dart';
 
 /// DebugDeviceDetailsDialog is a widget that displays the details of the device.
@@ -55,199 +56,202 @@ class DebugDeviceDetailsDialog extends StatelessWidget {
         .map((entry) => _SpecTileData(label: entry.key, value: '${entry.value}', isMono: true))
         .toList();
 
-    return Scaffold(
-      backgroundColor: DebugToolsPanelStyles.sheetFill,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: Text(
-                    'Device Details',
-                    style: _DeviceTextStyles.screenTitle,
+    return Theme(
+      data: flutterLensTheme(context),
+      child: Scaffold(
+        backgroundColor: DebugToolsPanelStyles.sheetFill,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: Text(
+                      'Device Details',
+                      style: _DeviceTextStyles.screenTitle,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                _HeaderButton(
-                  icon: Icons.clear_rounded,
-                  onTap: onTap,
-                ),
-                const SizedBox(width: 16),
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                child: ListView(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _GlassCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(14),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    gradient: DebugToolsPanelStyles.accentGradient,
-                                  ),
-                                  padding: const EdgeInsets.all(1.3),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF0D0D0F),
-                                      borderRadius: BorderRadius.circular(14.7),
-                                    ),
-                                    child: const Icon(Icons.phone_android_rounded, color: Colors.white70, size: 24),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      if (brand.isNotEmpty || model.isNotEmpty)
-                                        Text(
-                                          '${brand.toUpperCase()}${brand.isNotEmpty && model.isNotEmpty ? ' · ' : ''}${model.toUpperCase()}',
-                                          style: _DeviceTextStyles.caption.copyWith(
-                                              color: DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.42)),
-                                        ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        device.isEmpty ? 'Unknown Device' : device,
-                                        style: _DeviceTextStyles.value
-                                            .copyWith(color: DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.92)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (buildFingerprint.isNotEmpty) ...[
+                  const Spacer(),
+                  _HeaderButton(
+                    icon: Icons.clear_rounded,
+                    onTap: onTap,
+                  ),
+                  const SizedBox(width: 16),
+                ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                  child: ListView(
+                    clipBehavior: Clip.none,
+                    children: [
+                      _GlassCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
-                              child: Divider(height: 1, color: Colors.white.withValues(alpha: 0.06)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              padding: const EdgeInsets.all(14),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    'BUILD FINGERPRINT',
-                                    style:
-                                        _DeviceTextStyles.caption.copyWith(color: Colors.white.withValues(alpha: 0.40)),
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      gradient: DebugToolsPanelStyles.accentGradient,
+                                    ),
+                                    padding: const EdgeInsets.all(1.3),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF0D0D0F),
+                                        borderRadius: BorderRadius.circular(14.7),
+                                      ),
+                                      child: const Icon(Icons.phone_android_rounded, color: Colors.white70, size: 24),
+                                    ),
                                   ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    buildFingerprint,
-                                    style: _DeviceTextStyles.valueSmall.copyWith(
-                                      color: Colors.white.withValues(alpha: 0.78),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        if (brand.isNotEmpty || model.isNotEmpty)
+                                          Text(
+                                            '${brand.toUpperCase()}${brand.isNotEmpty && model.isNotEmpty ? ' · ' : ''}${model.toUpperCase()}',
+                                            style: _DeviceTextStyles.caption.copyWith(
+                                                color: DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.42)),
+                                          ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          device.isEmpty ? 'Unknown Device' : device,
+                                          style: _DeviceTextStyles.value.copyWith(
+                                              color: DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.92)),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+                            if (buildFingerprint.isNotEmpty) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 14),
+                                child: Divider(height: 1, color: Colors.white.withValues(alpha: 0.06)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'BUILD FINGERPRINT',
+                                      style: _DeviceTextStyles.caption
+                                          .copyWith(color: Colors.white.withValues(alpha: 0.40)),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      buildFingerprint,
+                                      style: _DeviceTextStyles.valueSmall.copyWith(
+                                        color: Colors.white.withValues(alpha: 0.78),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    _SpecSection(
-                      title: 'DISPLAY',
-                      icon: Icons.desktop_windows_rounded,
-                      accentColor: const Color(0xFF4ADE80),
-                      items: [
-                        _SpecTileData(
-                          label: 'Resolution',
-                          value: '${screenSize.width.toStringAsFixed(0)} x ${screenSize.height.toStringAsFixed(0)}',
-                          footnote: 'PIXELS',
-                        ),
-                        _SpecTileData(
-                          label: 'Density',
-                          value: '${screenDensity.toStringAsFixed(1)}x',
-                          footnote: _densityBucket(screenDensity),
-                        ),
-                        if (displayIdentifier.isNotEmpty)
-                          _SpecTileData(
-                            label: 'Display Identifier',
-                            value: displayIdentifier,
-                            isMono: true,
-                            fullWidth: true,
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    _SpecSection(
-                      title: 'SYSTEM',
-                      icon: Icons.settings_input_component_rounded,
-                      accentColor: const Color(0xFFF7A250),
-                      items: [
-                        if (sdk.isNotEmpty)
-                          _SpecTileData(
-                            label: 'SDK Version',
-                            value: sdk,
-                            footnote: _androidCodeName(sdk),
-                            accent: true,
-                          ),
-                        if (release.isNotEmpty)
-                          _SpecTileData(
-                            label: 'Release',
-                            value: release,
-                            footnote: systemName.isNotEmpty ? '$systemName $release' : '',
-                            accent: true,
-                          ),
-                        if (securityPatch.isNotEmpty)
-                          _SpecTileData(
-                            label: 'Security Patch',
-                            value: securityPatch,
-                            footnote: 'PATCH APPLIED',
-                            fullWidth: true,
-                          ),
-                        if (vendorIdentifier.isNotEmpty)
-                          _SpecTileData(
-                            label: 'Identifier For Vendor',
-                            value: vendorIdentifier,
-                            isMono: true,
-                            fullWidth: true,
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    _SpecSection(
-                      title: 'HARDWARE',
-                      icon: Icons.memory_rounded,
-                      accentColor: const Color(0xFFE24A79),
-                      items: [
-                        _SpecTileData(label: 'Board', value: _value(data, ['Board'])),
-                        _SpecTileData(label: 'Brand', value: brand),
-                        _SpecTileData(label: 'Model', value: model),
-                        _SpecTileData(label: 'Product', value: _value(data, ['Product'])),
-                        _SpecTileData(label: 'Device', value: _value(data, ['Device'])),
-                      ].where((item) => item.value.isNotEmpty).toList(),
-                    ),
-                    if (remainingEntries.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       _SpecSection(
-                        title: 'OTHER',
-                        icon: Icons.more_horiz_rounded,
-                        accentColor: const Color(0xFF9EA3AD),
-                        items: remainingEntries,
+                        title: 'DISPLAY',
+                        icon: Icons.desktop_windows_rounded,
+                        accentColor: const Color(0xFF4ADE80),
+                        items: [
+                          _SpecTileData(
+                            label: 'Resolution',
+                            value: '${screenSize.width.toStringAsFixed(0)} x ${screenSize.height.toStringAsFixed(0)}',
+                            footnote: 'PIXELS',
+                          ),
+                          _SpecTileData(
+                            label: 'Density',
+                            value: '${screenDensity.toStringAsFixed(1)}x',
+                            footnote: _densityBucket(screenDensity),
+                          ),
+                          if (displayIdentifier.isNotEmpty)
+                            _SpecTileData(
+                              label: 'Display Identifier',
+                              value: displayIdentifier,
+                              isMono: true,
+                              fullWidth: true,
+                            ),
+                        ],
                       ),
+                      const SizedBox(height: 12),
+                      _SpecSection(
+                        title: 'SYSTEM',
+                        icon: Icons.settings_input_component_rounded,
+                        accentColor: const Color(0xFFF7A250),
+                        items: [
+                          if (sdk.isNotEmpty)
+                            _SpecTileData(
+                              label: 'SDK Version',
+                              value: sdk,
+                              footnote: _androidCodeName(sdk),
+                              accent: true,
+                            ),
+                          if (release.isNotEmpty)
+                            _SpecTileData(
+                              label: 'Release',
+                              value: release,
+                              footnote: systemName.isNotEmpty ? '$systemName $release' : '',
+                              accent: true,
+                            ),
+                          if (securityPatch.isNotEmpty)
+                            _SpecTileData(
+                              label: 'Security Patch',
+                              value: securityPatch,
+                              footnote: 'PATCH APPLIED',
+                              fullWidth: true,
+                            ),
+                          if (vendorIdentifier.isNotEmpty)
+                            _SpecTileData(
+                              label: 'Identifier For Vendor',
+                              value: vendorIdentifier,
+                              isMono: true,
+                              fullWidth: true,
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _SpecSection(
+                        title: 'HARDWARE',
+                        icon: Icons.memory_rounded,
+                        accentColor: const Color(0xFFE24A79),
+                        items: [
+                          _SpecTileData(label: 'Board', value: _value(data, ['Board'])),
+                          _SpecTileData(label: 'Brand', value: brand),
+                          _SpecTileData(label: 'Model', value: model),
+                          _SpecTileData(label: 'Product', value: _value(data, ['Product'])),
+                          _SpecTileData(label: 'Device', value: _value(data, ['Device'])),
+                        ].where((item) => item.value.isNotEmpty).toList(),
+                      ),
+                      if (remainingEntries.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        _SpecSection(
+                          title: 'OTHER',
+                          icon: Icons.more_horiz_rounded,
+                          accentColor: const Color(0xFF9EA3AD),
+                          items: remainingEntries,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -465,21 +469,24 @@ class _SpecTile extends StatelessWidget {
 class _DeviceTextStyles {
   static const TextStyle screenTitle = TextStyle(
     fontSize: 14,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.2,
+    fontWeight: FontWeight.w800,
+    letterSpacing: 0,
     color: DebugToolsPanelStyles.textPrimary,
+    fontFamily: flutterLensFontFamily,
   );
 
   static const TextStyle sectionTitle = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w800,
     letterSpacing: 1.1,
+    fontFamily: flutterLensFontFamily,
   );
 
   static const TextStyle caption = TextStyle(
     fontSize: 8,
     fontWeight: FontWeight.w900,
     letterSpacing: 0.9,
+    fontFamily: flutterLensFontFamily,
     fontFeatures: [FontFeature.tabularFigures()],
   );
 
@@ -487,6 +494,7 @@ class _DeviceTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w600,
     height: 1.2,
+    fontFamily: flutterLensFontFamily,
     fontFeatures: [FontFeature.tabularFigures()],
   );
 
@@ -494,6 +502,7 @@ class _DeviceTextStyles {
     fontSize: 10,
     fontWeight: FontWeight.w500,
     height: 1.3,
+    fontFamily: flutterLensFontFamily,
     fontFeatures: [FontFeature.tabularFigures()],
   );
 
@@ -501,9 +510,9 @@ class _DeviceTextStyles {
     fontSize: 9,
     fontWeight: FontWeight.w700,
     letterSpacing: 0.8,
+    fontFamily: flutterLensFontFamily,
     fontFeatures: [FontFeature.tabularFigures()],
   );
-
 }
 
 class _HeaderButton extends StatelessWidget {

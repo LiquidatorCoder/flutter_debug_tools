@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/utils/dart_runtime_info.dart';
 import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
+import 'package:flutter_debug_tools/src/view/flutter_lens_theme.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel_sheet.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel_styles.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -313,54 +314,56 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _dismiss,
-      child: Material(
-        color: Colors.transparent,
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: FadeTransition(
-                    opacity: _barrierOpacityAnimation,
-                    child: ClipRect(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                        child: ColoredBox(
-                          color: DebugToolsPanelStyles.sheetFill.withValues(alpha: 0.45),
-                          child: const SizedBox.expand(),
+    return Theme(
+      data: flutterLensTheme(context),
+      child: GestureDetector(
+        onTap: _dismiss,
+        child: Material(
+          color: Colors.transparent,
+          child: SafeArea(
+            top: false,
+            bottom: false,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: FadeTransition(
+                      opacity: _barrierOpacityAnimation,
+                      child: ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                          child: ColoredBox(
+                            color: DebugToolsPanelStyles.sheetFill.withValues(alpha: 0.45),
+                            child: const SizedBox.expand(),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onVerticalDragUpdate: (details) =>
-                      _handleSheetDragUpdate(details, context),
-                  onVerticalDragEnd: _handleSheetDragEnd,
-                  child: DebugToolsPanelSheet(
-                    opacityAnimation: _sheetOpacityAnimation,
-                    slideAnimation: _sheetSlideAnimation,
-                    selectedColor: widget.color,
-                    colorToHexString: _colorToHexString,
-                    onClearColor: () => _dismiss(
-                      onDismissed: widget.clearColor,
-                      closePanel: false,
+                GestureDetector(
+                  onTap: () {},
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onVerticalDragUpdate: (details) => _handleSheetDragUpdate(details, context),
+                    onVerticalDragEnd: _handleSheetDragEnd,
+                    child: DebugToolsPanelSheet(
+                      opacityAnimation: _sheetOpacityAnimation,
+                      slideAnimation: _sheetSlideAnimation,
+                      selectedColor: widget.color,
+                      colorToHexString: _colorToHexString,
+                      onClearColor: () => _dismiss(
+                        onDismissed: widget.clearColor,
+                        closePanel: false,
+                      ),
+                      toolItems: _buildToolItems(),
+                      tickerItems: _buildTickerItems(),
                     ),
-                    toolItems: _buildToolItems(),
-                    tickerItems: _buildTickerItems(),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

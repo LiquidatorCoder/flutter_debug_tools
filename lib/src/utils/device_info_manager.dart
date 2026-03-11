@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 class DeviceInfoManager {
   DeviceInfoManager._privateConstructor();
 
-  static final DeviceInfoManager _instance =
-      DeviceInfoManager._privateConstructor();
+  static final DeviceInfoManager _instance = DeviceInfoManager._privateConstructor();
 
   static DeviceInfoManager get instance => _instance;
 

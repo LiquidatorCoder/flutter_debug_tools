@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_debug_tools/src/view/flutter_lens_theme.dart';
 import 'package:flutter_debug_tools/src/view/debug_tools_panel_styles.dart';
 
 class DebugToolItem {
@@ -129,9 +130,10 @@ class DebugToolsPanelSheet extends StatelessWidget {
                           'FlutterLens',
                           style: TextStyle(
                             fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.2,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0,
                             color: DebugToolsPanelStyles.textPrimary,
+                            fontFamily: flutterLensFontFamily,
                           ),
                         ),
                       ),
@@ -263,6 +265,7 @@ class _ColorResultCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1,
                         color: DebugToolsPanelStyles.textPrimary,
+                        fontFamily: flutterLensFontFamily,
                       ),
                     ),
                     const SizedBox(width: 6),
@@ -282,6 +285,7 @@ class _ColorResultCard extends StatelessWidget {
                     fontSize: 10,
                     color: DebugToolsPanelStyles.textSecondary,
                     letterSpacing: 0.2,
+                    fontFamily: flutterLensFontFamily,
                   ),
                 ),
               ],
@@ -304,6 +308,7 @@ class _ColorResultCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.3,
                   color: Color.fromRGBO(255, 255, 255, 0.45),
+                  fontFamily: flutterLensFontFamily,
                 ),
               ),
             ),
@@ -335,6 +340,7 @@ class _ColorTag extends StatelessWidget {
           fontWeight: FontWeight.w600,
           letterSpacing: 0.4,
           color: Color.fromRGBO(255, 255, 255, 0.30),
+          fontFamily: flutterLensFontFamily,
         ),
       ),
     );
@@ -447,6 +453,7 @@ class _DevTickerRowState extends State<_DevTickerRow> with SingleTickerProviderS
             fontWeight: FontWeight.w500,
             letterSpacing: 0.5,
             color: Color.fromRGBO(255, 255, 255, 0.28),
+            fontFamily: flutterLensFontFamily,
           ),
         ),
         const SizedBox(width: 4),
@@ -457,6 +464,7 @@ class _DevTickerRowState extends State<_DevTickerRow> with SingleTickerProviderS
             fontWeight: FontWeight.w600,
             letterSpacing: 0.3,
             color: Color.fromRGBO(255, 255, 255, 0.55),
+            fontFamily: flutterLensFontFamily,
           ),
         ),
       ],
@@ -719,6 +727,7 @@ class _ToolButtonState extends State<_ToolButton> with SingleTickerProviderState
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.3,
                       color: labelColor,
+                      fontFamily: flutterLensFontFamily,
                     ),
                   ),
                 ),

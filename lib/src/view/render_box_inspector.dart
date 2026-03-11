@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
+import 'package:flutter_debug_tools/src/view/flutter_lens_theme.dart';
 
 class RenderBoxInspector extends StatefulWidget {
   final Widget child;
@@ -130,7 +131,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                     color: Colors.yellow,
                     width: 1,
                   ),
-                   color: Colors.yellow.withValues(alpha: 0.3),
+                  color: Colors.yellow.withValues(alpha: 0.3),
                 ),
                 width: _selectedRenderBox?.targetRect.width,
                 height: _selectedRenderBox?.targetRect.height,
@@ -161,6 +162,7 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
+                              fontFamily: flutterLensFontFamily,
                             ),
                           ),
                           TextSpan(
@@ -169,9 +171,10 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                                 .replaceAll("Rect.fromLTRB(", "")
                                 .replaceAll(")", ""),
                             style: TextStyle(
-                               color: Colors.white.withValues(alpha: 0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
+                              fontFamily: flutterLensFontFamily,
                             ),
                           ),
                         ],
@@ -183,17 +186,19 @@ class _RenderBoxInspectorState extends State<RenderBoxInspector> {
                           TextSpan(
                             text: "size: ",
                             style: TextStyle(
-                               color: Colors.white.withValues(alpha: 0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
+                              fontFamily: flutterLensFontFamily,
                             ),
                           ),
                           TextSpan(
                             text:
                                 "${_selectedRenderBox?.targetRect.width.roundToDouble()}, ${_selectedRenderBox?.targetRect.height.roundToDouble()}",
                             style: TextStyle(
-                               color: Colors.white.withValues(alpha: 0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
+                              fontFamily: flutterLensFontFamily,
                             ),
                           ),
                         ],
