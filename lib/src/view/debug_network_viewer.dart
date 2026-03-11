@@ -373,16 +373,25 @@ class _NetworkDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _StatusBadgeStyle statusStyle = _badgeStyleForStatus(entry.statusCode, entry.state);
+
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.9,
-      ),
+      height: MediaQuery.sizeOf(context).height * 0.9,
       decoration: const BoxDecoration(
         color: DebugToolsPanelStyles.sheetFill,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
         children: [
+          const SizedBox(height: 8),
+          Container(
+            width: 44,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Row(
@@ -429,29 +438,86 @@ class _NetworkDetailsSheet extends StatelessWidget {
               children: [
                 _DetailCard(
                   title: 'Overview',
-                  child: _PlainTextBlock(
-                    text: _copyOverview(entry),
+                  icon: Icons.info_outline_rounded,
+                  accent: const Color(0xFFF7A250),
+                  child: _OverviewTable(
+                    entry: entry,
+                    statusStyle: statusStyle,
                   ),
                 ),
                 const SizedBox(height: 10),
                 _DetailCard(
                   title: 'Request Headers',
-                  child: _PlainTextBlock(text: _headersText(entry.requestHeaders)),
+                  icon: Icons.send_rounded,
+                  accent: const Color(0xFF4ADE80),
+                  child: _HeadersTable(headers: entry.requestHeaders),
                 ),
                 const SizedBox(height: 10),
                 _DetailCard(
                   title: 'Response Headers',
-                  child: _PlainTextBlock(text: _headersText(entry.responseHeaders)),
+                  icon: Icons.inbox_rounded,
+                  accent: const Color(0xFFE24A79),
+                  child: _HeadersTable(headers: entry.responseHeaders),
                 ),
                 const SizedBox(height: 10),
                 _DetailCard(
                   title: 'Request Payload',
-                  child: _PlainTextBlock(text: entry.requestBody ?? '--'),
+                  icon: Icons.data_object_rounded,
+                  accent: const Color(0xFF4ADE80),
+                  headerAction: _CardActionButton(
+                    icon: Icons.content_copy_rounded,
+                    onTap: () async {
+                      await Clipboard.setData(
+                        ClipboardData(text: entry.requestBody ?? '--'),
+                      );
+                      if (!context.mounted) {
+                        return;
+                      }
+                      final messenger = ScaffoldMessenger.maybeOf(context);
+                      messenger
+                        ?..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          const SnackBar(
+                            content: Text('Request payload copied'),
+                            duration: Duration(milliseconds: 1100),
+                          ),
+                        );
+                    },
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: _PlainTextBlock(text: entry.requestBody ?? '--'),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 _DetailCard(
                   title: 'Response Payload',
-                  child: _PlainTextBlock(text: entry.responseBody ?? '--'),
+                  icon: Icons.dataset_linked_rounded,
+                  accent: const Color(0xFFE24A79),
+                  headerAction: _CardActionButton(
+                    icon: Icons.content_copy_rounded,
+                    onTap: () async {
+                      await Clipboard.setData(
+                        ClipboardData(text: entry.responseBody ?? '--'),
+                      );
+                      if (!context.mounted) {
+                        return;
+                      }
+                      final messenger = ScaffoldMessenger.maybeOf(context);
+                      messenger
+                        ?..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          const SnackBar(
+                            content: Text('Response payload copied'),
+                            duration: Duration(milliseconds: 1100),
+                          ),
+                        );
+                    },
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: _PlainTextBlock(text: entry.responseBody ?? '--'),
+                  ),
                 ),
               ],
             ),
@@ -490,11 +556,17 @@ String _headersText(Map<String, String> values) {
 class _DetailCard extends StatelessWidget {
   const _DetailCard({
     required this.title,
+    required this.icon,
+    required this.accent,
     required this.child,
+    this.headerAction,
   });
 
   final String title;
+  final IconData icon;
+  final Color accent;
   final Widget child;
+  final Widget? headerAction;
 
   @override
   Widget build(BuildContext context) {
@@ -504,24 +576,348 @@ class _DetailCard extends StatelessWidget {
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
         color: Colors.white.withValues(alpha: 0.02),
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
+            child: Row(
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    shape: BoxShape.rectangle,
+                    color: accent.withValues(alpha: 0.08),
+                    border: Border.all(color: accent.withValues(alpha: 0.42)),
+                  ),
+                  child: Icon(icon, size: 13, color: accent),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  title.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.1,
+                    color: accent,
+                    fontFamily: flutterLensFontFamily,
+                  ),
+                ),
+                if (headerAction != null) ...[
+                  const Spacer(),
+                  headerAction!,
+                ],
+              ],
+            ),
+          ),
+          Divider(height: 1, color: Colors.white.withValues(alpha: 0.06)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CardActionButton extends StatelessWidget {
+  const _CardActionButton({
+    required this.icon,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white.withValues(alpha: 0.03),
+      borderRadius: BorderRadius.circular(999),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: onTap,
+        child: Container(
+          width: 26,
+          height: 26,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+          ),
+          child: Icon(
+            icon,
+            size: 13,
+            color: Colors.white.withValues(alpha: 0.72),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OverviewTable extends StatelessWidget {
+  const _OverviewTable({
+    required this.entry,
+    required this.statusStyle,
+  });
+
+  final DebugNetworkEntry entry;
+  final _StatusBadgeStyle statusStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final String stateLabel = entry.state.name.toUpperCase();
+    final String statusLabel = entry.statusCode?.toString() ?? '--';
+    final String duration = entry.duration == null ? 'PENDING' : '${entry.duration!.inMilliseconds}ms';
+
+    return Column(
+      children: [
+        _OverviewUrlRow(url: entry.url.toString()),
+        _OverviewRow(label: 'Method', trailing: _InlineChip(label: entry.method, color: Colors.white)),
+        _OverviewRow(
+          label: 'State',
+          trailing: _InlineChip(
+            label: stateLabel,
+            color: statusStyle.textColor,
+            fill: statusStyle.textColor.withValues(alpha: 0.12),
+          ),
+        ),
+        _OverviewRow(
+          label: 'Status',
+          trailing: _InlineChip(
+            label: statusLabel,
+            color: statusStyle.textColor,
+            fill: statusStyle.textColor.withValues(alpha: 0.12),
+          ),
+        ),
+        _OverviewRow(label: 'Retries', value: entry.retryCount.toString()),
+        _OverviewRow(
+          label: 'Duration',
+          showDivider: false,
+          trailing: _InlineChip(
+            label: duration,
+            color: Colors.white.withValues(alpha: 0.72),
+            fill: Colors.white.withValues(alpha: 0.06),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _OverviewRow extends StatelessWidget {
+  const _OverviewRow({
+    required this.label,
+    this.value,
+    this.trailing,
+    this.showDivider = true,
+  });
+
+  final String label;
+  final String? value;
+  final Widget? trailing;
+  final bool showDivider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: showDivider ? Colors.white.withValues(alpha: 0.04) : Colors.transparent,
+          ),
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+        padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 72,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white.withValues(alpha: 0.45),
+                  fontWeight: FontWeight.w700,
+                  fontFamily: flutterLensFontFamily,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: trailing ??
+                    Text(
+                      value ?? '--',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.white.withValues(alpha: 0.86),
+                        fontWeight: FontWeight.w600,
+                        fontFamily: flutterLensFontFamily,
+                      ),
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OverviewUrlRow extends StatelessWidget {
+  const _OverviewUrlRow({required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.04)),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title.toUpperCase(),
+              'URL',
               style: TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.9,
-                color: Colors.white.withValues(alpha: 0.55),
+                fontSize: 10,
+                color: Colors.white.withValues(alpha: 0.45),
+                fontWeight: FontWeight.w700,
                 fontFamily: flutterLensFontFamily,
               ),
             ),
             const SizedBox(height: 8),
-            child,
+            Text(
+              url,
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xFF4ADE80),
+                fontWeight: FontWeight.w600,
+                fontFamily: flutterLensFontFamily,
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HeadersTable extends StatelessWidget {
+  const _HeadersTable({required this.headers});
+
+  final Map<String, String> headers;
+
+  @override
+  Widget build(BuildContext context) {
+    if (headers.isEmpty) {
+      return Text(
+        '--',
+        style: TextStyle(
+          fontSize: 10,
+          color: Colors.white.withValues(alpha: 0.72),
+          fontFamily: flutterLensFontFamily,
+        ),
+      );
+    }
+
+    final List<MapEntry<String, String>> entries = headers.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
+
+    return Column(
+      children: entries.asMap().entries.map((indexedEntry) {
+        final int index = indexedEntry.key;
+        final MapEntry<String, String> entry = indexedEntry.value;
+        final bool isLast = index == entries.length - 1;
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isLast ? Colors.transparent : Colors.white.withValues(alpha: 0.04),
+              ),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 9, 12, 9),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 104,
+                  child: Text(
+                    entry.key,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFFF7A250),
+                      fontWeight: FontWeight.w600,
+                      fontFamily: flutterLensFontFamily,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    entry.value,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withValues(alpha: 0.75),
+                      fontWeight: FontWeight.w600,
+                      fontFamily: flutterLensFontFamily,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _InlineChip extends StatelessWidget {
+  const _InlineChip({
+    required this.label,
+    required this.color,
+    this.fill,
+  });
+
+  final String label;
+  final Color color;
+  final Color? fill;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(999),
+        color: fill ?? color.withValues(alpha: 0.12),
+        border: Border.all(color: color.withValues(alpha: 0.28)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 9,
+          letterSpacing: 0.5,
+          fontWeight: FontWeight.w800,
+          color: color,
+          fontFamily: flutterLensFontFamily,
         ),
       ),
     );
@@ -563,7 +959,7 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _StatusBadgeStyle style = _styleForStatus(statusCode, requestState);
+    final _StatusBadgeStyle style = _badgeStyleForStatus(statusCode, requestState);
 
     return Container(
       width: 34,
@@ -591,59 +987,14 @@ class _StatusBadge extends StatelessWidget {
       ),
     );
   }
+}
 
-  _StatusBadgeStyle _styleForStatus(
-    int? code,
-    DebugNetworkRequestState state,
-  ) {
-    if (code != null) {
-      if (code >= 500 || code >= 400) {
-        return const _StatusBadgeStyle(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0x33EF4444),
-              Color(0x11EF4444),
-            ],
-          ),
-          borderColor: Color(0x66EF4444),
-          textColor: Color(0xFFEF4444),
-        );
-      }
-
-      if (code >= 300) {
-        return const _StatusBadgeStyle(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0x33F7A250),
-              Color(0x11F7A250),
-            ],
-          ),
-          borderColor: Color(0x66F7A250),
-          textColor: Color(0xFFF7A250),
-        );
-      }
-
-      if (code >= 200) {
-        return const _StatusBadgeStyle(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0x334ADE80),
-              Color(0x114ADE80),
-            ],
-          ),
-          borderColor: Color(0x664ADE80),
-          textColor: Color(0xFF4ADE80),
-        );
-      }
-    }
-
-    if (state == DebugNetworkRequestState.failure) {
+_StatusBadgeStyle _badgeStyleForStatus(
+  int? code,
+  DebugNetworkRequestState state,
+) {
+  if (code != null) {
+    if (code >= 500 || code >= 400) {
       return const _StatusBadgeStyle(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -658,20 +1009,65 @@ class _StatusBadge extends StatelessWidget {
       );
     }
 
-    if (state == DebugNetworkRequestState.pending) {
+    if (code >= 300) {
       return const _StatusBadgeStyle(
-        gradient: DebugToolsPanelStyles.accentGradient,
-        borderColor: Colors.transparent,
-        textColor: Colors.white,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0x33F7A250),
+            Color(0x11F7A250),
+          ],
+        ),
+        borderColor: Color(0x66F7A250),
+        textColor: Color(0xFFF7A250),
       );
     }
 
-    return _StatusBadgeStyle(
-      fillColor: Colors.white.withValues(alpha: 0.06),
-      borderColor: Colors.white.withValues(alpha: 0.14),
-      textColor: Colors.white.withValues(alpha: 0.78),
+    if (code >= 200) {
+      return const _StatusBadgeStyle(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0x334ADE80),
+            Color(0x114ADE80),
+          ],
+        ),
+        borderColor: Color(0x664ADE80),
+        textColor: Color(0xFF4ADE80),
+      );
+    }
+  }
+
+  if (state == DebugNetworkRequestState.failure) {
+    return const _StatusBadgeStyle(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Color(0x33EF4444),
+          Color(0x11EF4444),
+        ],
+      ),
+      borderColor: Color(0x66EF4444),
+      textColor: Color(0xFFEF4444),
     );
   }
+
+  if (state == DebugNetworkRequestState.pending) {
+    return const _StatusBadgeStyle(
+      gradient: DebugToolsPanelStyles.accentGradient,
+      borderColor: Colors.transparent,
+      textColor: Colors.white,
+    );
+  }
+
+  return _StatusBadgeStyle(
+    fillColor: Colors.white.withValues(alpha: 0.06),
+    borderColor: Colors.white.withValues(alpha: 0.14),
+    textColor: Colors.white.withValues(alpha: 0.78),
+  );
 }
 
 class _StatusBadgeStyle {
