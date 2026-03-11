@@ -97,8 +97,7 @@ class _DebugFrameTimingHudState extends State<DebugFrameTimingHud> {
   Widget build(BuildContext context) {
     final fps = _avgMs <= 0 ? 0 : (1000 / _avgMs).clamp(0, 120);
     final janky = _worstMs > 20;
-    final Color accent =
-        janky ? const Color(0xFFE24A79) : const Color(0xFF4ADE80);
+    final Color accent = janky ? const Color(0xFFE24A79) : const Color(0xFF4ADE80);
 
     return Stack(
       fit: StackFit.expand,
@@ -111,8 +110,7 @@ class _DebugFrameTimingHudState extends State<DebugFrameTimingHud> {
                 alignment: Alignment.topLeft,
                 child: Container(
                   margin: const EdgeInsets.only(left: 14, top: 10),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: const Color(0xCC12131A),

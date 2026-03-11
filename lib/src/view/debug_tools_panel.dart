@@ -15,6 +15,7 @@ class DebugToolsPanel extends StatefulWidget {
   final Color? color;
   final VoidCallback onClose;
   final VoidCallback toggleLogs;
+  final VoidCallback toggleNetworkInspector;
   final VoidCallback toggleColorPicker;
   final VoidCallback clearColor;
   final VoidCallback toggleDeviceDetails;
@@ -25,6 +26,7 @@ class DebugToolsPanel extends StatefulWidget {
     this.color,
     required this.onClose,
     required this.toggleLogs,
+    required this.toggleNetworkInspector,
     required this.toggleColorPicker,
     required this.clearColor,
     required this.toggleDeviceDetails,
@@ -35,8 +37,7 @@ class DebugToolsPanel extends StatefulWidget {
   State<DebugToolsPanel> createState() => _DebugToolsPanelState();
 }
 
-class _DebugToolsPanelState extends State<DebugToolsPanel>
-    with SingleTickerProviderStateMixin {
+class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProviderStateMixin {
   late bool _debugPaintEnabled;
   late bool _repaintRainbowEnabled;
   late final AnimationController _sheetController;
@@ -123,8 +124,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
   }
 
   String _colorToHexString(Color color, {bool withAlpha = false}) {
-    String channelToHex(double value) =>
-        (value * 255.0).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
+    String channelToHex(double value) => (value * 255.0).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
 
     final a = channelToHex(color.a);
     final r = channelToHex(color.r);
@@ -134,8 +134,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
     return withAlpha ? '#$a$r$g$b' : '#$r$g$b';
   }
 
-  Future<void> _dismiss(
-      {VoidCallback? onDismissed, bool closePanel = true}) async {
+  Future<void> _dismiss({VoidCallback? onDismissed, bool closePanel = true}) async {
     if (_isDismissing) return;
     _isDismissing = true;
 
@@ -161,16 +160,14 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
     if (sheetTravel <= 0) return;
     final double progressDelta = delta / sheetTravel;
 
-    _sheetController.value =
-        (_sheetController.value - progressDelta).clamp(0.0, 1.0);
+    _sheetController.value = (_sheetController.value - progressDelta).clamp(0.0, 1.0);
   }
 
   void _handleSheetDragEnd(DragEndDetails details) {
     if (_isDismissing) return;
 
     final double velocity = details.primaryVelocity ?? 0;
-    if (velocity > _dismissVelocity ||
-        _sheetController.value < _dismissProgress) {
+    if (velocity > _dismissVelocity || _sheetController.value < _dismissProgress) {
       _dismiss();
       return;
     }
@@ -183,8 +180,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
       _debugPaintEnabled = !_debugPaintEnabled;
       debugPaintSizeEnabled = _debugPaintEnabled;
     });
-    SharedPrefsManager.instance
-        .setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
+    SharedPrefsManager.instance.setBool("debugPaintSizeEnabled", debugPaintSizeEnabled);
   }
 
   void _toggleRenderBoxDetails() {
@@ -224,20 +220,19 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
     state.value = state.value.copyWith(
       shouldShowScreenName: !state.value.shouldShowScreenName,
     );
-    SharedPrefsManager.instance
-        .setBool("shouldShowScreenName", state.value.shouldShowScreenName);
+    SharedPrefsManager.instance.setBool("shouldShowScreenName", state.value.shouldShowScreenName);
     setState(() {});
   }
 
   List<DebugToolItem> _buildToolItems() {
-    final bool hasAnimationOverrides = state.value.animationSpeedFactor !=
-            DebugToolsState.defaultAnimationSpeedFactor ||
-        state.value.animationCurvePreset != AnimationCurvePreset.system ||
-        state.value.shouldPauseAnimations ||
-        state.value.shouldDisableAnimations ||
-        state.value.shouldShowFrameTimingHud ||
-        state.value.shouldShowAnimationHighlights ||
-        state.value.shouldUseAnimationHighlightCompatibility;
+    final bool hasAnimationOverrides =
+        state.value.animationSpeedFactor != DebugToolsState.defaultAnimationSpeedFactor ||
+            state.value.animationCurvePreset != AnimationCurvePreset.system ||
+            state.value.shouldPauseAnimations ||
+            state.value.shouldDisableAnimations ||
+            state.value.shouldShowFrameTimingHud ||
+            state.value.shouldShowAnimationHighlights ||
+            state.value.shouldUseAnimationHighlightCompatibility;
 
     return [
       DebugToolItem(
@@ -303,9 +298,15 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
         id: 'animation_toolbox',
         label: 'Animation\nToolbox',
         icon: Icons.animation_rounded,
-        isActive:
-            state.value.shouldShowAnimationToolbox || hasAnimationOverrides,
+        isActive: state.value.shouldShowAnimationToolbox || hasAnimationOverrides,
         onTap: widget.toggleAnimationToolbox,
+      ),
+      DebugToolItem(
+        id: 'network_inspector',
+        label: 'Network\nInspector',
+        icon: Icons.wifi_tethering_rounded,
+        isActive: false,
+        onTap: widget.toggleNetworkInspector,
       ),
     ];
   }
@@ -360,8 +361,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
                         child: BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                           child: ColoredBox(
-                            color: DebugToolsPanelStyles.sheetFill
-                                .withValues(alpha: 0.45),
+                            color: DebugToolsPanelStyles.sheetFill.withValues(alpha: 0.45),
                             child: const SizedBox.expand(),
                           ),
                         ),
@@ -373,8 +373,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel>
                   onTap: () {},
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
-                    onVerticalDragUpdate: (details) =>
-                        _handleSheetDragUpdate(details, context),
+                    onVerticalDragUpdate: (details) => _handleSheetDragUpdate(details, context),
                     onVerticalDragEnd: _handleSheetDragEnd,
                     child: DebugToolsPanelSheet(
                       opacityAnimation: _sheetOpacityAnimation,

@@ -44,52 +44,43 @@ class _DebugIndicatorState extends State<DebugIndicator> {
       debugRepaintTextRainbowEnabled = value == true;
     });
     prefs.getBool("showPerformanceOverlay").then((value) {
-      state.value =
-          state.value.copyWith(shouldShowPerformanceOverlay: value == true);
+      state.value = state.value.copyWith(shouldShowPerformanceOverlay: value == true);
     });
     prefs.getBool("shouldShowScreenName").then((value) {
       state.value = state.value.copyWith(shouldShowScreenName: value == true);
     });
     prefs.getDouble("animationSpeedFactor").then((value) {
       if (value == null) return;
-      state.value =
-          state.value.copyWith(animationSpeedFactor: value.clamp(0.25, 2.0));
+      state.value = state.value.copyWith(animationSpeedFactor: value.clamp(0.25, 2.0));
     });
     prefs.getString("animationCurvePreset").then((value) {
       if (value == null) return;
-      state.value = state.value
-          .copyWith(animationCurvePreset: AnimationCurvePreset.fromId(value));
+      state.value = state.value.copyWith(animationCurvePreset: AnimationCurvePreset.fromId(value));
     });
     prefs.getBool("shouldPauseAnimations").then((value) {
       state.value = state.value.copyWith(shouldPauseAnimations: value == true);
     });
     prefs.getBool("shouldDisableAnimations").then((value) {
-      state.value =
-          state.value.copyWith(shouldDisableAnimations: value == true);
+      state.value = state.value.copyWith(shouldDisableAnimations: value == true);
     });
     prefs.getBool("shouldShowFrameTimingHud").then((value) {
-      state.value =
-          state.value.copyWith(shouldShowFrameTimingHud: value == true);
+      state.value = state.value.copyWith(shouldShowFrameTimingHud: value == true);
     });
     prefs.getDouble("animationHighlightSensitivity").then((value) {
       if (value == null) return;
-      state.value = state.value
-          .copyWith(animationHighlightSensitivity: value.clamp(5.0, 60.0));
+      state.value = state.value.copyWith(animationHighlightSensitivity: value.clamp(5.0, 60.0));
     });
     prefs.getInt("animationHighlightIntervalMs").then((value) {
       if (value == null) return;
-      state.value = state.value
-          .copyWith(animationHighlightIntervalMs: value.clamp(60, 400));
+      state.value = state.value.copyWith(animationHighlightIntervalMs: value.clamp(60, 400));
     });
     prefs.getInt("animationHighlightDecayMs").then((value) {
       if (value == null) return;
-      state.value = state.value
-          .copyWith(animationHighlightDecayMs: value.clamp(150, 1500));
+      state.value = state.value.copyWith(animationHighlightDecayMs: value.clamp(150, 1500));
     });
     prefs.getDouble("animationHighlightOpacity").then((value) {
       if (value == null) return;
-      state.value = state.value
-          .copyWith(animationHighlightOpacity: value.clamp(0.1, 0.9));
+      state.value = state.value.copyWith(animationHighlightOpacity: value.clamp(0.1, 0.9));
     });
   }
 
@@ -97,9 +88,7 @@ class _DebugIndicatorState extends State<DebugIndicator> {
     final deviceData = await deviceInfoManager.getDeviceDetails();
     state.value = state.value.copyWith(deviceData: deviceData);
 
-    final shouldRestoreHighlights = await SharedPrefsManager.instance
-            .getBool("shouldShowAnimationHighlights") ==
-        true;
+    final shouldRestoreHighlights = await SharedPrefsManager.instance.getBool("shouldShowAnimationHighlights") == true;
     if (!shouldRestoreHighlights) {
       return;
     }
@@ -133,8 +122,7 @@ class _DebugIndicatorState extends State<DebugIndicator> {
 
   double _clampTop(double top, double maxHeight) {
     const double minTop = 12;
-    final double maxTop =
-        (maxHeight - _trayHeight - 12).clamp(minTop, maxHeight);
+    final double maxTop = (maxHeight - _trayHeight - 12).clamp(minTop, maxHeight);
     return top.clamp(minTop, maxTop);
   }
 
@@ -182,8 +170,7 @@ class _DebugIndicatorState extends State<DebugIndicator> {
                           );
                         });
                       },
-                      child: const _DebugTray(
-                          width: _trayWidth, height: _trayHeight),
+                      child: const _DebugTray(width: _trayWidth, height: _trayHeight),
                     ),
                   ),
                 ),

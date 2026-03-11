@@ -40,6 +40,7 @@
 
 - 🧭 **Screen Name Overlay**: See the active route/screen while navigating.
 - 📋 **Debug Logs Viewer**: Capture and inspect console logs inside the running app.
+- 🌐 **Network Inspector**: Capture request/response timing, headers, payloads, failures, and retry attempts.
 - 📱 **Device Details**: Inspect model, OS, screen metrics, and hardware info in-app.
 - 🎯 **Color Picker**: Pick any on-screen pixel color quickly.
 - 🧱 **Debug Paint / Layout Insights**: Visualize layout boundaries and spacing behavior.
@@ -58,6 +59,7 @@
 - `Size Info` → enables render box inspector overlay
 - `Repaint Rainbow` → toggles `debugRepaintTextRainbowEnabled`
 - `Debug Logs` → opens in-app logs viewer
+- `Network Inspector` → opens in-app request/response inspector
 - `Perf Overlay` → toggles `showPerformanceOverlay`
 - `Color Picker` → pixel pick + color card/copy flow
 - `Device Details` → opens device info sheet
