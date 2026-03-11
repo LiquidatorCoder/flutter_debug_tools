@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class DebugToolsState {
+  static const double defaultAnimationSpeedFactor = 1.0;
+  static const double defaultAnimationHighlightSensitivity = 18.0;
+  static const int defaultAnimationHighlightIntervalMs = 120;
+  static const int defaultAnimationHighlightDecayMs = 450;
+  static const double defaultAnimationHighlightOpacity = 0.45;
+
   final Color? currentColor;
   final bool shouldShowToolsIndicator;
   final bool shouldShowToolsPanel;
@@ -12,6 +18,17 @@ class DebugToolsState {
   final String? currentScreen;
   final bool shouldShowScreenName;
   final bool shouldShowRenderBoxDetails;
+  final bool shouldShowAnimationToolbox;
+  final double animationSpeedFactor;
+  final bool shouldPauseAnimations;
+  final bool shouldDisableAnimations;
+  final bool shouldShowAnimationHighlights;
+  final bool shouldUseAnimationHighlightCompatibility;
+  final double animationHighlightSensitivity;
+  final int animationHighlightIntervalMs;
+  final int animationHighlightDecayMs;
+  final double animationHighlightOpacity;
+  final String? animationHighlightUnavailableReason;
 
   const DebugToolsState({
     this.currentColor,
@@ -25,6 +42,17 @@ class DebugToolsState {
     this.currentScreen,
     this.shouldShowScreenName = false,
     this.shouldShowRenderBoxDetails = false,
+    this.shouldShowAnimationToolbox = false,
+    this.animationSpeedFactor = defaultAnimationSpeedFactor,
+    this.shouldPauseAnimations = false,
+    this.shouldDisableAnimations = false,
+    this.shouldShowAnimationHighlights = false,
+    this.shouldUseAnimationHighlightCompatibility = false,
+    this.animationHighlightSensitivity = defaultAnimationHighlightSensitivity,
+    this.animationHighlightIntervalMs = defaultAnimationHighlightIntervalMs,
+    this.animationHighlightDecayMs = defaultAnimationHighlightDecayMs,
+    this.animationHighlightOpacity = defaultAnimationHighlightOpacity,
+    this.animationHighlightUnavailableReason,
   });
 
   DebugToolsState copyWith({
@@ -39,6 +67,17 @@ class DebugToolsState {
     String? currentScreen,
     bool? shouldShowScreenName,
     bool? shouldShowRenderBoxDetails,
+    bool? shouldShowAnimationToolbox,
+    double? animationSpeedFactor,
+    bool? shouldPauseAnimations,
+    bool? shouldDisableAnimations,
+    bool? shouldShowAnimationHighlights,
+    bool? shouldUseAnimationHighlightCompatibility,
+    double? animationHighlightSensitivity,
+    int? animationHighlightIntervalMs,
+    int? animationHighlightDecayMs,
+    double? animationHighlightOpacity,
+    Object? animationHighlightUnavailableReason = _sentinel,
   }) {
     return DebugToolsState(
       currentColor: currentColor ?? this.currentColor,
@@ -52,6 +91,20 @@ class DebugToolsState {
       currentScreen: currentScreen ?? this.currentScreen,
       shouldShowScreenName: shouldShowScreenName ?? this.shouldShowScreenName,
       shouldShowRenderBoxDetails: shouldShowRenderBoxDetails ?? this.shouldShowRenderBoxDetails,
+      shouldShowAnimationToolbox: shouldShowAnimationToolbox ?? this.shouldShowAnimationToolbox,
+      animationSpeedFactor: animationSpeedFactor ?? this.animationSpeedFactor,
+      shouldPauseAnimations: shouldPauseAnimations ?? this.shouldPauseAnimations,
+      shouldDisableAnimations: shouldDisableAnimations ?? this.shouldDisableAnimations,
+      shouldShowAnimationHighlights: shouldShowAnimationHighlights ?? this.shouldShowAnimationHighlights,
+      shouldUseAnimationHighlightCompatibility:
+          shouldUseAnimationHighlightCompatibility ?? this.shouldUseAnimationHighlightCompatibility,
+      animationHighlightSensitivity: animationHighlightSensitivity ?? this.animationHighlightSensitivity,
+      animationHighlightIntervalMs: animationHighlightIntervalMs ?? this.animationHighlightIntervalMs,
+      animationHighlightDecayMs: animationHighlightDecayMs ?? this.animationHighlightDecayMs,
+      animationHighlightOpacity: animationHighlightOpacity ?? this.animationHighlightOpacity,
+      animationHighlightUnavailableReason: identical(animationHighlightUnavailableReason, _sentinel)
+          ? this.animationHighlightUnavailableReason
+          : animationHighlightUnavailableReason as String?,
     );
   }
 
@@ -66,9 +119,39 @@ class DebugToolsState {
       deviceData: deviceData,
       shouldShowDeviceDetails: shouldShowDeviceDetails,
       currentScreen: currentScreen,
+      shouldShowScreenName: shouldShowScreenName,
+      shouldShowRenderBoxDetails: shouldShowRenderBoxDetails,
+      shouldShowAnimationToolbox: shouldShowAnimationToolbox,
+      animationSpeedFactor: animationSpeedFactor,
+      shouldPauseAnimations: shouldPauseAnimations,
+      shouldDisableAnimations: shouldDisableAnimations,
+      shouldShowAnimationHighlights: shouldShowAnimationHighlights,
+      shouldUseAnimationHighlightCompatibility: shouldUseAnimationHighlightCompatibility,
+      animationHighlightSensitivity: animationHighlightSensitivity,
+      animationHighlightIntervalMs: animationHighlightIntervalMs,
+      animationHighlightDecayMs: animationHighlightDecayMs,
+      animationHighlightOpacity: animationHighlightOpacity,
+      animationHighlightUnavailableReason: animationHighlightUnavailableReason,
+    );
+  }
+
+  DebugToolsState resetAnimationToolboxSettings() {
+    return copyWith(
+      animationSpeedFactor: defaultAnimationSpeedFactor,
+      shouldPauseAnimations: false,
+      shouldDisableAnimations: false,
+      shouldShowAnimationHighlights: false,
+      shouldUseAnimationHighlightCompatibility: false,
+      animationHighlightSensitivity: defaultAnimationHighlightSensitivity,
+      animationHighlightIntervalMs: defaultAnimationHighlightIntervalMs,
+      animationHighlightDecayMs: defaultAnimationHighlightDecayMs,
+      animationHighlightOpacity: defaultAnimationHighlightOpacity,
+      animationHighlightUnavailableReason: null,
     );
   }
 }
+
+const Object _sentinel = Object();
 
 final ValueNotifier<DebugToolsState> state = ValueNotifier<DebugToolsState>(const DebugToolsState());
 

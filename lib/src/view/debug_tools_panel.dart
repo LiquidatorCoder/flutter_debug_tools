@@ -18,6 +18,7 @@ class DebugToolsPanel extends StatefulWidget {
   final VoidCallback toggleColorPicker;
   final VoidCallback clearColor;
   final VoidCallback toggleDeviceDetails;
+  final VoidCallback toggleAnimationToolbox;
 
   const DebugToolsPanel({
     super.key,
@@ -27,6 +28,7 @@ class DebugToolsPanel extends StatefulWidget {
     required this.toggleColorPicker,
     required this.clearColor,
     required this.toggleDeviceDetails,
+    required this.toggleAnimationToolbox,
   });
 
   @override
@@ -221,6 +223,13 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
   }
 
   List<DebugToolItem> _buildToolItems() {
+    final bool hasAnimationOverrides =
+        state.value.animationSpeedFactor != DebugToolsState.defaultAnimationSpeedFactor ||
+            state.value.shouldPauseAnimations ||
+            state.value.shouldDisableAnimations ||
+            state.value.shouldShowAnimationHighlights ||
+            state.value.shouldUseAnimationHighlightCompatibility;
+
     return [
       DebugToolItem(
         id: 'debug_paint',
@@ -280,6 +289,16 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
         icon: Icons.login_rounded,
         isActive: state.value.shouldShowScreenName,
         onTap: _toggleScreenNameDetails,
+      ),
+      DebugToolItem(
+        id: 'animation_toolbox',
+        label: 'Animation\nToolbox',
+        icon: Icons.animation_rounded,
+        isActive: state.value.shouldShowAnimationToolbox || hasAnimationOverrides,
+        onTap: () => _dismiss(
+          onDismissed: widget.toggleAnimationToolbox,
+          closePanel: false,
+        ),
       ),
     ];
   }

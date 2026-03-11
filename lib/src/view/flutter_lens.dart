@@ -1,8 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_debug_tools/src/debug_log_store.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
+import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
+import 'package:flutter_debug_tools/src/view/debug_animation_highlight_compat_overlay.dart';
+import 'package:flutter_debug_tools/src/view/debug_animation_highlight_overlay.dart';
+import 'package:flutter_debug_tools/src/view/debug_animation_toolbox_sheet.dart';
 import 'package:flutter_debug_tools/src/view/debug_device_details_dialog.dart';
 import 'package:flutter_debug_tools/src/view/debug_indicator.dart';
 import 'package:flutter_debug_tools/src/view/debug_logs_viewer.dart';
@@ -29,6 +34,8 @@ class FlutterLens extends StatefulWidget {
 }
 
 class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
+  double _appliedTimeDilation = 1.0;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +45,7 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    timeDilation = 1.0;
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -54,6 +62,11 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
       return true;
     }
 
+    if (state.value.shouldShowAnimationToolbox) {
+      _toggleAnimationToolbox();
+      return true;
+    }
+
     return false;
   }
 
@@ -63,6 +76,181 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
       state.value = state.value.copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
   void _toggleDeviceDetails() =>
       state.value = state.value.copyWith(shouldShowDeviceDetails: !state.value.shouldShowDeviceDetails);
+  void _toggleAnimationToolbox() =>
+      state.value = state.value.copyWith(shouldShowAnimationToolbox: !state.value.shouldShowAnimationToolbox);
+
+  void _setAnimationSpeed(double speed) {
+    final clamped = speed.clamp(0.25, 2.0);
+    state.value = state.value.copyWith(animationSpeedFactor: clamped);
+    SharedPrefsManager.instance.setDouble('animationSpeedFactor', clamped);
+  }
+
+  void _setPauseAnimations(bool value) {
+    state.value = state.value.copyWith(shouldPauseAnimations: value);
+    SharedPrefsManager.instance.setBool('shouldPauseAnimations', value);
+  }
+
+  void _setDisableAnimations(bool value) {
+    state.value = state.value.copyWith(shouldDisableAnimations: value);
+    SharedPrefsManager.instance.setBool('shouldDisableAnimations', value);
+  }
+
+  void _setAnimationHighlights(bool value) {
+    if (!value) {
+      state.value = state.value.copyWith(
+        shouldShowAnimationHighlights: false,
+        shouldUseAnimationHighlightCompatibility: false,
+        animationHighlightUnavailableReason: null,
+      );
+      SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', false);
+      return;
+    }
+
+    final String? knownUnsafeReason = _knownUnsafeHighlightReason();
+    if (knownUnsafeReason != null) {
+      state.value = state.value.copyWith(
+        shouldShowAnimationHighlights: false,
+        shouldUseAnimationHighlightCompatibility: true,
+        animationHighlightUnavailableReason: knownUnsafeReason,
+      );
+      SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', true);
+      return;
+    }
+
+    state.value = state.value.copyWith(
+      shouldShowAnimationHighlights: true,
+      shouldUseAnimationHighlightCompatibility: false,
+      animationHighlightUnavailableReason: null,
+    );
+    SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', true);
+  }
+
+  String? _knownUnsafeHighlightReason() {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+      return null;
+    }
+
+    final data = state.value.deviceData;
+    final sdk = int.tryParse((data['SDK Version']?.toString() ?? '').trim());
+
+    if (sdk != null && sdk <= 31) {
+      return 'Animation highlight is disabled on Android 12 and below due to a known Impeller crash risk.';
+    }
+
+    return null;
+  }
+
+  void _disableAnimationHighlightFromRuntime(String reason) {
+    if (!state.value.shouldShowAnimationHighlights && state.value.animationHighlightUnavailableReason == reason) {
+      return;
+    }
+
+    state.value = state.value.copyWith(
+      shouldShowAnimationHighlights: false,
+      shouldUseAnimationHighlightCompatibility: true,
+      animationHighlightUnavailableReason: reason,
+    );
+    SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', true);
+  }
+
+  void _setAnimationHighlightSensitivity(double value) {
+    final clamped = value.clamp(5.0, 60.0);
+    state.value = state.value.copyWith(animationHighlightSensitivity: clamped);
+    SharedPrefsManager.instance.setDouble('animationHighlightSensitivity', clamped);
+  }
+
+  void _setAnimationHighlightInterval(int value) {
+    final clamped = value.clamp(60, 400);
+    state.value = state.value.copyWith(animationHighlightIntervalMs: clamped);
+    SharedPrefsManager.instance.setInt('animationHighlightIntervalMs', clamped);
+  }
+
+  void _setAnimationHighlightDecay(int value) {
+    final clamped = value.clamp(150, 1500);
+    state.value = state.value.copyWith(animationHighlightDecayMs: clamped);
+    SharedPrefsManager.instance.setInt('animationHighlightDecayMs', clamped);
+  }
+
+  void _setAnimationHighlightOpacity(double value) {
+    final clamped = value.clamp(0.1, 0.9);
+    state.value = state.value.copyWith(animationHighlightOpacity: clamped);
+    SharedPrefsManager.instance.setDouble('animationHighlightOpacity', clamped);
+  }
+
+  void _resetAnimationToolboxSettings() {
+    state.value = state.value.resetAnimationToolboxSettings();
+    SharedPrefsManager.instance.setDouble('animationSpeedFactor', DebugToolsState.defaultAnimationSpeedFactor);
+    SharedPrefsManager.instance.setBool('shouldPauseAnimations', false);
+    SharedPrefsManager.instance.setBool('shouldDisableAnimations', false);
+    SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', false);
+    SharedPrefsManager.instance
+        .setDouble('animationHighlightSensitivity', DebugToolsState.defaultAnimationHighlightSensitivity);
+    SharedPrefsManager.instance
+        .setInt('animationHighlightIntervalMs', DebugToolsState.defaultAnimationHighlightIntervalMs);
+    SharedPrefsManager.instance.setInt('animationHighlightDecayMs', DebugToolsState.defaultAnimationHighlightDecayMs);
+    SharedPrefsManager.instance
+        .setDouble('animationHighlightOpacity', DebugToolsState.defaultAnimationHighlightOpacity);
+  }
+
+  void _syncTimeDilation(DebugToolsState value) {
+    final target = (1.0 / value.animationSpeedFactor).clamp(0.5, 4.0);
+    if ((target - _appliedTimeDilation).abs() < 0.001) {
+      return;
+    }
+
+    timeDilation = target;
+    _appliedTimeDilation = target;
+  }
+
+  Widget _buildInstrumentedApp(BuildContext context, DebugToolsState value, Widget? child) {
+    bool highlightEnabled = value.shouldShowAnimationHighlights;
+    if (highlightEnabled && !kIsWeb && defaultTargetPlatform == TargetPlatform.android && value.deviceData.isEmpty) {
+      highlightEnabled = false;
+    } else {
+      final String? knownUnsafeReason = _knownUnsafeHighlightReason();
+      if (highlightEnabled && knownUnsafeReason != null) {
+        highlightEnabled = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _disableAnimationHighlightFromRuntime(knownUnsafeReason);
+          }
+        });
+      }
+    }
+
+    Widget content = widget.builder(context, value.shouldShowPerformanceOverlay, child);
+    final mediaQuery = MediaQuery.maybeOf(context);
+
+    if (mediaQuery != null) {
+      content = MediaQuery(
+        data: mediaQuery.copyWith(disableAnimations: value.shouldDisableAnimations),
+        child: content,
+      );
+    }
+
+    content = TickerMode(
+      enabled: !value.shouldPauseAnimations,
+      child: content,
+    );
+
+    content = DebugAnimationHighlightOverlay(
+      isEnabled: highlightEnabled,
+      sensitivity: value.animationHighlightSensitivity,
+      sampleInterval: Duration(milliseconds: value.animationHighlightIntervalMs),
+      decayDuration: Duration(milliseconds: value.animationHighlightDecayMs),
+      opacity: value.animationHighlightOpacity,
+      onUnavailable: _disableAnimationHighlightFromRuntime,
+      child: content,
+    );
+
+    content = DebugAnimationHighlightCompatOverlay(
+      isEnabled: value.shouldUseAnimationHighlightCompatibility,
+      opacity: value.animationHighlightOpacity,
+      child: content,
+    );
+
+    return content;
+  }
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
     String channelToHex(double value) => (value * 255.0).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
@@ -82,6 +270,10 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     if (!widget.isEnabled) {
+      if (_appliedTimeDilation != 1.0) {
+        timeDilation = 1.0;
+        _appliedTimeDilation = 1.0;
+      }
       return widget.builder(context, false, widget.child);
     }
 
@@ -90,11 +282,18 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
       child: ValueListenableBuilder<DebugToolsState>(
         valueListenable: state,
         builder: (context, value, child) {
+          _syncTimeDilation(value);
+          final Widget instrumentedApp = _buildInstrumentedApp(context, value, child);
+
           return PopScope(
-            canPop: !value.shouldShowLogsScreen,
+            canPop: !(value.shouldShowLogsScreen || value.shouldShowAnimationToolbox || value.shouldShowDeviceDetails),
             onPopInvokedWithResult: (didPop, result) {
               if (!didPop && value.shouldShowLogsScreen) {
                 _toggleLogs();
+              } else if (!didPop && value.shouldShowAnimationToolbox) {
+                _toggleAnimationToolbox();
+              } else if (!didPop && value.shouldShowDeviceDetails) {
+                _toggleDeviceDetails();
               }
             },
             child: Stack(
@@ -102,8 +301,8 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                 if (value.shouldShowColorPicker)
                   PixelColorInspector(
                     child: (value.shouldShowRenderBoxDetails)
-                        ? RenderBoxInspector(child: widget.builder(context, value.shouldShowPerformanceOverlay, child))
-                        : widget.builder(context, value.shouldShowPerformanceOverlay, child),
+                        ? RenderBoxInspector(child: instrumentedApp)
+                        : instrumentedApp,
                     onColorPicked: (val) {
                       state.value = state.value.copyWith(currentColor: val);
                       _toggleColorPicker();
@@ -111,9 +310,7 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                     },
                   )
                 else
-                  (value.shouldShowRenderBoxDetails)
-                      ? RenderBoxInspector(child: widget.builder(context, value.shouldShowPerformanceOverlay, child))
-                      : widget.builder(context, value.shouldShowPerformanceOverlay, child),
+                  (value.shouldShowRenderBoxDetails) ? RenderBoxInspector(child: instrumentedApp) : instrumentedApp,
                 if (value.shouldShowToolsIndicator) DebugIndicator(toggleTools: _toggleDialog),
                 if (value.shouldShowToolsPanel)
                   DebugToolsPanel(
@@ -130,6 +327,10 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                       _toggleDialog();
                     },
                     toggleDeviceDetails: _toggleDeviceDetails,
+                    toggleAnimationToolbox: () {
+                      _toggleAnimationToolbox();
+                      _toggleDialog();
+                    },
                   ),
                 if (value.shouldShowScreenName)
                   DebugScreenDetailsWidget(
@@ -139,7 +340,32 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                   DebugDeviceDetailsDialog(
                     onTap: _toggleDeviceDetails,
                   ),
-                if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs)
+                if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs),
+                if (value.shouldShowAnimationToolbox)
+                  Positioned.fill(
+                    child: Overlay(
+                      initialEntries: [
+                        OverlayEntry(
+                          builder: (context) => ValueListenableBuilder<DebugToolsState>(
+                            valueListenable: state,
+                            builder: (context, liveValue, _) => DebugAnimationToolboxSheet(
+                              stateValue: liveValue,
+                              onClose: _toggleAnimationToolbox,
+                              onReset: _resetAnimationToolboxSettings,
+                              onAnimationSpeedChanged: _setAnimationSpeed,
+                              onPauseAnimationsChanged: _setPauseAnimations,
+                              onDisableAnimationsChanged: _setDisableAnimations,
+                              onHighlightAnimationsChanged: _setAnimationHighlights,
+                              onHighlightSensitivityChanged: _setAnimationHighlightSensitivity,
+                              onHighlightIntervalChanged: _setAnimationHighlightInterval,
+                              onHighlightDecayChanged: _setAnimationHighlightDecay,
+                              onHighlightOpacityChanged: _setAnimationHighlightOpacity,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           );

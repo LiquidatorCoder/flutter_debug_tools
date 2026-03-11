@@ -49,11 +49,68 @@ class _DebugIndicatorState extends State<DebugIndicator> {
     prefs.getBool("shouldShowScreenName").then((value) {
       state.value = state.value.copyWith(shouldShowScreenName: value == true);
     });
+    prefs.getDouble("animationSpeedFactor").then((value) {
+      if (value == null) return;
+      state.value = state.value.copyWith(animationSpeedFactor: value.clamp(0.25, 2.0));
+    });
+    prefs.getBool("shouldPauseAnimations").then((value) {
+      state.value = state.value.copyWith(shouldPauseAnimations: value == true);
+    });
+    prefs.getBool("shouldDisableAnimations").then((value) {
+      state.value = state.value.copyWith(shouldDisableAnimations: value == true);
+    });
+    prefs.getDouble("animationHighlightSensitivity").then((value) {
+      if (value == null) return;
+      state.value = state.value.copyWith(animationHighlightSensitivity: value.clamp(5.0, 60.0));
+    });
+    prefs.getInt("animationHighlightIntervalMs").then((value) {
+      if (value == null) return;
+      state.value = state.value.copyWith(animationHighlightIntervalMs: value.clamp(60, 400));
+    });
+    prefs.getInt("animationHighlightDecayMs").then((value) {
+      if (value == null) return;
+      state.value = state.value.copyWith(animationHighlightDecayMs: value.clamp(150, 1500));
+    });
+    prefs.getDouble("animationHighlightOpacity").then((value) {
+      if (value == null) return;
+      state.value = state.value.copyWith(animationHighlightOpacity: value.clamp(0.1, 0.9));
+    });
   }
 
   Future<void> _initDeviceData() async {
     final deviceData = await deviceInfoManager.getDeviceDetails();
     state.value = state.value.copyWith(deviceData: deviceData);
+
+    final shouldRestoreHighlights = await SharedPrefsManager.instance.getBool("shouldShowAnimationHighlights") == true;
+    if (!shouldRestoreHighlights) {
+      return;
+    }
+
+    final reason = _knownUnsafeHighlightReason(deviceData);
+    if (reason != null) {
+      state.value = state.value.copyWith(
+        shouldShowAnimationHighlights: false,
+        shouldUseAnimationHighlightCompatibility: true,
+        animationHighlightUnavailableReason: reason,
+      );
+      return;
+    }
+
+    state.value = state.value.copyWith(
+      shouldShowAnimationHighlights: true,
+      shouldUseAnimationHighlightCompatibility: false,
+      animationHighlightUnavailableReason: null,
+    );
+  }
+
+  String? _knownUnsafeHighlightReason(Map<String, dynamic> data) {
+    final sdk = int.tryParse((data['SDK Version']?.toString() ?? '').trim());
+
+    if (sdk != null && sdk <= 31) {
+      return 'Using compatibility highlight mode on Android 12 and below to avoid a known Impeller capture crash.';
+    }
+
+    return null;
   }
 
   double _clampTop(double top, double maxHeight) {

@@ -44,6 +44,7 @@
 - 🎯 **Color Picker**: Pick any on-screen pixel color quickly.
 - 🧱 **Debug Paint / Layout Insights**: Visualize layout boundaries and spacing behavior.
 - 🌈 **Repaint Rainbow**: Spot frequent repaints to detect expensive widgets.
+- 🎛️ **Animation Toolbox**: Control animation speed, pause, reduce motion, and inspect animated regions.
 - ⚡ **Performance Overlay Toggle**: Enable Flutter performance overlay directly from the panel.
 - 🧲 **Edge Tray Launcher**: Open FlutterLens from a draggable edge tray.
 - 🧾 **Version Ticker**: Live ticker for app/build/flutter/dart/FlutterLens versions.
@@ -60,6 +61,7 @@
 - `Color Picker` → pixel pick + color card/copy flow
 - `Device Details` → opens device info sheet
 - `Screen Name` → route name overlay (with `DebugNavigatorObserver`)
+- `Animation Toolbox` → animation speed/pause/disable/highlight controls
 
 ---
 
