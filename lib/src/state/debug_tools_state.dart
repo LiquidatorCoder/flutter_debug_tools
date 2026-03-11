@@ -55,6 +55,7 @@ class DebugToolsState {
   final AnimationCurvePreset animationCurvePreset;
   final bool shouldPauseAnimations;
   final bool shouldDisableAnimations;
+  final bool shouldShowFrameTimingHud;
   final bool shouldShowAnimationHighlights;
   final bool shouldUseAnimationHighlightCompatibility;
   final double animationHighlightSensitivity;
@@ -80,6 +81,7 @@ class DebugToolsState {
     this.animationCurvePreset = AnimationCurvePreset.system,
     this.shouldPauseAnimations = false,
     this.shouldDisableAnimations = false,
+    this.shouldShowFrameTimingHud = false,
     this.shouldShowAnimationHighlights = false,
     this.shouldUseAnimationHighlightCompatibility = false,
     this.animationHighlightSensitivity = defaultAnimationHighlightSensitivity,
@@ -106,6 +108,7 @@ class DebugToolsState {
     AnimationCurvePreset? animationCurvePreset,
     bool? shouldPauseAnimations,
     bool? shouldDisableAnimations,
+    bool? shouldShowFrameTimingHud,
     bool? shouldShowAnimationHighlights,
     bool? shouldUseAnimationHighlightCompatibility,
     double? animationHighlightSensitivity,
@@ -116,31 +119,48 @@ class DebugToolsState {
   }) {
     return DebugToolsState(
       currentColor: currentColor ?? this.currentColor,
-      shouldShowToolsIndicator: shouldShowToolsIndicator ?? this.shouldShowToolsIndicator,
+      shouldShowToolsIndicator:
+          shouldShowToolsIndicator ?? this.shouldShowToolsIndicator,
       shouldShowToolsPanel: shouldShowToolsPanel ?? this.shouldShowToolsPanel,
       shouldShowLogsScreen: shouldShowLogsScreen ?? this.shouldShowLogsScreen,
-      shouldShowColorPicker: shouldShowColorPicker ?? this.shouldShowColorPicker,
-      shouldShowPerformanceOverlay: shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
+      shouldShowColorPicker:
+          shouldShowColorPicker ?? this.shouldShowColorPicker,
+      shouldShowPerformanceOverlay:
+          shouldShowPerformanceOverlay ?? this.shouldShowPerformanceOverlay,
       deviceData: deviceData ?? this.deviceData,
-      shouldShowDeviceDetails: shouldShowDeviceDetails ?? this.shouldShowDeviceDetails,
+      shouldShowDeviceDetails:
+          shouldShowDeviceDetails ?? this.shouldShowDeviceDetails,
       currentScreen: currentScreen ?? this.currentScreen,
       shouldShowScreenName: shouldShowScreenName ?? this.shouldShowScreenName,
-      shouldShowRenderBoxDetails: shouldShowRenderBoxDetails ?? this.shouldShowRenderBoxDetails,
-      shouldShowAnimationToolbox: shouldShowAnimationToolbox ?? this.shouldShowAnimationToolbox,
+      shouldShowRenderBoxDetails:
+          shouldShowRenderBoxDetails ?? this.shouldShowRenderBoxDetails,
+      shouldShowAnimationToolbox:
+          shouldShowAnimationToolbox ?? this.shouldShowAnimationToolbox,
       animationSpeedFactor: animationSpeedFactor ?? this.animationSpeedFactor,
       animationCurvePreset: animationCurvePreset ?? this.animationCurvePreset,
-      shouldPauseAnimations: shouldPauseAnimations ?? this.shouldPauseAnimations,
-      shouldDisableAnimations: shouldDisableAnimations ?? this.shouldDisableAnimations,
-      shouldShowAnimationHighlights: shouldShowAnimationHighlights ?? this.shouldShowAnimationHighlights,
+      shouldPauseAnimations:
+          shouldPauseAnimations ?? this.shouldPauseAnimations,
+      shouldDisableAnimations:
+          shouldDisableAnimations ?? this.shouldDisableAnimations,
+      shouldShowFrameTimingHud:
+          shouldShowFrameTimingHud ?? this.shouldShowFrameTimingHud,
+      shouldShowAnimationHighlights:
+          shouldShowAnimationHighlights ?? this.shouldShowAnimationHighlights,
       shouldUseAnimationHighlightCompatibility:
-          shouldUseAnimationHighlightCompatibility ?? this.shouldUseAnimationHighlightCompatibility,
-      animationHighlightSensitivity: animationHighlightSensitivity ?? this.animationHighlightSensitivity,
-      animationHighlightIntervalMs: animationHighlightIntervalMs ?? this.animationHighlightIntervalMs,
-      animationHighlightDecayMs: animationHighlightDecayMs ?? this.animationHighlightDecayMs,
-      animationHighlightOpacity: animationHighlightOpacity ?? this.animationHighlightOpacity,
-      animationHighlightUnavailableReason: identical(animationHighlightUnavailableReason, _sentinel)
-          ? this.animationHighlightUnavailableReason
-          : animationHighlightUnavailableReason as String?,
+          shouldUseAnimationHighlightCompatibility ??
+              this.shouldUseAnimationHighlightCompatibility,
+      animationHighlightSensitivity:
+          animationHighlightSensitivity ?? this.animationHighlightSensitivity,
+      animationHighlightIntervalMs:
+          animationHighlightIntervalMs ?? this.animationHighlightIntervalMs,
+      animationHighlightDecayMs:
+          animationHighlightDecayMs ?? this.animationHighlightDecayMs,
+      animationHighlightOpacity:
+          animationHighlightOpacity ?? this.animationHighlightOpacity,
+      animationHighlightUnavailableReason:
+          identical(animationHighlightUnavailableReason, _sentinel)
+              ? this.animationHighlightUnavailableReason
+              : animationHighlightUnavailableReason as String?,
     );
   }
 
@@ -162,8 +182,10 @@ class DebugToolsState {
       animationCurvePreset: animationCurvePreset,
       shouldPauseAnimations: shouldPauseAnimations,
       shouldDisableAnimations: shouldDisableAnimations,
+      shouldShowFrameTimingHud: shouldShowFrameTimingHud,
       shouldShowAnimationHighlights: shouldShowAnimationHighlights,
-      shouldUseAnimationHighlightCompatibility: shouldUseAnimationHighlightCompatibility,
+      shouldUseAnimationHighlightCompatibility:
+          shouldUseAnimationHighlightCompatibility,
       animationHighlightSensitivity: animationHighlightSensitivity,
       animationHighlightIntervalMs: animationHighlightIntervalMs,
       animationHighlightDecayMs: animationHighlightDecayMs,
@@ -178,6 +200,7 @@ class DebugToolsState {
       animationCurvePreset: AnimationCurvePreset.system,
       shouldPauseAnimations: false,
       shouldDisableAnimations: false,
+      shouldShowFrameTimingHud: false,
       shouldShowAnimationHighlights: false,
       shouldUseAnimationHighlightCompatibility: false,
       animationHighlightSensitivity: defaultAnimationHighlightSensitivity,
@@ -191,7 +214,8 @@ class DebugToolsState {
 
 const Object _sentinel = Object();
 
-final ValueNotifier<DebugToolsState> state = ValueNotifier<DebugToolsState>(const DebugToolsState());
+final ValueNotifier<DebugToolsState> state =
+    ValueNotifier<DebugToolsState>(const DebugToolsState());
 
 class RenderBoxInfo {
   final RenderBox targetRenderBox;
@@ -206,10 +230,14 @@ class RenderBoxInfo {
 
   Rect get targetRect => getRectFromRenderBox(targetRenderBox)!;
   Rect get targetRectShifted => targetRect.shift(-overlayOffset);
-  Rect? get containerRect => containerRenderBox != null ? getRectFromRenderBox(containerRenderBox!) : null;
+  Rect? get containerRect => containerRenderBox != null
+      ? getRectFromRenderBox(containerRenderBox!)
+      : null;
 
   Rect? getRectFromRenderBox(RenderBox renderBox) {
-    return renderBox.attached ? (renderBox.localToGlobal(Offset.zero)) & renderBox.size : null;
+    return renderBox.attached
+        ? (renderBox.localToGlobal(Offset.zero)) & renderBox.size
+        : null;
   }
 
   double? get paddingLeft => paddingRectLeft?.width;
@@ -219,21 +247,26 @@ class RenderBoxInfo {
   double? get paddingHorizontal => (paddingLeft ?? 0) + (paddingRight ?? 0);
   double? get paddingVertical => (paddingTop ?? 0) + (paddingBottom ?? 0);
 
-  Rect get paddingRect => Rect.fromLTRB(paddingLeft ?? 0, paddingTop ?? 0, paddingRight ?? 0, paddingBottom ?? 0);
+  Rect get paddingRect => Rect.fromLTRB(
+      paddingLeft ?? 0, paddingTop ?? 0, paddingRight ?? 0, paddingBottom ?? 0);
 
   Rect? get paddingRectLeft => containerRect != null
-      ? Rect.fromLTRB(containerRect!.left, containerRect!.top, targetRect.left, containerRect!.bottom)
+      ? Rect.fromLTRB(containerRect!.left, containerRect!.top, targetRect.left,
+          containerRect!.bottom)
       : null;
 
   Rect? get paddingRectTop => containerRect != null
-      ? Rect.fromLTRB(targetRect.left, containerRect!.top, targetRect.right, targetRect.top)
+      ? Rect.fromLTRB(
+          targetRect.left, containerRect!.top, targetRect.right, targetRect.top)
       : null;
 
   Rect? get paddingRectRight => containerRect != null
-      ? Rect.fromLTRB(targetRect.right, containerRect!.top, containerRect!.right, containerRect!.bottom)
+      ? Rect.fromLTRB(targetRect.right, containerRect!.top,
+          containerRect!.right, containerRect!.bottom)
       : null;
 
   Rect? get paddingRectBottom => containerRect != null
-      ? Rect.fromLTRB(targetRect.left, targetRect.bottom, targetRect.right, containerRect!.bottom)
+      ? Rect.fromLTRB(targetRect.left, targetRect.bottom, targetRect.right,
+          containerRect!.bottom)
       : null;
 }

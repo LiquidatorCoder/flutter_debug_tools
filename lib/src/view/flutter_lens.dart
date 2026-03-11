@@ -10,6 +10,7 @@ import 'package:flutter_debug_tools/src/view/debug_animation_highlight_compat_ov
 import 'package:flutter_debug_tools/src/view/debug_animation_highlight_overlay.dart';
 import 'package:flutter_debug_tools/src/view/debug_animation_toolbox_sheet.dart';
 import 'package:flutter_debug_tools/src/view/debug_device_details_dialog.dart';
+import 'package:flutter_debug_tools/src/view/debug_frame_timing_hud.dart';
 import 'package:flutter_debug_tools/src/view/debug_indicator.dart';
 import 'package:flutter_debug_tools/src/view/debug_logs_viewer.dart';
 import 'package:flutter_debug_tools/src/view/debug_screen_details_widget.dart';
@@ -19,7 +20,8 @@ import 'package:flutter_debug_tools/src/view/render_box_inspector.dart';
 
 /// FlutterLens overlays debugging tools over its [child].
 class FlutterLens extends StatefulWidget {
-  final Widget Function(BuildContext context, bool value, Widget? child) builder;
+  final Widget Function(BuildContext context, bool value, Widget? child)
+      builder;
   final Widget? child;
   final bool isEnabled;
 
@@ -71,14 +73,16 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
     return false;
   }
 
-  void _toggleDialog() => state.value = state.value.copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
-  void _toggleLogs() => state.value = state.value.copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
-  void _toggleColorPicker() =>
-      state.value = state.value.copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
-  void _toggleDeviceDetails() =>
-      state.value = state.value.copyWith(shouldShowDeviceDetails: !state.value.shouldShowDeviceDetails);
-  void _toggleAnimationToolbox() =>
-      state.value = state.value.copyWith(shouldShowAnimationToolbox: !state.value.shouldShowAnimationToolbox);
+  void _toggleDialog() => state.value = state.value
+      .copyWith(shouldShowToolsPanel: !state.value.shouldShowToolsPanel);
+  void _toggleLogs() => state.value = state.value
+      .copyWith(shouldShowLogsScreen: !state.value.shouldShowLogsScreen);
+  void _toggleColorPicker() => state.value = state.value
+      .copyWith(shouldShowColorPicker: !state.value.shouldShowColorPicker);
+  void _toggleDeviceDetails() => state.value = state.value
+      .copyWith(shouldShowDeviceDetails: !state.value.shouldShowDeviceDetails);
+  void _toggleAnimationToolbox() => state.value = state.value.copyWith(
+      shouldShowAnimationToolbox: !state.value.shouldShowAnimationToolbox);
 
   void _setAnimationSpeed(double speed) {
     final clamped = speed.clamp(0.25, 2.0);
@@ -101,6 +105,11 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
     SharedPrefsManager.instance.setBool('shouldDisableAnimations', value);
   }
 
+  void _setFrameTimingHud(bool value) {
+    state.value = state.value.copyWith(shouldShowFrameTimingHud: value);
+    SharedPrefsManager.instance.setBool('shouldShowFrameTimingHud', value);
+  }
+
   void _setAnimationHighlights(bool value) {
     if (!value) {
       state.value = state.value.copyWith(
@@ -108,7 +117,8 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
         shouldUseAnimationHighlightCompatibility: false,
         animationHighlightUnavailableReason: null,
       );
-      SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', false);
+      SharedPrefsManager.instance
+          .setBool('shouldShowAnimationHighlights', false);
       return;
     }
 
@@ -119,7 +129,8 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
         shouldUseAnimationHighlightCompatibility: true,
         animationHighlightUnavailableReason: knownUnsafeReason,
       );
-      SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', true);
+      SharedPrefsManager.instance
+          .setBool('shouldShowAnimationHighlights', true);
       return;
     }
 
@@ -147,7 +158,8 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
   }
 
   void _disableAnimationHighlightFromRuntime(String reason) {
-    if (!state.value.shouldShowAnimationHighlights && state.value.animationHighlightUnavailableReason == reason) {
+    if (!state.value.shouldShowAnimationHighlights &&
+        state.value.animationHighlightUnavailableReason == reason) {
       return;
     }
 
@@ -162,7 +174,8 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
   void _setAnimationHighlightSensitivity(double value) {
     final clamped = value.clamp(5.0, 60.0);
     state.value = state.value.copyWith(animationHighlightSensitivity: clamped);
-    SharedPrefsManager.instance.setDouble('animationHighlightSensitivity', clamped);
+    SharedPrefsManager.instance
+        .setDouble('animationHighlightSensitivity', clamped);
   }
 
   void _setAnimationHighlightInterval(int value) {
@@ -185,18 +198,22 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
 
   void _resetAnimationToolboxSettings() {
     state.value = state.value.resetAnimationToolboxSettings();
-    SharedPrefsManager.instance.setDouble('animationSpeedFactor', DebugToolsState.defaultAnimationSpeedFactor);
+    SharedPrefsManager.instance.setDouble(
+        'animationSpeedFactor', DebugToolsState.defaultAnimationSpeedFactor);
     SharedPrefsManager.instance.setBool('shouldPauseAnimations', false);
     SharedPrefsManager.instance.setBool('shouldDisableAnimations', false);
     SharedPrefsManager.instance.setBool('shouldShowAnimationHighlights', false);
+    SharedPrefsManager.instance.setDouble('animationHighlightSensitivity',
+        DebugToolsState.defaultAnimationHighlightSensitivity);
+    SharedPrefsManager.instance.setInt('animationHighlightIntervalMs',
+        DebugToolsState.defaultAnimationHighlightIntervalMs);
+    SharedPrefsManager.instance.setInt('animationHighlightDecayMs',
+        DebugToolsState.defaultAnimationHighlightDecayMs);
+    SharedPrefsManager.instance.setDouble('animationHighlightOpacity',
+        DebugToolsState.defaultAnimationHighlightOpacity);
     SharedPrefsManager.instance
-        .setDouble('animationHighlightSensitivity', DebugToolsState.defaultAnimationHighlightSensitivity);
-    SharedPrefsManager.instance
-        .setInt('animationHighlightIntervalMs', DebugToolsState.defaultAnimationHighlightIntervalMs);
-    SharedPrefsManager.instance.setInt('animationHighlightDecayMs', DebugToolsState.defaultAnimationHighlightDecayMs);
-    SharedPrefsManager.instance
-        .setDouble('animationHighlightOpacity', DebugToolsState.defaultAnimationHighlightOpacity);
-    SharedPrefsManager.instance.setString('animationCurvePreset', AnimationCurvePreset.system.id);
+        .setString('animationCurvePreset', AnimationCurvePreset.system.id);
+    SharedPrefsManager.instance.setBool('shouldShowFrameTimingHud', false);
   }
 
   Curve? _resolveOverrideCurve(AnimationCurvePreset preset) {
@@ -244,9 +261,13 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
     _appliedTimeDilation = target;
   }
 
-  Widget _buildInstrumentedApp(BuildContext context, DebugToolsState value, Widget? child) {
+  Widget _buildInstrumentedApp(
+      BuildContext context, DebugToolsState value, Widget? child) {
     bool highlightEnabled = value.shouldShowAnimationHighlights;
-    if (highlightEnabled && !kIsWeb && defaultTargetPlatform == TargetPlatform.android && value.deviceData.isEmpty) {
+    if (highlightEnabled &&
+        !kIsWeb &&
+        defaultTargetPlatform == TargetPlatform.android &&
+        value.deviceData.isEmpty) {
       highlightEnabled = false;
     } else {
       final String? knownUnsafeReason = _knownUnsafeHighlightReason();
@@ -260,12 +281,14 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
       }
     }
 
-    Widget content = widget.builder(context, value.shouldShowPerformanceOverlay, child);
+    Widget content =
+        widget.builder(context, value.shouldShowPerformanceOverlay, child);
     final mediaQuery = MediaQuery.maybeOf(context);
 
     if (mediaQuery != null) {
       content = MediaQuery(
-        data: mediaQuery.copyWith(disableAnimations: value.shouldDisableAnimations),
+        data: mediaQuery.copyWith(
+            disableAnimations: value.shouldDisableAnimations),
         child: content,
       );
     }
@@ -278,7 +301,8 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
     content = DebugAnimationHighlightOverlay(
       isEnabled: highlightEnabled,
       sensitivity: value.animationHighlightSensitivity,
-      sampleInterval: Duration(milliseconds: value.animationHighlightIntervalMs),
+      sampleInterval:
+          Duration(milliseconds: value.animationHighlightIntervalMs),
       decayDuration: Duration(milliseconds: value.animationHighlightDecayMs),
       opacity: value.animationHighlightOpacity,
       onUnavailable: _disableAnimationHighlightFromRuntime,
@@ -291,6 +315,11 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
       child: content,
     );
 
+    content = DebugFrameTimingHud(
+      isEnabled: value.shouldShowFrameTimingHud,
+      child: content,
+    );
+
     content = FlutterLensAnimationCurveScope(
       overrideCurve: _resolveOverrideCurve(value.animationCurvePreset),
       child: content,
@@ -300,7 +329,8 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
   }
 
   String colorToHexString(Color color, {bool withAlpha = false}) {
-    String channelToHex(double value) => (value * 255.0).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
+    String channelToHex(double value) =>
+        (value * 255.0).round().clamp(0, 255).toRadixString(16).padLeft(2, '0');
 
     final a = channelToHex(color.a);
     final r = channelToHex(color.r);
@@ -330,10 +360,13 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
         valueListenable: state,
         builder: (context, value, child) {
           _syncTimeDilation(value);
-          final Widget instrumentedApp = _buildInstrumentedApp(context, value, child);
+          final Widget instrumentedApp =
+              _buildInstrumentedApp(context, value, child);
 
           return PopScope(
-            canPop: !(value.shouldShowLogsScreen || value.shouldShowAnimationToolbox || value.shouldShowDeviceDetails),
+            canPop: !(value.shouldShowLogsScreen ||
+                value.shouldShowAnimationToolbox ||
+                value.shouldShowDeviceDetails),
             onPopInvokedWithResult: (didPop, result) {
               if (!didPop && value.shouldShowLogsScreen) {
                 _toggleLogs();
@@ -357,8 +390,11 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                     },
                   )
                 else
-                  (value.shouldShowRenderBoxDetails) ? RenderBoxInspector(child: instrumentedApp) : instrumentedApp,
-                if (value.shouldShowToolsIndicator) DebugIndicator(toggleTools: _toggleDialog),
+                  (value.shouldShowRenderBoxDetails)
+                      ? RenderBoxInspector(child: instrumentedApp)
+                      : instrumentedApp,
+                if (value.shouldShowToolsIndicator)
+                  DebugIndicator(toggleTools: _toggleDialog),
                 if (value.shouldShowToolsPanel)
                   DebugToolsPanel(
                     color: value.currentColor,
@@ -369,7 +405,9 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                       _toggleDialog();
                     },
                     clearColor: () {
-                      Clipboard.setData(ClipboardData(text: colorToHexString(value.currentColor ?? Colors.white)));
+                      Clipboard.setData(ClipboardData(
+                          text: colorToHexString(
+                              value.currentColor ?? Colors.white)));
                       state.value = state.value.clearColor();
                       _toggleDialog();
                     },
@@ -387,27 +425,37 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                   DebugDeviceDetailsDialog(
                     onTap: _toggleDeviceDetails,
                   ),
-                if (value.shouldShowLogsScreen) DebugLogsViewer(onTap: _toggleLogs),
+                if (value.shouldShowLogsScreen)
+                  DebugLogsViewer(onTap: _toggleLogs),
                 if (value.shouldShowAnimationToolbox)
                   Positioned.fill(
                     child: Overlay(
                       initialEntries: [
                         OverlayEntry(
-                          builder: (context) => ValueListenableBuilder<DebugToolsState>(
+                          builder: (context) =>
+                              ValueListenableBuilder<DebugToolsState>(
                             valueListenable: state,
-                            builder: (context, liveValue, _) => DebugAnimationToolboxSheet(
+                            builder: (context, liveValue, _) =>
+                                DebugAnimationToolboxSheet(
                               stateValue: liveValue,
                               onClose: _toggleAnimationToolbox,
                               onReset: _resetAnimationToolboxSettings,
                               onAnimationSpeedChanged: _setAnimationSpeed,
-                              onAnimationCurvePresetChanged: _setAnimationCurvePreset,
+                              onAnimationCurvePresetChanged:
+                                  _setAnimationCurvePreset,
                               onPauseAnimationsChanged: _setPauseAnimations,
                               onDisableAnimationsChanged: _setDisableAnimations,
-                              onHighlightAnimationsChanged: _setAnimationHighlights,
-                              onHighlightSensitivityChanged: _setAnimationHighlightSensitivity,
-                              onHighlightIntervalChanged: _setAnimationHighlightInterval,
-                              onHighlightDecayChanged: _setAnimationHighlightDecay,
-                              onHighlightOpacityChanged: _setAnimationHighlightOpacity,
+                              onFrameTimingHudChanged: _setFrameTimingHud,
+                              onHighlightAnimationsChanged:
+                                  _setAnimationHighlights,
+                              onHighlightSensitivityChanged:
+                                  _setAnimationHighlightSensitivity,
+                              onHighlightIntervalChanged:
+                                  _setAnimationHighlightInterval,
+                              onHighlightDecayChanged:
+                                  _setAnimationHighlightDecay,
+                              onHighlightOpacityChanged:
+                                  _setAnimationHighlightOpacity,
                             ),
                           ),
                         ),

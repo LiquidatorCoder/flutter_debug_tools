@@ -16,6 +16,7 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
     required this.onAnimationCurvePresetChanged,
     required this.onPauseAnimationsChanged,
     required this.onDisableAnimationsChanged,
+    required this.onFrameTimingHudChanged,
     required this.onHighlightAnimationsChanged,
     required this.onHighlightSensitivityChanged,
     required this.onHighlightIntervalChanged,
@@ -30,6 +31,7 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
   final ValueChanged<AnimationCurvePreset> onAnimationCurvePresetChanged;
   final ValueChanged<bool> onPauseAnimationsChanged;
   final ValueChanged<bool> onDisableAnimationsChanged;
+  final ValueChanged<bool> onFrameTimingHudChanged;
   final ValueChanged<bool> onHighlightAnimationsChanged;
   final ValueChanged<double> onHighlightSensitivityChanged;
   final ValueChanged<int> onHighlightIntervalChanged;
@@ -85,8 +87,10 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
                         children: [
                           _SliderTile(
                             label: 'Animation Speed',
-                            description: 'Scales app animation duration globally (lower is slower, higher is faster).',
-                            valueLabel: '${stateValue.animationSpeedFactor.toStringAsFixed(2)}x',
+                            description:
+                                'Scales app animation duration globally (lower is slower, higher is faster).',
+                            valueLabel:
+                                '${stateValue.animationSpeedFactor.toStringAsFixed(2)}x',
                             min: 0.25,
                             max: 2.0,
                             divisions: 35,
@@ -107,6 +111,14 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
                             value: stateValue.shouldDisableAnimations,
                             onChanged: onDisableAnimationsChanged,
                           ),
+                          const SizedBox(height: 8),
+                          _SwitchTile(
+                            title: 'Frame Timing HUD',
+                            subtitle:
+                                'Shows FPS, avg frame time, and worst frame time.',
+                            value: stateValue.shouldShowFrameTimingHud,
+                            onChanged: onFrameTimingHudChanged,
+                          ),
                         ],
                       ),
                     ),
@@ -119,24 +131,30 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
                         children: [
                           _SwitchTile(
                             title: 'Highlight Animated Regions',
-                            subtitle: stateValue.shouldUseAnimationHighlightCompatibility
+                            subtitle: stateValue
+                                    .shouldUseAnimationHighlightCompatibility
                                 ? 'Compatibility mode: shows frame activity safely.'
                                 : 'Shows a heatmap where frames change.',
                             value: stateValue.shouldShowAnimationHighlights ||
-                                stateValue.shouldUseAnimationHighlightCompatibility,
+                                stateValue
+                                    .shouldUseAnimationHighlightCompatibility,
                             onChanged: onHighlightAnimationsChanged,
                           ),
-                          if (stateValue.animationHighlightUnavailableReason != null) ...[
+                          if (stateValue.animationHighlightUnavailableReason !=
+                              null) ...[
                             const SizedBox(height: 8),
                             _NoticeTile(
-                              message: stateValue.animationHighlightUnavailableReason!,
+                              message: stateValue
+                                  .animationHighlightUnavailableReason!,
                             ),
                           ],
                           const SizedBox(height: 10),
                           _SliderTile(
                             label: 'Sensitivity',
-                            description: 'Controls how much pixel change is needed before a region is highlighted.',
-                            valueLabel: stateValue.animationHighlightSensitivity.toStringAsFixed(0),
+                            description:
+                                'Controls how much pixel change is needed before a region is highlighted.',
+                            valueLabel: stateValue.animationHighlightSensitivity
+                                .toStringAsFixed(0),
                             min: 5,
                             max: 60,
                             divisions: 55,
@@ -148,29 +166,38 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
                             label: 'Sample Interval',
                             description:
                                 'How often highlight sampling runs (lower is more responsive, higher is lighter).',
-                            valueLabel: '${stateValue.animationHighlightIntervalMs}ms',
+                            valueLabel:
+                                '${stateValue.animationHighlightIntervalMs}ms',
                             min: 60,
                             max: 400,
                             divisions: 34,
-                            value: stateValue.animationHighlightIntervalMs.toDouble(),
-                            onChanged: (value) => onHighlightIntervalChanged(value.round()),
+                            value: stateValue.animationHighlightIntervalMs
+                                .toDouble(),
+                            onChanged: (value) =>
+                                onHighlightIntervalChanged(value.round()),
                           ),
                           const SizedBox(height: 10),
                           _SliderTile(
                             label: 'Trail Decay',
-                            description: 'How long highlighted regions remain visible before fading out.',
-                            valueLabel: '${stateValue.animationHighlightDecayMs}ms',
+                            description:
+                                'How long highlighted regions remain visible before fading out.',
+                            valueLabel:
+                                '${stateValue.animationHighlightDecayMs}ms',
                             min: 150,
                             max: 1500,
                             divisions: 45,
-                            value: stateValue.animationHighlightDecayMs.toDouble(),
-                            onChanged: (value) => onHighlightDecayChanged(value.round()),
+                            value:
+                                stateValue.animationHighlightDecayMs.toDouble(),
+                            onChanged: (value) =>
+                                onHighlightDecayChanged(value.round()),
                           ),
                           const SizedBox(height: 10),
                           _SliderTile(
                             label: 'Overlay Opacity',
-                            description: 'Adjusts visibility strength of the highlight overlay on top of your UI.',
-                            valueLabel: stateValue.animationHighlightOpacity.toStringAsFixed(2),
+                            description:
+                                'Adjusts visibility strength of the highlight overlay on top of your UI.',
+                            valueLabel: stateValue.animationHighlightOpacity
+                                .toStringAsFixed(2),
                             min: 0.1,
                             max: 0.9,
                             divisions: 40,
@@ -223,7 +250,8 @@ class _CurvePresetSelector extends StatefulWidget {
   State<_CurvePresetSelector> createState() => _CurvePresetSelectorState();
 }
 
-class _CurvePresetSelectorState extends State<_CurvePresetSelector> with SingleTickerProviderStateMixin {
+class _CurvePresetSelectorState extends State<_CurvePresetSelector>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _previewController;
 
   @override
@@ -353,9 +381,13 @@ class _CurvePresetRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: isSelected ? accent.withValues(alpha: 0.22) : Colors.white.withValues(alpha: 0.03),
+            color: isSelected
+                ? accent.withValues(alpha: 0.22)
+                : Colors.white.withValues(alpha: 0.03),
             border: Border.all(
-              color: isSelected ? accent.withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.08),
+              color: isSelected
+                  ? accent.withValues(alpha: 0.9)
+                  : Colors.white.withValues(alpha: 0.08),
             ),
           ),
           child: Row(
@@ -366,7 +398,9 @@ class _CurvePresetRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: isSelected ? accent : Colors.white.withValues(alpha: 0.75),
+                    color: isSelected
+                        ? accent
+                        : Colors.white.withValues(alpha: 0.75),
                     fontFamily: flutterLensFontFamily,
                   ),
                 ),
@@ -389,7 +423,9 @@ class _CurvePresetRow extends StatelessWidget {
                         width: 16,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: isSelected ? accent : Colors.white.withValues(alpha: 0.75),
+                          color: isSelected
+                              ? accent
+                              : Colors.white.withValues(alpha: 0.75),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -458,7 +494,8 @@ class _SectionCard extends StatelessWidget {
                             accentColor.withValues(alpha: 0.08),
                           ],
                         ),
-                        border: Border.all(color: accentColor.withValues(alpha: 0.35)),
+                        border: Border.all(
+                            color: accentColor.withValues(alpha: 0.35)),
                       ),
                       child: Icon(icon, size: 16, color: accentColor),
                     ),
@@ -477,7 +514,8 @@ class _SectionCard extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 14),
-                  child: Divider(height: 1, color: Colors.white.withValues(alpha: 0.06)),
+                  child: Divider(
+                      height: 1, color: Colors.white.withValues(alpha: 0.06)),
                 ),
                 child,
               ],
@@ -513,7 +551,9 @@ class _HeaderIconButton extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
-          child: Icon(icon, size: 18, color: DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.45)),
+          child: Icon(icon,
+              size: 18,
+              color: DebugToolsPanelStyles.textPrimary.withValues(alpha: 0.45)),
         ),
       ),
     );
@@ -742,7 +782,8 @@ class _NoticeTile extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 1),
-            child: Icon(Icons.warning_amber_rounded, size: 14, color: Color(0xFFF7A250)),
+            child: Icon(Icons.warning_amber_rounded,
+                size: 14, color: Color(0xFFF7A250)),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -797,7 +838,8 @@ class _TickerInspectorState extends State<_TickerInspector> {
     final nextTransient = scheduler.transientCallbackCount;
     final nextHasScheduledFrame = scheduler.hasScheduledFrame;
 
-    if (nextTransient == _transientCallbacks && nextHasScheduledFrame == _hasScheduledFrame) {
+    if (nextTransient == _transientCallbacks &&
+        nextHasScheduledFrame == _hasScheduledFrame) {
       return;
     }
 
@@ -810,7 +852,8 @@ class _TickerInspectorState extends State<_TickerInspector> {
   @override
   Widget build(BuildContext context) {
     final bool tickerPaused = widget.stateValue.shouldPauseAnimations;
-    final bool compatMode = widget.stateValue.shouldUseAnimationHighlightCompatibility;
+    final bool compatMode =
+        widget.stateValue.shouldUseAnimationHighlightCompatibility;
 
     final String statusLabel;
     final Color statusColor;
@@ -916,7 +959,9 @@ class _TickerInspectorState extends State<_TickerInspector> {
               _InspectorRow(
                 label: 'Highlight Engine',
                 value: compatMode ? 'Compatibility' : 'Heatmap',
-                note: compatMode ? 'Safe mode on this device/renderer.' : 'Per-region motion heatmap sampling.',
+                note: compatMode
+                    ? 'Safe mode on this device/renderer.'
+                    : 'Per-region motion heatmap sampling.',
               ),
             ],
           ),
