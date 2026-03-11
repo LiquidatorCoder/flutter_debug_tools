@@ -39,7 +39,7 @@ class _DebugLogsViewerState extends State<DebugLogsViewer> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
+                        letterSpacing: -0.2,
                         color: DebugToolsPanelStyles.textPrimary,
                         fontFamily: flutterLensFontFamily,
                       ),
