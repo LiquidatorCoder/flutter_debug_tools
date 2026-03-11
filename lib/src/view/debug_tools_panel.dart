@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
+import 'package:flutter_debug_tools/src/flutter_debug_tools_version.dart';
 import 'package:flutter_debug_tools/src/utils/dart_runtime_info.dart';
 import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
 import 'package:flutter_debug_tools/src/view/flutter_lens_theme.dart';
@@ -46,10 +47,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
   late final Animation<double> _barrierOpacityAnimation;
   bool _isDismissing = false;
   String _appVersion = 'loading';
-  final String _debugToolsVersion = const String.fromEnvironment(
-    'FLUTTER_DEBUG_TOOLS_VERSION',
-    defaultValue: '1.0.0',
-  );
+  final String _debugToolsVersion = flutterDebugToolsVersion;
   String _flutterVersion = 'loading';
   String _dartVersion = 'loading';
 
