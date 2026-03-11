@@ -25,6 +25,8 @@ screenshots:
     path: screenshots/image.png
 
 flutter:
+  assets:
+    - assets/images/icon.png
   fonts:
     - family: DMSans
       fonts:

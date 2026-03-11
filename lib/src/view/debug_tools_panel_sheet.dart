@@ -122,25 +122,60 @@ class DebugToolsPanelSheet extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(24, 0, 24, 20),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'FlutterLens',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.2,
-                            color: DebugToolsPanelStyles.textPrimary,
-                            fontFamily: flutterLensFontFamily,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Stack(
+                            alignment: Alignment.center,
+                            clipBehavior: Clip.none,
+                            children: [
+                              ImageFiltered(
+                                imageFilter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: const Image(
+                                    image: AssetImage(
+                                      'assets/images/icon.png',
+                                      package: 'flutter_debug_tools',
+                                    ),
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
+                              ),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: const Image(
+                                  image: AssetImage(
+                                    'assets/images/icon.png',
+                                    package: 'flutter_debug_tools',
+                                  ),
+                                  width: 24,
+                                  height: 24,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'FlutterLens',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.2,
+                              color: DebugToolsPanelStyles.textPrimary,
+                              fontFamily: flutterLensFontFamily,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Container(
                       height: 1,
-                      margin: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+                      margin: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.centerLeft,
@@ -154,7 +189,7 @@ class DebugToolsPanelSheet extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                      padding: const EdgeInsets.fromLTRB(20, 32, 20, 32),
                       child: LayoutBuilder(
                         builder: (context, constraints) {
                           final double cellWidth = (constraints.maxWidth - (12 * 3)) / 4;

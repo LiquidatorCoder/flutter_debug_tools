@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
@@ -20,9 +22,8 @@ class DebugIndicator extends StatefulWidget {
 class _DebugIndicatorState extends State<DebugIndicator> {
   final DeviceInfoManager deviceInfoManager = DeviceInfoManager.instance;
 
-  static const double _trayWidth = 34;
-  static const double _trayHeight = 44;
-  static const double _edgeMargin = 2;
+  static const double _trayWidth = 48;
+  static const double _trayHeight = 48;
 
   double? _trayTop;
   bool _trayPressed = false;
@@ -77,7 +78,7 @@ class _DebugIndicatorState extends State<DebugIndicator> {
             return Stack(
               children: [
                 Positioned(
-                  right: -_edgeMargin,
+                  right: -10,
                   top: _trayTop,
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 20, end: 0),
@@ -126,47 +127,43 @@ class _DebugTray extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const LinearGradient accent = LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [Color(0xFFF7A250), Color(0xFFE24A79), Color(0xFF5A3386)],
-    );
-
     return SizedBox(
       width: width,
       height: height,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(14),
-          bottomLeft: Radius.circular(14),
-        ),
-        child: Container(
-          width: width,
-          decoration: const BoxDecoration(
-            gradient: accent,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: const ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                ),
+                child: Image(
+                  image: AssetImage(
+                    'assets/images/icon.png',
+                    package: 'flutter_debug_tools',
+                  ),
+                  width: 34,
+                  height: 34,
+                ),
+              )),
+          const ClipRRect(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(14),
-              bottomLeft: Radius.circular(14),
+              topLeft: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
             ),
-            border: Border(
-              left: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.2)),
-              top: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.2)),
-              bottom: BorderSide(color: Color.fromRGBO(255, 255, 255, 0.2)),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.5),
-                blurRadius: 24,
-                offset: Offset(0, 0),
+            child: Image(
+              image: AssetImage(
+                'assets/images/icon.png',
+                package: 'flutter_debug_tools',
               ),
-            ],
+              width: 34,
+              height: 34,
+            ),
           ),
-          child: const Icon(
-            Icons.bug_report,
-            size: 13,
-            color: Color.fromRGBO(255, 255, 255, 0.85),
-          ),
-        ),
+        ],
       ),
     );
   }
