@@ -58,7 +58,7 @@ class DebugToolsPanelSheet extends StatelessWidget {
     final int r = (color.r * 255).round().clamp(0, 255);
     final int g = (color.g * 255).round().clamp(0, 255);
     final int b = (color.b * 255).round().clamp(0, 255);
-    return 'rgb($r, $g, $b)';
+    return '$r, $g, $b';
   }
 
   String _hslText(Color color) {
@@ -66,7 +66,7 @@ class DebugToolsPanelSheet extends StatelessWidget {
     final int h = hsl.hue.round();
     final int s = (hsl.saturation * 100).round();
     final int l = (hsl.lightness * 100).round();
-    return 'hsl($h, $s%, $l%)';
+    return '$h, $s%, $l%';
   }
 
   @override
@@ -219,7 +219,8 @@ class DebugToolsPanelSheet extends StatelessWidget {
                         child: _ColorResultCard(
                           color: selectedColor!,
                           hexText: colorToHexString(selectedColor!),
-                          subText: '${_rgbText(selectedColor!)}  -  ${_hslText(selectedColor!)}',
+                          rgbText: _rgbText(selectedColor!),
+                          hslText: _hslText(selectedColor!),
                           onCopyTap: onClearColor,
                         ),
                       ),
@@ -238,13 +239,15 @@ class DebugToolsPanelSheet extends StatelessWidget {
 class _ColorResultCard extends StatelessWidget {
   final Color color;
   final String hexText;
-  final String subText;
+  final String rgbText;
+  final String hslText;
   final VoidCallback onCopyTap;
 
   const _ColorResultCard({
     required this.color,
     required this.hexText,
-    required this.subText,
+    required this.rgbText,
+    required this.hslText,
     required this.onCopyTap,
   });
 
@@ -291,38 +294,11 @@ class _ColorResultCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      hexText.toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1,
-                        color: DebugToolsPanelStyles.textPrimary,
-                        fontFamily: flutterLensFontFamily,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    const _ColorTag(label: 'HEX'),
-                    const SizedBox(width: 4),
-                    const _ColorTag(label: 'RGB'),
-                    const SizedBox(width: 4),
-                    const _ColorTag(label: 'HSL'),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  subText,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: DebugToolsPanelStyles.textSecondary,
-                    letterSpacing: 0.2,
-                    fontFamily: flutterLensFontFamily,
-                  ),
-                ),
+                _ColorValueLine(value: hexText.toUpperCase(), tag: 'HEX'),
+                const SizedBox(height: 3),
+                _ColorValueLine(value: rgbText, tag: 'RGB'),
+                const SizedBox(height: 3),
+                _ColorValueLine(value: hslText, tag: 'HSL'),
               ],
             ),
           ),
@@ -354,6 +330,36 @@ class _ColorResultCard extends StatelessWidget {
   }
 }
 
+class _ColorValueLine extends StatelessWidget {
+  final String value;
+  final String tag;
+
+  const _ColorValueLine({required this.value, required this.tag});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 10,
+              color: DebugToolsPanelStyles.textSecondary,
+              letterSpacing: 0.2,
+              fontFamily: flutterLensFontFamily,
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        _ColorTag(label: tag),
+      ],
+    );
+  }
+}
+
 class _ColorTag extends StatelessWidget {
   final String label;
 
@@ -376,6 +382,7 @@ class _ColorTag extends StatelessWidget {
           letterSpacing: 0.4,
           color: Color.fromRGBO(255, 255, 255, 0.30),
           fontFamily: flutterLensFontFamily,
+          fontFeatures: [FontFeature.tabularFigures()],
         ),
       ),
     );
