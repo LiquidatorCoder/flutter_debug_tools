@@ -360,7 +360,6 @@ class _DevTickerRowState extends State<_DevTickerRow> with SingleTickerProviderS
   final GlobalKey _segmentKey = GlobalKey();
   late final AnimationController _marqueeController;
 
-  static const double _segmentGap = 16;
   static const double _pixelsPerSecond = 26;
   static const double _tickerHeight = 14;
   double _segmentExtent = 0;
@@ -458,7 +457,7 @@ class _DevTickerRowState extends State<_DevTickerRow> with SingleTickerProviderS
         ),
         const SizedBox(width: 4),
         Text(
-          item.value,
+          item.value.toUpperCase(),
           style: const TextStyle(
             fontSize: 9,
             fontWeight: FontWeight.w600,
@@ -476,13 +475,12 @@ class _DevTickerRowState extends State<_DevTickerRow> with SingleTickerProviderS
       children: [
         for (int i = 0; i < widget.items.length; i++) ...[
           _buildItem(widget.items[i]),
-          if (i != widget.items.length - 1)
-            Container(
-              width: 1,
-              height: 10,
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              color: const Color.fromRGBO(255, 255, 255, 0.07),
-            ),
+          Container(
+            width: 1,
+            height: 10,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            color: const Color.fromRGBO(255, 255, 255, 0.07),
+          ),
         ],
       ],
     );
@@ -495,14 +493,12 @@ class _DevTickerRowState extends State<_DevTickerRow> with SingleTickerProviderS
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildTickerContent(),
-        const SizedBox(width: _segmentGap),
       ],
     );
     final Widget duplicateSegment = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildTickerContent(),
-        const SizedBox(width: _segmentGap),
       ],
     );
 
