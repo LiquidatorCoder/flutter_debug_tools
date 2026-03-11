@@ -1,3 +1,10 @@
+## 2.0.3
+
+- **UI/UX Improvements:** Refined FlutterLens panel, logs viewer, and related debug views for better layout and usability.
+- **Bug Fixes:** Fixed color overflow and marquee behavior issues in debug UI flows.
+- **Visual Refresh:** Updated tool sheet/tray icon, fonts, screenshots, and image assets.
+- **Documentation:** Refreshed README content and image descriptions.
+
 ## 2.0.2
 
 - **Static Analysis Fix:** Added an explicit return type to `RenderBoxInspector.show` to satisfy `lints_core` missing type annotation checks.
