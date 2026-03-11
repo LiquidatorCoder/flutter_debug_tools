@@ -45,8 +45,8 @@
 - 🎯 **Color Picker**: Pick any on-screen pixel color quickly.
 - 🧱 **Debug Paint / Layout Insights**: Visualize layout boundaries and spacing behavior.
 - 🌈 **Repaint Rainbow**: Spot frequent repaints to detect expensive widgets.
-- 🎛️ **Animation Toolbox**: Control animation speed, pause, reduce motion, and inspect animated regions.
-  - Includes global curve presets (`System`, `Linear`, `Ease In Out`, `Bounce Out`) for animations that opt into FlutterLens curve scope.
+- 🎛️ **Animation Toolbox**: Control animation speed, pause, disable animations, frame timing HUD, and animated-region highlights.
+  - Includes global curve presets (for example: `System`, `Linear`, `Ease In Out`, `Bounce Out`, and more) for animations that opt into FlutterLens curve scope.
 - ⚡ **Performance Overlay Toggle**: Enable Flutter performance overlay directly from the panel.
 - 🧲 **Edge Tray Launcher**: Open FlutterLens from a draggable edge tray.
 - 🧾 **Version Ticker**: Live ticker for app/build/flutter/dart/FlutterLens versions.
@@ -74,7 +74,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_debug_tools: ^2.0.0
+  flutter_debug_tools: ^2.0.4
 ```
 
 Then run:
@@ -145,6 +145,20 @@ class MyApp extends StatelessWidget {
 }
 ```
 
+### 🎚️ Opt animations into global curve override
+
+Animation Toolbox curve presets apply to animations that resolve their curve from `FlutterLensAnimationCurveScope`:
+
+```dart
+final curve = FlutterLensAnimationCurveScope.resolve(context, Curves.easeInOutCubic);
+
+AnimatedContainer(
+  duration: const Duration(milliseconds: 500),
+  curve: curve,
+  child: const Placeholder(),
+)
+```
+
 ### 🎛️ Disable in non-debug environments
 
 ```dart
@@ -206,6 +220,11 @@ MaterialApp(
 - Drag the right-edge tray up/down to reposition.
 - Tap the tray to open FlutterLens.
 
+### 🌐 Network Inspector coverage
+
+- Captures requests made through `dart:io` `HttpClient` (including typical `package:http` usage on Android/iOS/desktop).
+- Does not capture web `fetch/XHR` traffic.
+
 ---
 
 ## 💡 Tips
@@ -213,6 +232,8 @@ MaterialApp(
 - Use FlutterLens only in debug/dev environments.
 - Add `DebugNavigatorObserver` for better route visibility in overlays.
 - Keep an eye on `Repaint Rainbow` + `Performance Overlay` together for quick perf diagnosis.
+- Use `FlutterLensAnimationCurveScope.resolve(...)` in your app animations when you want Animation Toolbox curve overrides to affect them.
+- Network Inspector currently targets `dart:io` `HttpClient` traffic.
 - If Dart/Flutter versions show fallback values, pass build-time dart-defines for those keys.
 
 ---
