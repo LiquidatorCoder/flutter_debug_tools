@@ -225,6 +225,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
   List<DebugToolItem> _buildToolItems() {
     final bool hasAnimationOverrides =
         state.value.animationSpeedFactor != DebugToolsState.defaultAnimationSpeedFactor ||
+            state.value.animationCurvePreset != AnimationCurvePreset.system ||
             state.value.shouldPauseAnimations ||
             state.value.shouldDisableAnimations ||
             state.value.shouldShowAnimationHighlights ||

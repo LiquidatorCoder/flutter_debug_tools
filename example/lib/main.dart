@@ -83,6 +83,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final switchCurve = FlutterLensAnimationCurveScope.resolve(context, Curves.easeOutBack);
+    final cardCurve = FlutterLensAnimationCurveScope.resolve(context, Curves.easeInOutCubic);
+    final pulseCurve = FlutterLensAnimationCurveScope.resolve(context, Curves.easeInOut);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -101,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 return ScaleTransition(
                   scale: CurvedAnimation(
                     parent: animation,
-                    curve: Curves.easeOutBack,
+                    curve: switchCurve,
                   ),
                   child: FadeTransition(opacity: animation, child: child),
                 );
@@ -124,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             const SizedBox(height: 18),
             AnimatedContainer(
               duration: const Duration(milliseconds: 900),
-              curve: Curves.easeInOutCubic,
+              curve: cardCurve,
               width: _animateCard ? 220 : 160,
               height: _animateCard ? 72 : 56,
               decoration: BoxDecoration(
@@ -141,14 +145,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               opacity: Tween<double>(begin: 0.25, end: 1.0).animate(
                 CurvedAnimation(
                   parent: _pulseController,
-                  curve: Curves.easeInOut,
+                  curve: pulseCurve,
                 ),
               ),
               child: ScaleTransition(
                 scale: Tween<double>(begin: 0.92, end: 1.08).animate(
                   CurvedAnimation(
                     parent: _pulseController,
-                    curve: Curves.easeInOut,
+                    curve: pulseCurve,
                   ),
                 ),
                 child: Container(
@@ -170,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               height: 44,
               child: AnimatedAlign(
                 duration: const Duration(milliseconds: 550),
-                curve: Curves.easeInOutCubic,
+                curve: cardCurve,
                 alignment: _toggleExtras ? Alignment.centerRight : Alignment.centerLeft,
                 child: Container(
                   width: 104,
@@ -187,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             const SizedBox(height: 12),
             AnimatedOpacity(
               duration: const Duration(milliseconds: 480),
-              curve: Curves.easeInOut,
+              curve: pulseCurve,
               opacity: _toggleExtras ? 1.0 : 0.2,
               child: Container(
                 width: 140,

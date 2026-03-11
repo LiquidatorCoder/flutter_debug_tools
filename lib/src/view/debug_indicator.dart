@@ -53,6 +53,10 @@ class _DebugIndicatorState extends State<DebugIndicator> {
       if (value == null) return;
       state.value = state.value.copyWith(animationSpeedFactor: value.clamp(0.25, 2.0));
     });
+    prefs.getString("animationCurvePreset").then((value) {
+      if (value == null) return;
+      state.value = state.value.copyWith(animationCurvePreset: AnimationCurvePreset.fromId(value));
+    });
     prefs.getBool("shouldPauseAnimations").then((value) {
       state.value = state.value.copyWith(shouldPauseAnimations: value == true);
     });

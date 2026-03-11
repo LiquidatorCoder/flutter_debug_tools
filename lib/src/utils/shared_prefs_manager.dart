@@ -43,4 +43,14 @@ class SharedPrefsManager {
     final prefs = await _preferences;
     return prefs.setInt(key, value);
   }
+
+  Future<String?> getString(String key) async {
+    final prefs = await _preferences;
+    return prefs.getString(key);
+  }
+
+  Future<bool> setString(String key, String value) async {
+    final prefs = await _preferences;
+    return prefs.setString(key, value);
+  }
 }

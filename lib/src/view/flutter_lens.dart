@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_debug_tools/src/animation_curve_override.dart';
 import 'package:flutter_debug_tools/src/debug_log_store.dart';
 import 'package:flutter_debug_tools/src/state/debug_tools_state.dart';
 import 'package:flutter_debug_tools/src/utils/shared_prefs_manager.dart';
@@ -83,6 +84,11 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
     final clamped = speed.clamp(0.25, 2.0);
     state.value = state.value.copyWith(animationSpeedFactor: clamped);
     SharedPrefsManager.instance.setDouble('animationSpeedFactor', clamped);
+  }
+
+  void _setAnimationCurvePreset(AnimationCurvePreset preset) {
+    state.value = state.value.copyWith(animationCurvePreset: preset);
+    SharedPrefsManager.instance.setString('animationCurvePreset', preset.id);
   }
 
   void _setPauseAnimations(bool value) {
@@ -190,6 +196,42 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
     SharedPrefsManager.instance.setInt('animationHighlightDecayMs', DebugToolsState.defaultAnimationHighlightDecayMs);
     SharedPrefsManager.instance
         .setDouble('animationHighlightOpacity', DebugToolsState.defaultAnimationHighlightOpacity);
+    SharedPrefsManager.instance.setString('animationCurvePreset', AnimationCurvePreset.system.id);
+  }
+
+  Curve? _resolveOverrideCurve(AnimationCurvePreset preset) {
+    switch (preset) {
+      case AnimationCurvePreset.system:
+        return null;
+      case AnimationCurvePreset.linear:
+        return Curves.linear;
+      case AnimationCurvePreset.easeIn:
+        return Curves.easeIn;
+      case AnimationCurvePreset.easeOut:
+        return Curves.easeOut;
+      case AnimationCurvePreset.easeInOut:
+        return Curves.easeInOut;
+      case AnimationCurvePreset.easeInCubic:
+        return Curves.easeInCubic;
+      case AnimationCurvePreset.easeOutCubic:
+        return Curves.easeOutCubic;
+      case AnimationCurvePreset.easeInOutCubic:
+        return Curves.easeInOutCubic;
+      case AnimationCurvePreset.fastOutSlowIn:
+        return Curves.fastOutSlowIn;
+      case AnimationCurvePreset.decelerate:
+        return Curves.decelerate;
+      case AnimationCurvePreset.bounceIn:
+        return Curves.bounceIn;
+      case AnimationCurvePreset.bounceOut:
+        return Curves.bounceOut;
+      case AnimationCurvePreset.bounceInOut:
+        return Curves.bounceInOut;
+      case AnimationCurvePreset.elasticOut:
+        return Curves.elasticOut;
+      case AnimationCurvePreset.easeOutBack:
+        return Curves.easeOutBack;
+    }
   }
 
   void _syncTimeDilation(DebugToolsState value) {
@@ -246,6 +288,11 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
     content = DebugAnimationHighlightCompatOverlay(
       isEnabled: value.shouldUseAnimationHighlightCompatibility,
       opacity: value.animationHighlightOpacity,
+      child: content,
+    );
+
+    content = FlutterLensAnimationCurveScope(
+      overrideCurve: _resolveOverrideCurve(value.animationCurvePreset),
       child: content,
     );
 
@@ -353,6 +400,7 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
                               onClose: _toggleAnimationToolbox,
                               onReset: _resetAnimationToolboxSettings,
                               onAnimationSpeedChanged: _setAnimationSpeed,
+                              onAnimationCurvePresetChanged: _setAnimationCurvePreset,
                               onPauseAnimationsChanged: _setPauseAnimations,
                               onDisableAnimationsChanged: _setDisableAnimations,
                               onHighlightAnimationsChanged: _setAnimationHighlights,

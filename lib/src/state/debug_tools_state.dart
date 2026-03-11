@@ -1,5 +1,37 @@
 import 'package:flutter/material.dart';
 
+enum AnimationCurvePreset {
+  system('system', 'System'),
+  linear('linear', 'Linear'),
+  easeIn('easeIn', 'Ease In'),
+  easeOut('easeOut', 'Ease Out'),
+  easeInOut('easeInOut', 'Ease In Out'),
+  easeInCubic('easeInCubic', 'Ease In Cubic'),
+  easeOutCubic('easeOutCubic', 'Ease Out Cubic'),
+  easeInOutCubic('easeInOutCubic', 'Ease In Out Cubic'),
+  fastOutSlowIn('fastOutSlowIn', 'Fast Out Slow In'),
+  decelerate('decelerate', 'Decelerate'),
+  bounceIn('bounceIn', 'Bounce In'),
+  bounceOut('bounceOut', 'Bounce Out'),
+  bounceInOut('bounceInOut', 'Bounce In Out'),
+  elasticOut('elasticOut', 'Elastic Out'),
+  easeOutBack('easeOutBack', 'Ease Out Back');
+
+  const AnimationCurvePreset(this.id, this.label);
+
+  final String id;
+  final String label;
+
+  static AnimationCurvePreset fromId(String id) {
+    for (final value in AnimationCurvePreset.values) {
+      if (value.id == id) {
+        return value;
+      }
+    }
+    return AnimationCurvePreset.system;
+  }
+}
+
 class DebugToolsState {
   static const double defaultAnimationSpeedFactor = 1.0;
   static const double defaultAnimationHighlightSensitivity = 18.0;
@@ -20,6 +52,7 @@ class DebugToolsState {
   final bool shouldShowRenderBoxDetails;
   final bool shouldShowAnimationToolbox;
   final double animationSpeedFactor;
+  final AnimationCurvePreset animationCurvePreset;
   final bool shouldPauseAnimations;
   final bool shouldDisableAnimations;
   final bool shouldShowAnimationHighlights;
@@ -44,6 +77,7 @@ class DebugToolsState {
     this.shouldShowRenderBoxDetails = false,
     this.shouldShowAnimationToolbox = false,
     this.animationSpeedFactor = defaultAnimationSpeedFactor,
+    this.animationCurvePreset = AnimationCurvePreset.system,
     this.shouldPauseAnimations = false,
     this.shouldDisableAnimations = false,
     this.shouldShowAnimationHighlights = false,
@@ -69,6 +103,7 @@ class DebugToolsState {
     bool? shouldShowRenderBoxDetails,
     bool? shouldShowAnimationToolbox,
     double? animationSpeedFactor,
+    AnimationCurvePreset? animationCurvePreset,
     bool? shouldPauseAnimations,
     bool? shouldDisableAnimations,
     bool? shouldShowAnimationHighlights,
@@ -93,6 +128,7 @@ class DebugToolsState {
       shouldShowRenderBoxDetails: shouldShowRenderBoxDetails ?? this.shouldShowRenderBoxDetails,
       shouldShowAnimationToolbox: shouldShowAnimationToolbox ?? this.shouldShowAnimationToolbox,
       animationSpeedFactor: animationSpeedFactor ?? this.animationSpeedFactor,
+      animationCurvePreset: animationCurvePreset ?? this.animationCurvePreset,
       shouldPauseAnimations: shouldPauseAnimations ?? this.shouldPauseAnimations,
       shouldDisableAnimations: shouldDisableAnimations ?? this.shouldDisableAnimations,
       shouldShowAnimationHighlights: shouldShowAnimationHighlights ?? this.shouldShowAnimationHighlights,
@@ -123,6 +159,7 @@ class DebugToolsState {
       shouldShowRenderBoxDetails: shouldShowRenderBoxDetails,
       shouldShowAnimationToolbox: shouldShowAnimationToolbox,
       animationSpeedFactor: animationSpeedFactor,
+      animationCurvePreset: animationCurvePreset,
       shouldPauseAnimations: shouldPauseAnimations,
       shouldDisableAnimations: shouldDisableAnimations,
       shouldShowAnimationHighlights: shouldShowAnimationHighlights,
@@ -138,6 +175,7 @@ class DebugToolsState {
   DebugToolsState resetAnimationToolboxSettings() {
     return copyWith(
       animationSpeedFactor: defaultAnimationSpeedFactor,
+      animationCurvePreset: AnimationCurvePreset.system,
       shouldPauseAnimations: false,
       shouldDisableAnimations: false,
       shouldShowAnimationHighlights: false,

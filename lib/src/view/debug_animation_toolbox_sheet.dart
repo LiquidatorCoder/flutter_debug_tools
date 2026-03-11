@@ -13,6 +13,7 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
     required this.onClose,
     required this.onReset,
     required this.onAnimationSpeedChanged,
+    required this.onAnimationCurvePresetChanged,
     required this.onPauseAnimationsChanged,
     required this.onDisableAnimationsChanged,
     required this.onHighlightAnimationsChanged,
@@ -26,6 +27,7 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
   final VoidCallback onClose;
   final VoidCallback onReset;
   final ValueChanged<double> onAnimationSpeedChanged;
+  final ValueChanged<AnimationCurvePreset> onAnimationCurvePresetChanged;
   final ValueChanged<bool> onPauseAnimationsChanged;
   final ValueChanged<bool> onDisableAnimationsChanged;
   final ValueChanged<bool> onHighlightAnimationsChanged;
@@ -180,11 +182,216 @@ class DebugAnimationToolboxSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     _SectionCard(
+                      title: 'GLOBAL CURVES OVERRIDE',
+                      icon: Icons.multiline_chart_rounded,
+                      accentColor: const Color(0xFFE24A79),
+                      child: _CurvePresetSelector(
+                        selected: stateValue.animationCurvePreset,
+                        onChanged: onAnimationCurvePresetChanged,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _SectionCard(
                       title: 'TICKER INSPECTOR',
                       icon: Icons.query_stats_rounded,
                       accentColor: const Color(0xFF4ADE80),
                       child: _TickerInspector(
                         stateValue: stateValue,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CurvePresetSelector extends StatefulWidget {
+  const _CurvePresetSelector({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final AnimationCurvePreset selected;
+  final ValueChanged<AnimationCurvePreset> onChanged;
+
+  @override
+  State<_CurvePresetSelector> createState() => _CurvePresetSelectorState();
+}
+
+class _CurvePresetSelectorState extends State<_CurvePresetSelector> with SingleTickerProviderStateMixin {
+  late final AnimationController _previewController;
+
+  @override
+  void initState() {
+    super.initState();
+    _previewController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _previewController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _previewController,
+      builder: (context, _) {
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: Colors.white.withValues(alpha: 0.03),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Affects animations that opt into FlutterLens curve scope.',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.white70,
+                  fontFamily: flutterLensFontFamily,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Column(
+                children: [
+                  for (final preset in AnimationCurvePreset.values)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: _CurvePresetRow(
+                        label: preset.label,
+                        curve: _curveForPreset(preset),
+                        progress: _previewController.value,
+                        isSelected: preset == widget.selected,
+                        onTap: () => widget.onChanged(preset),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Curve _curveForPreset(AnimationCurvePreset preset) {
+    switch (preset) {
+      case AnimationCurvePreset.system:
+        return Curves.easeInOut;
+      case AnimationCurvePreset.linear:
+        return Curves.linear;
+      case AnimationCurvePreset.easeIn:
+        return Curves.easeIn;
+      case AnimationCurvePreset.easeOut:
+        return Curves.easeOut;
+      case AnimationCurvePreset.easeInOut:
+        return Curves.easeInOut;
+      case AnimationCurvePreset.easeInCubic:
+        return Curves.easeInCubic;
+      case AnimationCurvePreset.easeOutCubic:
+        return Curves.easeOutCubic;
+      case AnimationCurvePreset.easeInOutCubic:
+        return Curves.easeInOutCubic;
+      case AnimationCurvePreset.fastOutSlowIn:
+        return Curves.fastOutSlowIn;
+      case AnimationCurvePreset.decelerate:
+        return Curves.decelerate;
+      case AnimationCurvePreset.bounceIn:
+        return Curves.bounceIn;
+      case AnimationCurvePreset.bounceOut:
+        return Curves.bounceOut;
+      case AnimationCurvePreset.bounceInOut:
+        return Curves.bounceInOut;
+      case AnimationCurvePreset.elasticOut:
+        return Curves.elasticOut;
+      case AnimationCurvePreset.easeOutBack:
+        return Curves.easeOutBack;
+    }
+  }
+}
+
+class _CurvePresetRow extends StatelessWidget {
+  const _CurvePresetRow({
+    required this.label,
+    required this.curve,
+    required this.progress,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final Curve curve;
+  final double progress;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    const accent = Color(0xFFE24A79);
+    final curvedValue = curve.transform(progress).clamp(0.0, 1.0);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: isSelected ? accent.withValues(alpha: 0.22) : Colors.white.withValues(alpha: 0.03),
+            border: Border.all(
+              color: isSelected ? accent.withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.08),
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: isSelected ? accent : Colors.white.withValues(alpha: 0.75),
+                    fontFamily: flutterLensFontFamily,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 84,
+                height: 18,
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    Container(
+                      height: 2,
+                      width: 84,
+                      color: Colors.white.withValues(alpha: 0.16),
+                    ),
+                    Positioned(
+                      left: curvedValue * 68,
+                      child: Container(
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: isSelected ? accent : Colors.white.withValues(alpha: 0.75),
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
                   ],

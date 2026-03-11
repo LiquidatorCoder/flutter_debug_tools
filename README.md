@@ -45,6 +45,7 @@
 - 🧱 **Debug Paint / Layout Insights**: Visualize layout boundaries and spacing behavior.
 - 🌈 **Repaint Rainbow**: Spot frequent repaints to detect expensive widgets.
 - 🎛️ **Animation Toolbox**: Control animation speed, pause, reduce motion, and inspect animated regions.
+  - Includes global curve presets (`System`, `Linear`, `Ease In Out`, `Bounce Out`) for animations that opt into FlutterLens curve scope.
 - ⚡ **Performance Overlay Toggle**: Enable Flutter performance overlay directly from the panel.
 - 🧲 **Edge Tray Launcher**: Open FlutterLens from a draggable edge tray.
 - 🧾 **Version Ticker**: Live ticker for app/build/flutter/dart/FlutterLens versions.
