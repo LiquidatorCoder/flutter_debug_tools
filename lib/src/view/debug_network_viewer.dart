@@ -826,12 +826,15 @@ class _HeadersTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (headers.isEmpty) {
-      return Text(
-        '--',
-        style: TextStyle(
-          fontSize: 10,
-          color: Colors.white.withValues(alpha: 0.72),
-          fontFamily: flutterLensFontFamily,
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Text(
+          '--',
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.white.withValues(alpha: 0.72),
+            fontFamily: flutterLensFontFamily,
+          ),
         ),
       );
     }
