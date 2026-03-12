@@ -33,6 +33,7 @@ class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     return FlutterLens(
+      isEnabled: true,
       builder: (BuildContext context, bool shouldShowPerfOverlay, Widget? child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
