@@ -1,3 +1,8 @@
+/// Public API surface for Flutter Debug Tools.
+///
+/// Import this library to use [`FlutterLens`], log capture utilities,
+/// navigation observer integration, animation curve override helpers,
+/// and network inspection models.
 library;
 
 export 'src/view/flutter_lens.dart';

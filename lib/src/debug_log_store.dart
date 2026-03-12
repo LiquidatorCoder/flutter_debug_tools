@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
+/// Severity levels used by [DebugLogEntry] and [DebugLogStore].
 enum DebugLogLevel {
   verbose,
   debug,
@@ -12,27 +13,40 @@ enum DebugLogLevel {
   error,
 }
 
+/// A single captured log row with message, severity, and timestamp.
 class DebugLogEntry {
+  /// Creates a log entry snapshot.
   const DebugLogEntry({
     required this.message,
     required this.level,
     required this.timestamp,
   });
 
+  /// Raw text payload captured from print/error handlers.
   final String message;
+
+  /// Severity inferred from message content or provided explicitly.
   final DebugLogLevel level;
+
+  /// Time when this entry was added to the store.
   final DateTime timestamp;
 }
 
+/// In-memory log buffer used by FlutterLens log viewer.
 class DebugLogStore {
   DebugLogStore._();
 
+  /// Singleton instance shared by FlutterLens internals and app code.
   static final DebugLogStore instance = DebugLogStore._();
 
   static const int _maxLogs = 1000;
 
+  /// Reactive list of currently captured log entries.
   final ValueNotifier<List<DebugLogEntry>> logs = ValueNotifier<List<DebugLogEntry>>(<DebugLogEntry>[]);
 
+  /// Adds a log message to the store.
+  ///
+  /// If [level] is omitted, a best-effort level is inferred from [message].
   void add(
     String message, {
     DebugLogLevel? level,
@@ -58,6 +72,7 @@ class DebugLogStore {
     logs.value = next;
   }
 
+  /// Adds an error and stack trace as `error`-level log entries.
   void addError(Object error, StackTrace stackTrace) {
     add(error.toString(), level: DebugLogLevel.error);
     final stackTraceMessage = stackTrace.toString().trim();
@@ -66,10 +81,12 @@ class DebugLogStore {
     }
   }
 
+  /// Clears all currently captured entries.
   void clear() {
     logs.value = <DebugLogEntry>[];
   }
 
+  /// Read-only snapshot view of [logs].
   UnmodifiableListView<DebugLogEntry> get entries => UnmodifiableListView<DebugLogEntry>(logs.value);
 
   DebugLogLevel _resolveLevel(String message) {
@@ -99,6 +116,7 @@ class DebugLogStore {
   }
 }
 
+/// Hooks framework and zone-level logging into [DebugLogStore].
 class DebugLogCapture {
   DebugLogCapture._();
 
@@ -106,6 +124,7 @@ class DebugLogCapture {
   static FlutterExceptionHandler? _previousFlutterErrorHandler;
   static ErrorCallback? _previousPlatformErrorHandler;
 
+  /// Installs Flutter/framework error hooks once for the current process.
   static void install() {
     if (_isInstalled) {
       return;
@@ -136,6 +155,9 @@ class DebugLogCapture {
     };
   }
 
+  /// Runs app bootstrap in a guarded zone that captures `print` and uncaught errors.
+  ///
+  /// Typically used in `main()` to enable in-app log collection before `runApp`.
   static Future<void> runApp(FutureOr<void> Function() appRunner) async {
     install();
 
