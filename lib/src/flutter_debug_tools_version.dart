@@ -1,1 +1,1 @@
-const String flutterDebugToolsVersion = '2.0.4';
+const String flutterDebugToolsVersion = '2.0.5';

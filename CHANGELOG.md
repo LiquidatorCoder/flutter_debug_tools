@@ -1,3 +1,10 @@
+## 2.0.5
+
+- **Fixes:** Fixed app reset behavior in the Color Picker flow and adjusted sheet height behavior.
+- **UI/UX Improvements:** Applied minor Network Inspector UI refinements.
+- **Example App:** Updated example app configuration and usage flow.
+- **Documentation:** Added API docs and multiple README improvements/clarifications.
+
 ## 2.0.4
 
 - **Animation Toolbox:** Added a dedicated animation debugging tool to inspect and tune motion, including global curve controls.
