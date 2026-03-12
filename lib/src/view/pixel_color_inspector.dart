@@ -5,9 +5,15 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 class PixelColorInspector extends StatefulWidget {
+  final bool isEnabled;
   final void Function(Color) onColorPicked;
   final Widget child;
-  const PixelColorInspector({super.key, required this.child, required this.onColorPicked});
+  const PixelColorInspector({
+    super.key,
+    required this.isEnabled,
+    required this.child,
+    required this.onColorPicked,
+  });
 
   @override
   State<PixelColorInspector> createState() => _PixelColorInspectorState();
@@ -21,13 +27,43 @@ class _PixelColorInspectorState extends State<PixelColorInspector> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _captureImage());
+    if (widget.isEnabled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _captureImage());
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant PixelColorInspector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.isEnabled && widget.isEnabled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _captureImage());
+    }
+  }
+
+  @override
+  void dispose() {
+    _image?.dispose();
+    super.dispose();
   }
 
   Future<void> _captureImage() async {
-    RenderRepaintBoundary boundary = _repaintBoundaryKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    final context = _repaintBoundaryKey.currentContext;
+    if (context == null) {
+      return;
+    }
+
+    final boundary = context.findRenderObject();
+    if (boundary is! RenderRepaintBoundary) {
+      return;
+    }
+
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    _image = await boundary.toImage(pixelRatio: pixelRatio);
+    final image = await boundary.toImage(pixelRatio: pixelRatio);
+    _image?.dispose();
+    _image = image;
+    if (!mounted) {
+      return;
+    }
     setState(() {});
   }
 
@@ -55,12 +91,24 @@ class _PixelColorInspectorState extends State<PixelColorInspector> {
   }
 
   Future<void> _showPixelColor(Offset globalPosition) async {
+    if (!widget.isEnabled) return;
+
+    if (_image == null) {
+      await _captureImage();
+    }
+
+    if (!mounted) return;
+
     if (_image == null) return;
 
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
 
-    var offset = (_repaintBoundaryKey.currentContext!.findRenderObject()! as RenderRepaintBoundary)
-        .globalToLocal(globalPosition);
+    final boundary = _repaintBoundaryKey.currentContext?.findRenderObject();
+    if (boundary is! RenderRepaintBoundary) {
+      return;
+    }
+
+    var offset = boundary.globalToLocal(globalPosition);
 
     offset *= pixelRatio;
 
@@ -89,9 +137,10 @@ class _PixelColorInspectorState extends State<PixelColorInspector> {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      behavior: HitTestBehavior.translucent,
-      onPointerUp: (e) => _showPixelColor(e.position),
+      behavior: widget.isEnabled ? HitTestBehavior.translucent : HitTestBehavior.deferToChild,
+      onPointerUp: widget.isEnabled ? (e) => _showPixelColor(e.position) : null,
       child: IgnorePointer(
+        ignoring: widget.isEnabled,
         child: RepaintBoundary(
           key: _repaintBoundaryKey,
           child: widget.child,

@@ -372,19 +372,16 @@ class _FlutterLensState extends State<FlutterLens> with WidgetsBindingObserver {
             },
             child: Stack(
               children: [
-                if (value.shouldShowColorPicker)
-                  PixelColorInspector(
-                    child: (value.shouldShowRenderBoxDetails)
-                        ? RenderBoxInspector(child: instrumentedApp)
-                        : instrumentedApp,
-                    onColorPicked: (val) {
-                      state.value = state.value.copyWith(currentColor: val);
-                      _toggleColorPicker();
-                      _toggleDialog();
-                    },
-                  )
-                else
-                  (value.shouldShowRenderBoxDetails) ? RenderBoxInspector(child: instrumentedApp) : instrumentedApp,
+                PixelColorInspector(
+                  isEnabled: value.shouldShowColorPicker,
+                  child:
+                      (value.shouldShowRenderBoxDetails) ? RenderBoxInspector(child: instrumentedApp) : instrumentedApp,
+                  onColorPicked: (val) {
+                    state.value = state.value.copyWith(currentColor: val);
+                    _toggleColorPicker();
+                    _toggleDialog();
+                  },
+                ),
                 if (value.shouldShowToolsIndicator) DebugIndicator(toggleTools: _toggleDialog),
                 if (value.shouldShowToolsPanel)
                   DebugToolsPanel(
