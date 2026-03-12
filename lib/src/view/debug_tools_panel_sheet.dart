@@ -87,7 +87,7 @@ class DebugToolsPanelSheet extends StatelessWidget {
             child: Container(
               width: double.infinity,
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(context).height * 0.82,
+                maxHeight: MediaQuery.sizeOf(context).height * 0.9,
               ),
               decoration: const BoxDecoration(
                 color: DebugToolsPanelStyles.sheetFill,

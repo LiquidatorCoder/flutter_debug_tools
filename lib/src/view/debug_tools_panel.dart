@@ -154,7 +154,7 @@ class _DebugToolsPanelState extends State<DebugToolsPanel> with SingleTickerProv
     final double delta = details.primaryDelta ?? 0;
     if (delta <= 0) return;
 
-    final double sheetTravel = MediaQuery.sizeOf(context).height * 0.82;
+    final double sheetTravel = MediaQuery.sizeOf(context).height * 0.9;
     if (sheetTravel <= 0) return;
     final double progressDelta = delta / sheetTravel;
 
